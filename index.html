@@ -1820,60 +1820,60 @@ const essayQuestions = [
                 <h4 style="color: #155724; margin-bottom: 15px;">📝 Jawaban Lengkap dan Detail:</h4>
                 
                 <div style="background: white; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
-                    <h5 style="color: #2a5298; margin-bottom: 10px;">1. Rancangan Database Awal (Bentuk Tidak Normal/UNF)</h5>
+                    <h5 style="color: #2a5298; margin-bottom: 10px;">1. Rancangan Database Awal (Bentuk Tidak Normal/Unnormalized Form - UNF)</h5>
                     
-                    <p style="margin-bottom: 15px;">Pada tahap ini, kita mencoba menangkap semua informasi yang dibutuhkan dalam beberapa tabel utama, meskipun masih mengandung redundansi data.</p>
+                    <p style="margin-bottom: 15px;">Pada tahap ini, kita mencoba menangkap semua informasi yang dibutuhkan dalam beberapa tabel utama.</p>
                     
                     <div style="margin-bottom: 15px;">
-                        <strong>Tabel Mobil (Sudah cukup baik):</strong>
+                        <strong>Tabel Mobil:</strong>
                         <ul style="margin-top: 5px; margin-left: 20px;">
-                            <li><code>No_Polisi</code> VARCHAR(15) <span style="color: #dc3545;">[PRIMARY KEY]</span></li>
-                            <li><code>Merk</code> VARCHAR(50)</li>
-                            <li><code>Model</code> VARCHAR(50)</li>
-                            <li><code>Tahun</code> INT</li>
-                            <li><code>Warna</code> VARCHAR(30)</li>
-                            <li><code>Harga_Sewa_Per_Hari</code> DECIMAL(10,2)</li>
-                            <li><code>Status_Ketersediaan</code> VARCHAR(20)</li>
+                            <li><code>No_Polisi</code> (PK, Unik)</li>
+                            <li><code>Merk</code></li>
+                            <li><code>Model</code></li>
+                            <li><code>Tahun</code></li>
+                            <li><code>Warna</code></li>
+                            <li><code>Harga_Sewa_Per_Hari</code></li>
+                            <li><code>Status_Ketersediaan</code></li>
                         </ul>
                     </div>
                     
                     <div style="margin-bottom: 15px;">
-                        <strong>Tabel Pelanggan (Sudah cukup baik):</strong>
+                        <strong>Tabel Pelanggan:</strong>
                         <ul style="margin-top: 5px; margin-left: 20px;">
-                            <li><code>No_KTP</code> VARCHAR(20) <span style="color: #dc3545;">[PRIMARY KEY]</span></li>
-                            <li><code>Nama_Pelanggan</code> VARCHAR(100)</li>
-                            <li><code>Alamat_Pelanggan</code> TEXT</li>
-                            <li><code>No_Telepon_Pelanggan</code> VARCHAR(20)</li>
+                            <li><code>No_KTP</code> (PK, Unik)</li>
+                            <li><code>Nama_Pelanggan</code></li>
+                            <li><code>Alamat_Pelanggan</code></li>
+                            <li><code>No_Telepon_Pelanggan</code></li>
                         </ul>
                     </div>
                     
                     <div style="margin-bottom: 15px;">
-                        <strong>Tabel Penyewaan (Mengandung Redundansi - Perlu Normalisasi):</strong>
+                        <strong>Tabel Penyewaan:</strong>
                         <ul style="margin-top: 5px; margin-left: 20px;">
-                            <li><code>No_Transaksi</code> VARCHAR(20) <span style="color: #dc3545;">[PRIMARY KEY]</span></li>
-                            <li><code>No_KTP_Pelanggan</code> VARCHAR(20)</li>
-                            <li><code>Nama_Pelanggan</code> VARCHAR(100) <span style="color: #dc3545;">[REDUNDAN]</span></li>
-                            <li><code>Alamat_Pelanggan</code> TEXT <span style="color: #dc3545;">[REDUNDAN]</span></li>
-                            <li><code>No_Telepon_Pelanggan</code> VARCHAR(20) <span style="color: #dc3545;">[REDUNDAN]</span></li>
-                            <li><code>No_Polisi_Mobil</code> VARCHAR(15)</li>
-                            <li><code>Merk_Mobil</code> VARCHAR(50) <span style="color: #dc3545;">[REDUNDAN]</span></li>
-                            <li><code>Model_Mobil</code> VARCHAR(50) <span style="color: #dc3545;">[REDUNDAN]</span></li>
-                            <li><code>Harga_Sewa_Per_Hari_Mobil</code> DECIMAL(10,2) <span style="color: #dc3545;">[REDUNDAN]</span></li>
-                            <li><code>Tanggal_Sewa</code> DATE</li>
-                            <li><code>Tanggal_Kembali_Rencana</code> DATE</li>
-                            <li><code>Tanggal_Kembali_Aktual</code> DATE (nullable)</li>
-                            <li><code>Total_Biaya</code> DECIMAL(12,2)</li>
-                            <li><code>Denda</code> DECIMAL(10,2) (nullable)</li>
+                            <li><code>No_Transaksi</code> (PK, Unik)</li>
+                            <li><code>No_KTP_Pelanggan</code> (FK mereferensi Pelanggan)</li>
+                            <li><code>Nama_Pelanggan</code> <span style="color: #dc3545;">[REDUNDAN]</span></li>
+                            <li><code>Alamat_Pelanggan</code> <span style="color: #dc3545;">[REDUNDAN]</span></li>
+                            <li><code>No_Telepon_Pelanggan</code> <span style="color: #dc3545;">[REDUNDAN]</span></li>
+                            <li><code>No_Polisi_Mobil</code> (FK mereferensi Mobil)</li>
+                            <li><code>Merk_Mobil</code> <span style="color: #dc3545;">[REDUNDAN]</span></li>
+                            <li><code>Model_Mobil</code> <span style="color: #dc3545;">[REDUNDAN]</span></li>
+                            <li><code>Harga_Sewa_Per_Hari_Mobil</code> <span style="color: #dc3545;">[REDUNDAN]</span></li>
+                            <li><code>Tanggal_Sewa</code></li>
+                            <li><code>Tanggal_Kembali_Rencana</code></li>
+                            <li><code>Tanggal_Kembali_Aktual</code></li>
+                            <li><code>Total_Biaya</code></li>
+                            <li><code>Denda</code></li>
                         </ul>
                     </div>
                     
                     <div style="background: #fff3cd; padding: 10px; border-radius: 5px;">
-                        <strong>Masalah Rancangan Awal:</strong> Tabel Penyewaan mengandung banyak redundansi data dari tabel Pelanggan dan Mobil, yang dapat menyebabkan anomali insert, update, dan delete.
+                        <strong>Penjelasan Rancangan Awal:</strong> Tabel Mobil dan Pelanggan sudah cukup baik karena atributnya mendeskripsikan entitas masing-masing dan memiliki Primary Key yang jelas. Namun, tabel Penyewaan mengandung banyak redundansi data dari tabel Pelanggan dan Mobil. Ini perlu dinormalisasi.
                     </div>
                 </div>
                 
                 <div style="background: white; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
-                    <h5 style="color: #2a5298; margin-bottom: 10px;">2. Proses Normalisasi Lengkap hingga 3NF</h5>
+                    <h5 style="color: #2a5298; margin-bottom: 10px;">2. Proses Normalisasi hingga 3NF</h5>
                     
                     <div style="margin-bottom: 20px;">
                         <h6 style="color: #1e3c72; margin-bottom: 10px;">📋 Bentuk Normal Pertama (1NF)</h6>
@@ -1891,6 +1891,7 @@ const essayQuestions = [
                             <li>Tidak ada repeating groups</li>
                             <li>Setiap tabel memiliki Primary Key yang jelas</li>
                         </ul>
+                        <p>Rancangan awal kita, dengan asumsi atomisitas atribut, sudah memenuhi 1NF, meskipun tabel Penyewaan sangat tidak efisien.</p>
                     </div>
                     
                     <div style="margin-bottom: 20px;">
@@ -1900,49 +1901,79 @@ const essayQuestions = [
                             <ul style="margin-top: 5px; margin-left: 20px;">
                                 <li>Sudah dalam 1NF</li>
                                 <li>Semua non-key atribut bergantung penuh pada keseluruhan primary key</li>
-                                <li>Tidak ada ketergantungan parsial (partial dependency)</li>
+                                <li>Tidak ada ketergantungan parsial</li>
                             </ul>
                         </div>
                         
                         <div style="margin-bottom: 15px;">
-                            <strong>Identifikasi Ketergantungan Fungsional:</strong>
+                            <strong>Analisis Tabel:</strong>
                             <ul style="margin-top: 5px; margin-left: 20px;">
-                                <li><code>No_Transaksi → No_KTP_Pelanggan, No_Polisi_Mobil, Tanggal_Sewa, ...</code></li>
-                                <li><code>No_KTP_Pelanggan → Nama_Pelanggan, Alamat_Pelanggan, No_Telepon_Pelanggan</code></li>
-                                <li><code>No_Polisi_Mobil → Merk_Mobil, Model_Mobil, Harga_Sewa_Per_Hari_Mobil</code></li>
+                                <li><strong>Tabel Mobil:</strong> Sudah 2NF. Semua atribut bergantung penuh pada No_Polisi.</li>
+                                <li><strong>Tabel Pelanggan:</strong> Sudah 2NF. Semua atribut bergantung penuh pada No_KTP.</li>
+                                <li><strong>Tabel Penyewaan:</strong>
+                                    <ul style="margin-top: 5px; margin-left: 20px;">
+                                        <li>Primary Key: No_Transaksi</li>
+                                        <li>Atribut Nama_Pelanggan, Alamat_Pelanggan, No_Telepon_Pelanggan bergantung pada No_KTP_Pelanggan, bukan pada No_Transaksi</li>
+                                        <li>Atribut Merk_Mobil, Model_Mobil, Harga_Sewa_Per_Hari_Mobil bergantung pada No_Polisi_Mobil, bukan pada No_Transaksi</li>
+                                    </ul>
+                                </li>
                             </ul>
                         </div>
                         
                         <div style="background: #fff3cd; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
-                            <strong>Masalah yang Ditemukan:</strong> Dalam tabel Penyewaan, atribut seperti Nama_Pelanggan bergantung pada No_KTP_Pelanggan, bukan pada No_Transaksi. Ini menunjukkan adanya redundansi yang harus dihilangkan.
+                            <strong>Pemecahan/Penghilangan Redundansi untuk 2NF:</strong> Kita akan menghilangkan atribut-atribut yang sudah ada di tabel lain dan hanya menyimpan Foreign Key.
                         </div>
                         
-                        <p><strong>Solusi:</strong> Menghilangkan atribut redundan dari tabel Penyewaan dan hanya menyimpan Foreign Key.</p>
+                        <div style="margin-bottom: 15px;">
+                                                        <strong>Tabel Penyewaan (Setelah penyesuaian menuju 2NF/3NF):</strong>
+                            <ul style="margin-top: 5px; margin-left: 20px;">
+                                <li><code>No_Transaksi</code> (PK)</li>
+                                <li><code>No_KTP_Pelanggan</code> (FK mereferensi Pelanggan.No_KTP)</li>
+                                <li><code>No_Polisi_Mobil</code> (FK mereferensi Mobil.No_Polisi)</li>
+                                <li><code>Tanggal_Sewa</code></li>
+                                <li><code>Tanggal_Kembali_Rencana</code></li>
+                                <li><code>Tanggal_Kembali_Aktual</code></li>
+                                <li><code>Total_Biaya</code></li>
+                                <li><code>Denda</code></li>
+                            </ul>
+                        </div>
+                        
+                        <div style="background: #e3f2fd; padding: 10px; border-radius: 5px;">
+                            <strong>Ketergantungan Fungsional (FD) yang relevan di tabel Penyewaan (setelah penyesuaian):</strong>
+                            <ul style="margin-top: 5px; margin-left: 20px;">
+                                <li><code>No_Transaksi → No_KTP_Pelanggan, No_Polisi_Mobil, Tanggal_Sewa, Tanggal_Kembali_Rencana, Tanggal_Kembali_Aktual, Total_Biaya, Denda</code></li>
+                            </ul>
+                            <p style="margin-top: 10px;">Semua non-key atribut kini bergantung penuh pada No_Transaksi. Jadi, tabel Penyewaan yang disesuaikan ini sudah 2NF.</p>
+                        </div>
                     </div>
                     
                     <div style="margin-bottom: 20px;">
-                                                <h6 style="color: #1e3c72; margin-bottom: 10px;">📋 Bentuk Normal Ketiga (3NF)</h6>
+                        <h6 style="color: #1e3c72; margin-bottom: 10px;">📋 Bentuk Normal Ketiga (3NF)</h6>
                         <div style="background: #e3f2fd; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
                             <strong>Syarat 3NF:</strong>
                             <ul style="margin-top: 5px; margin-left: 20px;">
                                 <li>Sudah dalam 2NF</li>
-                                <li>Tidak ada ketergantungan transitif</li>
-                                <li>Semua non-key atribut bergantung langsung pada primary key</li>
+                                <li>Tidak ada ketergantungan transitif (non-key atribut tidak bergantung pada non-key atribut lainnya)</li>
                             </ul>
                         </div>
                         
                         <div style="margin-bottom: 15px;">
                             <strong>Analisis Ketergantungan Transitif:</strong>
-                            <p style="margin: 5px 0;">Setelah penyesuaian 2NF, kita periksa apakah ada ketergantungan transitif dalam tabel Penyewaan:</p>
                             <ul style="margin-top: 5px; margin-left: 20px;">
-                                <li><code>Total_Biaya</code> mungkin dihitung dari <code>Harga_Sewa_Per_Hari</code> × <code>Lama_Sewa</code></li>
-                                <li>Namun, <code>Total_Biaya</code> dan <code>Denda</code> adalah hasil dari transaksi spesifik</li>
-                                <li>Tidak ada non-key atribut yang bergantung pada non-key atribut lain</li>
+                                <li><strong>Tabel Mobil:</strong> Sudah 3NF. Tidak ada non-key atribut yang bergantung pada non-key atribut lain.</li>
+                                <li><strong>Tabel Pelanggan:</strong> Sudah 3NF.</li>
+                                <li><strong>Tabel Penyewaan (setelah penyesuaian 2NF):</strong>
+                                    <ul style="margin-top: 5px; margin-left: 20px;">
+                                        <li>Total_Biaya mungkin dihitung dari Harga_Sewa_Per_Hari (dari tabel Mobil) dan lama sewa</li>
+                                        <li>Namun, karena kita sudah menghilangkan Harga_Sewa_Per_Hari dari tabel Penyewaan, dan Total_Biaya adalah hasil transaksi spesifik (bisa termasuk diskon, biaya tambahan, dll), maka tidak ada ketergantungan transitif</li>
+                                        <li>Denda juga merupakan atribut hasil transaksi, bukan bergantung pada atribut lain</li>
+                                    </ul>
+                                </li>
                             </ul>
                         </div>
                         
                         <div style="background: #d4edda; padding: 10px; border-radius: 5px;">
-                            <strong>Kesimpulan:</strong> Setelah menghilangkan redundansi pada tahap 2NF, struktur database sudah memenuhi 3NF karena tidak ada ketergantungan transitif.
+                            <strong>Kesimpulan:</strong> Dengan struktur yang disesuaikan, tabel Penyewaan sudah memenuhi 3NF karena tidak ada non-key atribut yang bergantung pada non-key atribut lain di dalam tabel Penyewaan.
                         </div>
                     </div>
                     
@@ -1952,38 +1983,188 @@ const essayQuestions = [
                         <div style="margin-bottom: 10px;">
                             <strong>Tabel Mobil:</strong>
                             <ul style="margin-top: 5px; margin-left: 20px;">
-                                <li><code>No_Polisi</code> VARCHAR(15) <span style="color: #dc3545;">[PRIMARY KEY]</span></li>
-                                <li><code>Merk</code> VARCHAR(50)</li>
-                                <li><code>Model</code> VARCHAR(50)</li>
-                                <li><code>Tahun</code> INT</li>
-                                <li><code>Warna</code> VARCHAR(30)</li>
-                                <li><code>Harga_Sewa_Per_Hari</code> DECIMAL(10,2)</li>
-                                <li><code>Status_Ketersediaan</code> VARCHAR(20)</li>
+                                <li><code>No_Polisi</code> (VARCHAR(15), PK)</li>
+                                <li><code>Merk</code> (VARCHAR(50))</li>
+                                <li><code>Model</code> (VARCHAR(50))</li>
+                                <li><code>Tahun</code> (INT)</li>
+                                <li><code>Warna</code> (VARCHAR(30))</li>
+                                <li><code>Harga_Sewa_Per_Hari</code> (DECIMAL(10,2))</li>
+                                <li><code>Status_Ketersediaan</code> (VARCHAR(20)) -- Misal: 'Tersedia', 'Disewa'</li>
                             </ul>
                         </div>
                         
                         <div style="margin-bottom: 10px;">
                             <strong>Tabel Pelanggan:</strong>
                             <ul style="margin-top: 5px; margin-left: 20px;">
-                                <li><code>No_KTP</code> VARCHAR(20) <span style="color: #dc3545;">[PRIMARY KEY]</span></li>
-                                <li><code>Nama_Pelanggan</code> VARCHAR(100)</li>
-                                <li><code>Alamat_Pelanggan</code> TEXT</li>
-                                <li><code>No_Telepon_Pelanggan</code> VARCHAR(20)</li>
+                                <li><code>No_KTP</code> (VARCHAR(20), PK)</li>
+                                <li><code>Nama_Pelanggan</code> (VARCHAR(100))</li>
+                                <li><code>Alamat_Pelanggan</code> (TEXT)</li>
+                                <li><code>No_Telepon_Pelanggan</code> (VARCHAR(20))</li>
                             </ul>
                         </div>
                         
                         <div style="margin-bottom: 10px;">
-                            <strong>Tabel Penyewaan (Setelah Normalisasi):</strong>
+                            <strong>Tabel Penyewaan:</strong>
                             <ul style="margin-top: 5px; margin-left: 20px;">
-                                <li><code>No_Transaksi</code> VARCHAR(20) <span style="color: #dc3545;">[PRIMARY KEY]</span></li>
-                                <li><code>No_KTP_Pelanggan</code> VARCHAR(20) <span style="color: #17a2b8;">[FOREIGN KEY → Pelanggan.No_KTP]</span></li>
-                                <li><code>No_Polisi_Mobil</code> VARCHAR(15) <span style="color: #17a2b8;">[FOREIGN KEY → Mobil.No_Polisi]</span></li>
-                                <li><code>Tanggal_Sewa</code> DATE</li>
-                                <li><code>Tanggal_Kembali_Rencana</code> DATE</li>
-                                <li><code>Tanggal_Kembali_Aktual</code> DATE (nullable)</li>
-                                <li><code>Total_Biaya</code> DECIMAL(12,2)</li>
-                                <li><code>Denda</code> DECIMAL(10,2) (nullable)</li>
+                                <li><code>No_Transaksi</code> (VARCHAR(20), PK)</li>
+                                <li><code>No_KTP_Pelanggan</code> (VARCHAR(20), FK REFERENCES Pelanggan(No_KTP))</li>
+                                <li><code>No_Polisi_Mobil</code> (VARCHAR(15), FK REFERENCES Mobil(No_Polisi))</li>
+                                <li><code>Tanggal_Sewa</code> (DATE)</li>
+                                <li><code>Tanggal_Kembali_Rencana</code> (DATE)</li>
+                                <li><code>Tanggal_Kembali_Aktual</code> (DATE, NULLABLE)</li>
+                                <li><code>Total_Biaya</code> (DECIMAL(12,2))</li>
+                                <li><code>Denda</code> (DECIMAL(10,2), NULLABLE)</li>
                             </ul>
+                        </div>
+                        
+                        <div style="background: #e3f2fd; padding: 10px; border-radius: 5px; margin-top: 10px;">
+                            <strong>Penjelasan Normalisasi:</strong>
+                            <ul style="margin-top: 5px; margin-left: 20px;">
+                                <li><strong>1NF:</strong> Memastikan setiap data bersifat atomik dan ada PK.</li>
+                                <li><strong>2NF:</strong> Menghilangkan ketergantungan parsial. Data pelanggan dan mobil yang awalnya ada di tabel Penyewaan dihilangkan karena sudah ada di tabel masing-masing.</li>
+                                <li><strong>3NF:</strong> Menghilangkan ketergantungan transitif. Setelah penyesuaian 2NF, tidak ada lagi non-key atribut yang bergantung pada non-key atribut lain.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- ER Diagram untuk Sistem Rental Mobil -->
+                <div style="background: white; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
+                    <h5 style="color: #2a5298; margin-bottom: 10px;">ER Diagram Sistem Rental Mobil (3NF)</h5>
+                    
+                    <div style="width: 100%; overflow-x: auto; margin: 20px 0; background: #f9f9f9; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                        <div style="display: flex; justify-content: center; align-items: center; min-height: 400px;">
+                            <svg width="800" height="500" viewBox="0 0 800 500" style="border: 1px solid #ddd; background: linear-gradient(to bottom, #fafafa, #f0f0f0); border-radius: 8px; max-width: 100%; height: auto;">
+                                <defs>
+                                    <linearGradient id="entitygrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                                        <stop offset="0%" style="stop-color:#e8f5e8;stop-opacity:1" />
+                                        <stop offset="100%" style="stop-color:#c8e6c9;stop-opacity:1" />
+                                    </linearGradient>
+                                    
+                                    <linearGradient id="entitygrad2" x1="0%" y1="0%" x2="0%" y2="100%">
+                                        <stop offset="0%" style="stop-color:#e3f2fd;stop-opacity:1" />
+                                        <stop offset="100%" style="stop-color:#bbdefb;stop-opacity:1" />
+                                    </linearGradient>
+                                    
+                                    <linearGradient id="entitygrad3" x1="0%" y1="0%" x2="0%" y2="100%">
+                                        <stop offset="0%" style="stop-color:#fff3e0;stop-opacity:1" />
+                                        <stop offset="100%" style="stop-color:#ffe0b2;stop-opacity:1" />
+                                    </linearGradient>
+                                    
+                                    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+                                        <feDropShadow dx="2" dy="2" stdDeviation="2" flood-color="#00000020"/>
+                                    </filter>
+                                </defs>
+                                
+                                <!-- ENTITY: MOBIL -->
+                                <g filter="url(#shadow)">
+                                    <rect x="50" y="150" width="180" height="140" rx="8" ry="8" 
+                                          fill="url(#entitygrad)" stroke="#4caf50" stroke-width="2"/>
+                                    <line x1="50" y1="190" x2="230" y2="190" stroke="#4caf50" stroke-width="1"/>
+                                    
+                                    <text x="140" y="175" text-anchor="middle" font-family="Arial, sans-serif" 
+                                          font-size="16" font-weight="bold" fill="#2e7d32">MOBIL</text>
+                                    
+                                    <text x="60" y="208" font-family="Arial, sans-serif" font-size="12" fill="#333">
+                                        <tspan font-weight="bold" text-decoration="underline">No_Polisi</tspan> (PK)
+                                    </text>
+                                    <text x="60" y="225" font-family="Arial, sans-serif" font-size="12" fill="#333">Merk</text>
+                                    <text x="60" y="242" font-family="Arial, sans-serif" font-size="12" fill="#333">Model</text>
+                                    <text x="60" y="259" font-family="Arial, sans-serif" font-size="12" fill="#333">Tahun</text>
+                                    <text x="60" y="276" font-family="Arial, sans-serif" font-size="12" fill="#333">Warna</text>
+                                </g>
+                                
+                                <!-- ENTITY: PELANGGAN -->
+                                <g filter="url(#shadow)">
+                                    <rect x="570" y="150" width="180" height="140" rx="8" ry="8" 
+                                          fill="url(#entitygrad2)" stroke="#2196f3" stroke-width="2"/>
+                                    <line x1="570" y1="190" x2="750" y2="190" stroke="#2196f3" stroke-width="1"/>
+                                    
+                                    <text x="660" y="175" text-anchor="middle" font-family="Arial, sans-serif" 
+                                          font-size="16" font-weight="bold" fill="#1565c0">PELANGGAN</text>
+                                    
+                                    <text x="580" y="208" font-family="Arial, sans-serif" font-size="12" fill="#333">
+                                        <tspan font-weight="bold" text-decoration="underline">No_KTP</tspan> (PK)
+                                    </text>
+                                    <text x="580" y="225" font-family="Arial, sans-serif" font-size="12" fill="#333">Nama_Pelanggan</text>
+                                    <text x="580" y="242" font-family="Arial, sans-serif" font-size="12" fill="#333">Alamat_Pelanggan</text>
+                                    <text x="580" y="259" font-family="Arial, sans-serif" font-size="12" fill="#333">No_Telepon</text>
+                                </g>
+                                
+                                <!-- ENTITY: PENYEWAAN -->
+                                <g filter="url(#shadow)">
+                                    <rect x="310" y="350" width="180" height="140" rx="8" ry="8" 
+                                          fill="url(#entitygrad3)" stroke="#ff9800" stroke-width="2"/>
+                                    <line x1="310" y1="390" x2="490" y2="390" stroke="#ff9800" stroke-width="1"/>
+                                    
+                                    <text x="400" y="375" text-anchor="middle" font-family="Arial, sans-serif" 
+                                          font-size="16" font-weight="bold" fill="#ef6c00">PENYEWAAN</text>
+                                    
+                                                                        <text x="320" y="408" font-family="Arial, sans-serif" font-size="12" fill="#333">
+                                        <tspan font-weight="bold" text-decoration="underline">No_Transaksi</tspan> (PK)
+                                    </text>
+                                    <text x="320" y="425" font-family="Arial, sans-serif" font-size="12" fill="#333">Tanggal_Sewa</text>
+                                    <text x="320" y="442" font-family="Arial, sans-serif" font-size="12" fill="#333">Tgl_Kembali_Rencana</text>
+                                    <text x="320" y="459" font-family="Arial, sans-serif" font-size="12" fill="#333">Tgl_Kembali_Aktual</text>
+                                    <text x="320" y="476" font-family="Arial, sans-serif" font-size="12" fill="#333">Total_Biaya, Denda</text>
+                                </g>
+                                
+                                <!-- RELATIONSHIP LINES -->
+                                <!-- MOBIL to PENYEWAAN -->
+                                <line x1="230" y1="220" x2="310" y2="400" stroke="#333" stroke-width="2"/>
+                                <text x="250" y="300" font-family="Arial, sans-serif" font-size="11" fill="#666">FK: No_Polisi_Mobil</text>
+                                
+                                <!-- PELANGGAN to PENYEWAAN -->
+                                <line x1="570" y1="220" x2="490" y2="400" stroke="#333" stroke-width="2"/>
+                                <text x="480" y="300" font-family="Arial, sans-serif" font-size="11" fill="#666">FK: No_KTP_Pelanggan</text>
+                                
+                                <!-- CARDINALITY LABELS -->
+                                <!-- MOBIL (1) to PENYEWAAN (N) -->
+                                <circle cx="260" cy="280" r="12" fill="white" stroke="#333" stroke-width="1"/>
+                                <text x="260" y="285" text-anchor="middle" font-family="Arial, sans-serif" 
+                                      font-size="12" font-weight="bold" fill="#d32f2f">1</text>
+                                
+                                <circle cx="300" cy="360" r="12" fill="white" stroke="#333" stroke-width="1"/>
+                                <text x="300" y="365" text-anchor="middle" font-family="Arial, sans-serif" 
+                                      font-size="12" font-weight="bold" fill="#d32f2f">N</text>
+                                
+                                <!-- PELANGGAN (1) to PENYEWAAN (N) -->
+                                <circle cx="540" cy="280" r="12" fill="white" stroke="#333" stroke-width="1"/>
+                                <text x="540" y="285" text-anchor="middle" font-family="Arial, sans-serif" 
+                                      font-size="12" font-weight="bold" fill="#d32f2f">1</text>
+                                
+                                <circle cx="500" cy="360" r="12" fill="white" stroke="#333" stroke-width="1"/>
+                                <text x="500" y="365" text-anchor="middle" font-family="Arial, sans-serif" 
+                                      font-size="12" font-weight="bold" fill="#d32f2f">N</text>
+                                
+                                <!-- TITLE -->
+                                <text x="400" y="30" text-anchor="middle" font-family="Arial, sans-serif" 
+                                      font-size="18" font-weight="bold" fill="#1565c0">
+                                    ER Diagram - Sistem Rental Mobil (3NF)
+                                </text>
+                                
+                                <!-- LEGEND -->
+                                <g transform="translate(50, 30)">
+                                    <rect x="0" y="0" width="200" height="100" rx="5" ry="5" 
+                                          fill="white" stroke="#666" stroke-width="1" opacity="0.95"/>
+                                    
+                                    <text x="100" y="20" text-anchor="middle" font-family="Arial, sans-serif" 
+                                          font-size="12" font-weight="bold" fill="#333">LEGENDA</text>
+                                    
+                                    <text x="10" y="40" font-family="Arial, sans-serif" font-size="10" fill="#333">
+                                        PK = Primary Key
+                                    </text>
+                                    <text x="10" y="55" font-family="Arial, sans-serif" font-size="10" fill="#333">
+                                        FK = Foreign Key
+                                    </text>
+                                    <text x="10" y="70" font-family="Arial, sans-serif" font-size="10" fill="#333">
+                                        (1) = One, (N) = Many
+                                    </text>
+                                    <text x="10" y="85" font-family="Arial, sans-serif" font-size="10" fill="#333">
+                                        Rectangle = Entity
+                                    </text>
+                                </g>
+                            </svg>
                         </div>
                     </div>
                 </div>
@@ -1991,57 +2172,32 @@ const essayQuestions = [
                 <div style="background: white; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
                     <h5 style="color: #2a5298; margin-bottom: 10px;">3. Perintah SQL CREATE VIEW InfoSewaAktif</h5>
                     
-                    <div style="margin-bottom: 15px;">
-                        <strong>Analisis Kebutuhan View:</strong>
-                        <ul style="margin-top: 5px; margin-left: 20px;">
-                            <li>Menampilkan informasi mobil yang sedang disewa</li>
-                            <li>Menggabungkan data dari 3 tabel: Mobil, Penyewaan, dan Pelanggan</li>
-                            <li>Filter berdasarkan status mobil dan kondisi penyewaan aktif</li>
-                        </ul>
-                    </div>
-                    
                     <pre style="background: #f4f4f4; padding: 15px; border-radius: 5px; overflow-x: auto; margin-bottom: 15px;">
 CREATE VIEW InfoSewaAktif AS
-SELECT 
+SELECT
     M.No_Polisi,
     M.Merk AS Merk_Mobil,
     M.Model AS Model_Mobil,
     P.Nama_Pelanggan,
     Py.Tanggal_Kembali_Rencana
-FROM 
+FROM
     Mobil M
-    INNER JOIN Penyewaan Py ON M.No_Polisi = Py.No_Polisi_Mobil
-    INNER JOIN Pelanggan P ON Py.No_KTP_Pelanggan = P.No_KTP
-WHERE 
-    M.Status_Ketersediaan = 'Disewa' 
-    AND Py.Tanggal_Kembali_Aktual IS NULL;</pre>
+JOIN
+    Penyewaan Py ON M.No_Polisi = Py.No_Polisi_Mobil
+JOIN
+    Pelanggan P ON Py.No_KTP_Pelanggan = P.No_KTP
+WHERE
+    M.Status_Ketersediaan = 'Disewa'
+    AND Py.Tanggal_Kembali_Aktual IS NULL; -- Asumsi jika belum kembali aktual, masih disewa</pre>
                     
                     <div style="background: #e3f2fd; padding: 15px; border-radius: 5px;">
-                        <h6 style="color: #1e3c72; margin-bottom: 10px;">📝 Penjelasan Detail Query:</h6>
+                        <h6 style="color: #1e3c72; margin-bottom: 10px;">📝 Penjelasan View:</h6>
+                        <p style="margin-bottom: 10px;">View InfoSewaAktif ini menggabungkan data dari tabel Mobil, Penyewaan, dan Pelanggan.</p>
                         <ul style="margin-top: 5px; margin-left: 20px;">
-                            <li><strong>SELECT Clause:</strong> Memilih kolom yang diminta dengan alias yang jelas</li>
-                            <li><strong>FROM & JOIN:</strong> 
-                                <ul style="margin-top: 5px; margin-left: 20px;">
-                                    <li>INNER JOIN Penyewaan: Menghubungkan mobil dengan transaksi penyewaan</li>
-                                    <li>INNER JOIN Pelanggan: Mendapatkan informasi pelanggan yang menyewa</li>
-                                </ul>
-                            </li>
-                            <li><strong>WHERE Clause:</strong>
-                                <ul style="margin-top: 5px; margin-left: 20px;">
-                                    <li><code>Status_Ketersediaan = 'Disewa'</code>: Filter mobil yang statusnya disewa</li>
-                                    <li><code>Tanggal_Kembali_Aktual IS NULL</code>: Memastikan mobil belum dikembalikan</li>
-                                </ul>
-                            </li>
+                            <li>Ia memilih kolom-kolom yang diminta: Nomor Polisi, Merk Mobil, Model Mobil, Nama Pelanggan, dan Tanggal Kembali Rencana.</li>
+                            <li>Menggunakan JOIN untuk menghubungkan tabel berdasarkan Primary Key dan Foreign Key yang sesuai.</li>
+                            <li>Klausa WHERE memfilter hasilnya untuk hanya menampilkan mobil yang statusnya 'Disewa' DAN yang Tanggal_Kembali_Aktual-nya masih NULL (mengindikasikan mobil belum dikembalikan dan sewa masih aktif).</li>
                         </ul>
-                        
-                        <div style="margin-top: 10px; background: #fff3cd; padding: 10px; border-radius: 5px;">
-                            <strong>Keuntungan View:</strong>
-                            <ul style="margin-top: 5px; margin-left: 20px;">
-                                <li>Menyederhanakan query kompleks untuk pengguna</li>
-                                <li>Menyediakan abstraksi data yang aman</li>
-                                <li>Memudahkan maintenance dan konsistensi query</li>
-                            </ul>
-                        </div>
                     </div>
                 </div>
                 
@@ -2049,27 +2205,17 @@ WHERE
                     <h5 style="color: #2a5298; margin-bottom: 10px;">🔍 Ringkasan Proses Normalisasi</h5>
                     
                     <div style="margin-bottom: 15px;">
-                        <strong>Manfaat yang Dicapai:</strong>
+                        <strong>Proses normalisasi dilakukan untuk menghilangkan redundansi dan anomali:</strong>
                         <ul style="margin-top: 5px; margin-left: 20px;">
-                            <li><strong>Eliminasi Redundansi:</strong> Data pelanggan dan mobil tidak lagi duplikat di tabel Penyewaan</li>
-                            <li><strong>Konsistensi Data:</strong> Perubahan data pelanggan/mobil hanya perlu dilakukan di satu tempat</li>
-                            <li><strong>Efisiensi Storage:</strong> Mengurangi ukuran database secara keseluruhan</li>
-                            <li><strong>Integritas Data:</strong> Foreign key constraints memastikan referential integrity</li>
-                        </ul>
-                    </div>
-                    
-                    <div style="background: #e3f2fd; padding: 10px; border-radius: 5px;">
-                        <strong>Ketergantungan Fungsional Final:</strong>
-                        <ul style="margin-top: 5px; margin-left: 20px;">
-                            <li><strong>Mobil:</strong> No_Polisi → {Merk, Model, Tahun, Warna, Harga_Sewa_Per_Hari, Status_Ketersediaan}</li>
-                            <li><strong>Pelanggan:</strong> No_KTP → {Nama_Pelanggan, Alamat_Pelanggan, No_Telepon_Pelanggan}</li>
-                            <li><strong>Penyewaan:</strong> No_Transaksi → {No_KTP_Pelanggan, No_Polisi_Mobil, Tanggal_Sewa, Tanggal_Kembali_Rencana, Tanggal_Kembali_Aktual, Total_Biaya, Denda}</li>
+                            <li><strong>1NF:</strong> Memastikan setiap data bersifat atomik dan ada PK.</li>
+                            <li><strong>2NF:</strong> Menghilangkan ketergantungan parsial. Dalam kasus ini, data pelanggan dan mobil yang awalnya ada di tabel Penyewaan dihilangkan karena sudah ada di tabel masing-masing dan dapat diakses melalui Foreign Key.</li>
+                            <li><strong>3NF:</strong> Menghilangkan ketergantungan transitif. Atribut seperti Total_Biaya dan Denda adalah hasil dari transaksi itu sendiri, bukan karena ketergantungan transitif dalam tabel Penyewaan.</li>
                         </ul>
                     </div>
                 </div>
             </div>
         `,
-        explanation: "Jawaban harus mencakup rancangan database awal dengan identifikasi redundansi, proses normalisasi step-by-step dengan analisis ketergantungan fungsional yang detail, dan query CREATE VIEW dengan penjelasan komprehensif."
+        explanation: "Jawaban harus mencakup rancangan database awal dengan identifikasi redundansi, proses normalisasi step-by-step dengan analisis ketergantungan fungsional yang detail sesuai dengan penjelasan di atas, dan query CREATE VIEW dengan penjelasan komprehensif."
     },
     {
         question: `
@@ -2123,7 +2269,7 @@ WHERE
                         <strong style="color: #2a5298;">5. KELAS_PERKULIAHAN</strong>
                         <p style="margin: 5px 0 5px 20px; color: #666;">Instance spesifik dari sebuah MATA_KULIAH yang ditawarkan pada semester dan tahun tertentu</p>
                         <ul style="margin-top: 5px; margin-left: 20px;">
-                                                        <li>Semester</li>
+                            <li>Semester</li>
                             <li>Tahun</li>
                             <li>Ruang</li>
                             <li>Jadwal</li>
@@ -2161,7 +2307,7 @@ WHERE
                             </ul>
                         </li>
                         <li>
-                            <strong>Konsep Object-Oriented Database (OODB)</strong><br>
+                                                        <strong>Konsep Object-Oriented Database (OODB)</strong><br>
                             Jelaskan secara singkat bagaimana konsep OODB dapat:
                             <ul style="margin-top: 5px;">
                                 <li>Diterapkan untuk sistem ini</li>
@@ -2173,759 +2319,562 @@ WHERE
             </div>
         `,
         minLength: 200,
-correctAnswer: `
-    <div style="background: #d4edda; padding: 20px; border-radius: 10px;">
-        <h4 style="color: #155724; margin-bottom: 15px;">📝 Jawaban Lengkap dengan EER Diagram:</h4>
-        
-        <div style="background: white; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
-            <h5 style="color: #2a5298; margin-bottom: 10px;">1. EER Diagram Sistem Akademik</h5>
-            
-           <div class="diagram-container">
-    <div class="svg-content">
-                <svg width="900" height="700" viewBox="0 0 900 700" style="border: 1px solid #ddd; background: linear-gradient(to bottom, #fafafa, #f0f0f0); border-radius: 8px;">
-                    <!-- Grid background (optional, for development) -->
-                    <defs>
-                        <pattern id="grid" width="50" height="50" patternUnits="userSpaceOnUse">
-                            <path d="M 50 0 L 0 0 0 50" fill="none" stroke="#e0e0e0" stroke-width="0.5" opacity="0.3"/>
-                        </pattern>
-                        
-                        <!-- Gradients for entities -->
-                        <linearGradient id="supergradient" x1="0%" y1="0%" x2="0%" y2="100%">
-                            <stop offset="0%" style="stop-color:#e3f2fd;stop-opacity:1" />
-                            <stop offset="100%" style="stop-color:#bbdefb;stop-opacity:1" />
-                        </linearGradient>
-                        
-                        <linearGradient id="subgradient1" x1="0%" y1="0%" x2="0%" y2="100%">
-                            <stop offset="0%" style="stop-color:#e8f5e8;stop-opacity:1" />
-                            <stop offset="100%" style="stop-color:#c8e6c9;stop-opacity:1" />
-                        </linearGradient>
-                        
-                        <linearGradient id="subgradient2" x1="0%" y1="0%" x2="0%" y2="100%">
-                            <stop offset="0%" style="stop-color:#fff3e0;stop-opacity:1" />
-                            <stop offset="100%" style="stop-color:#ffe0b2;stop-opacity:1" />
-                        </linearGradient>
-                        
-                        <linearGradient id="entitygradient" x1="0%" y1="0%" x2="0%" y2="100%">
-                            <stop offset="0%" style="stop-color:#f3e5f5;stop-opacity:1" />
-                            <stop offset="100%" style="stop-color:#e1bee7;stop-opacity:1" />
-                        </linearGradient>
-                        
-                        <!-- Drop shadow filter -->
-                        <filter id="dropshadow" x="-20%" y="-20%" width="140%" height="140%">
-                            <feDropShadow dx="3" dy="3" stdDeviation="3" flood-color="#00000030"/>
-                        </filter>
-                    </defs>
-                    
-                    <!-- Background grid -->
-                    <rect width="100%" height="100%" fill="url(#grid)" />
-                    
-                    <!-- SUPERCLASS: ORANG -->
-                    <g filter="url(#dropshadow)">
-                        <rect x="350" y="50" width="200" height="120" rx="8" ry="8" 
-                              fill="url(#supergradient)" stroke="#1976d2" stroke-width="2"/>
-                        <line x1="350" y1="90" x2="550" y2="90" stroke="#1976d2" stroke-width="1"/>
-                        
-                        <!-- Title -->
-                        <text x="450" y="75" text-anchor="middle" font-family="Arial, sans-serif" 
-                              font-size="16" font-weight="bold" fill="#1565c0">ORANG</text>
-                        <text x="450" y="88" text-anchor="middle" font-family="Arial, sans-serif" 
-                              font-size="11" fill="#1976d2" font-style="italic">(Superclass)</text>
-                        
-                        <!-- Attributes -->
-                        <text x="360" y="108" font-family="Arial, sans-serif" font-size="12" fill="#333">
-                            <tspan font-weight="bold" text-decoration="underline">🔑 NIK</tspan>
-                        </text>
-                        <text x="360" y="125" font-family="Arial, sans-serif" font-size="12" fill="#333">Nama</text>
-                        <text x="360" y="142" font-family="Arial, sans-serif" font-size="12" fill="#333">Tanggal_Lahir</text>
-                        <text x="360" y="159" font-family="Arial, sans-serif" font-size="12" fill="#333">Alamat</text>
-                    </g>
-                    
-                    <!-- INHERITANCE SYMBOL -->
-                    <g>
-                        <!-- Connection line from ORANG -->
-                        <line x1="450" y1="170" x2="450" y2="200" stroke="#333" stroke-width="2"/>
-                        
-                        <!-- Triangle (IS-A symbol) -->
-                        <polygon points="450,200 440,220 460,220" fill="white" stroke="#333" stroke-width="2"/>
-                        
-                        <!-- Specialization circle with constraint -->
-                        <circle cx="450" cy="240" r="20" fill="white" stroke="#333" stroke-width="2"/>
-                        <text x="450" y="235" text-anchor="middle" font-family="Arial, sans-serif" 
-                              font-size="14" font-weight="bold" fill="#d32f2f">d</text>
-                        <text x="450" y="250" text-anchor="middle" font-family="Arial, sans-serif" 
-                              font-size="10" fill="#666">Disjoint</text>
-                        <text x="450" y="275" text-anchor="middle" font-family="Arial, sans-serif" 
-                              font-size="10" fill="#666">Partial</text>
-                    </g>
-                    
-                    <!-- SUBCLASS: MAHASISWA -->
-                    <g filter="url(#dropshadow)">
-                        <rect x="150" y="320" width="220" height="140" rx="8" ry="8" 
-                              fill="url(#subgradient1)" stroke="#4caf50" stroke-width="2"/>
-                        <line x1="150" y1="360" x2="370" y2="360" stroke="#4caf50" stroke-width="1"/>
-                        
-                        <!-- Title -->
-                        <text x="260" y="345" text-anchor="middle" font-family="Arial, sans-serif" 
-                              font-size="16" font-weight="bold" fill="#2e7d32">MAHASISWA</text>
-                        <text x="260" y="358" text-anchor="middle" font-family="Arial, sans-serif" 
-                              font-size="11" fill="#4caf50" font-style="italic">(Subclass)</text>
-                        
-                        <!-- Attributes -->
-                        <text x="160" y="378" font-family="Arial, sans-serif" font-size="12" fill="#333">
-                            <tspan font-weight="bold" text-decoration="underline">🔑 NIK_Orang</tspan>
-                        </text>
-                        <text x="160" y="395" font-family="Arial, sans-serif" font-size="12" fill="#333">
-                            <tspan font-weight="bold">🔸 NPM</tspan> (Unique)
-                        </text>
-                        <text x="160" y="412" font-family="Arial, sans-serif" font-size="12" fill="#333">Program_Studi</text>
-                        <text x="160" y="429" font-family="Arial, sans-serif" font-size="12" fill="#333">Angkatan</text>
-                        <text x="160" y="446" font-family="Arial, sans-serif" font-size="12" fill="#333">Status_Mahasiswa</text>
-                    </g>
-                    
-                    <!-- SUBCLASS: DOSEN -->
-                    <g filter="url(#dropshadow)">
-                        <rect x="530" y="320" width="220" height="140" rx="8" ry="8" 
-                              fill="url(#subgradient2)" stroke="#ff9800" stroke-width="2"/>
-                        <line x1="530" y1="360" x2="750" y2="360" stroke="#ff9800" stroke-width="1"/>
-                        
-                        <!-- Title -->
-                        <text x="640" y="345" text-anchor="middle" font-family="Arial, sans-serif" 
-                              font-size="16" font-weight="bold" fill="#ef6c00">DOSEN</text>
-                        <text x="640" y="358" text-anchor="middle" font-family="Arial, sans-serif" 
-                              font-size="11" fill="#ff9800" font-style="italic">(Subclass)</text>
-                        
-                        <!-- Attributes -->
-                        <text x="540" y="378" font-family="Arial, sans-serif" font-size="12" fill="#333">
-                            <tspan font-weight="bold" text-decoration="underline">🔑 NIK_Orang</tspan>
-                        </text>
-                        <text x="540" y="395" font-family="Arial, sans-serif" font-size="12" fill="#333">
-                            <tspan font-weight="bold">🔸 NIDN</tspan> (Unique)
-                        </text>
-                        <text x="540" y="412" font-family="Arial, sans-serif" font-size="12" fill="#333">Bidang_Keahlian</text>
-                        <text x="540" y="429" font-family="Arial, sans-serif" font-size="12" fill="#333">Status_Dosen</text>
-                        <text x="540" y="446" font-family="Arial, sans-serif" font-size="12" fill="#333">Tanggal_Mulai_Kerja</text>
-                    </g>
-                    
-                    <!-- Inheritance lines to subclasses -->
-                    <line x1="450" y1="260" x2="260" y2="320" stroke="#333" stroke-width="2"/>
-                    <line x1="450" y1="260" x2="640" y2="320" stroke="#333" stroke-width="2"/>
-                    
-                    <!-- ENTITY: MATA_KULIAH -->
-                    <g filter="url(#dropshadow)">
-                        <rect x="50" y="520" width="180" height="120" rx="8" ry="8" 
-                              fill="url(#entitygradient)" stroke="#9c27b0" stroke-width="2"/>
-                        <line x1="50" y1="560" x2="230" y2="560" stroke="#9c27b0" stroke-width="1"/>
-                        
-                        <text x="140" y="545" text-anchor="middle" font-family="Arial, sans-serif" 
-                              font-size="14" font-weight="bold" fill="#7b1fa2">MATA_KULIAH</text>
-                        
-                        <text x="60" y="578" font-family="Arial, sans-serif" font-size="12" fill="#333">
-                            <tspan font-weight="bold" text-decoration="underline">🔑 Kode_MK</tspan>
-                        </text>
-                        <text x="60" y="595" font-family="Arial, sans-serif" font-size="12" fill="#333">Nama_MK</text>
-                        <text x="60" y="612" font-family="Arial, sans-serif" font-size="12" fill="#333">Jumlah_SKS</text>
-                        <text x="60" y="629" font-family="Arial, sans-serif" font-size="12" fill="#333">Deskripsi</text>
-                    </g>
-                    
-                    <!-- ENTITY: KELAS_PERKULIAHAN -->
-                    <g filter="url(#dropshadow)">
-                        <rect x="350" y="520" width="200" height="140" rx="8" ry="8" 
-                              fill="url(#entitygradient)" stroke="#e91e63" stroke-width="2"/>
-                        <line x1="350" y1="560" x2="550" y2="560" stroke="#e91e63" stroke-width="1"/>
-                        
-                        <text x="450" y="545" text-anchor="middle" font-family="Arial, sans-serif" 
-                              font-size="14" font-weight="bold" fill="#c2185b">KELAS_PERKULIAHAN</text>
-                        
-                        <text x="360" y="578" font-family="Arial, sans-serif" font-size="12" fill="#333">
-                            <tspan font-weight="bold" text-decoration="underline">🔑 ID_Kelas</tspan>
-                        </text>
-                        <text x="360" y="595" font-family="Arial, sans-serif" font-size="12" fill="#333">Semester</text>
-                        <text x="360" y="612" font-family="Arial, sans-serif" font-size="12" fill="#333">Tahun_Akademik</text>
-                        <text x="360" y="629" font-family="Arial, sans-serif" font-size="12" fill="#333">Ruang</text>
-                        <text x="360" y="646" font-family="Arial, sans-serif" font-size="12" fill="#333">Jadwal</text>
-                    </g>
-                    
-                    <!-- RELATIONSHIP: MENAWARKAN -->
-                    <g filter="url(#dropshadow)">
-                        <polygon points="290,580 320,565 350,580 320,595" 
-                                 fill="#ffeb3b" stroke="#333" stroke-width="2"/>
-                        <text x="320" y="585" text-anchor="middle" font-family="Arial, sans-serif" 
-                              font-size="11" font-weight="bold" fill="#333">MENAWARKAN</text>
-                    </g>
-                    
-                    <!-- RELATIONSHIP: MENGAJAR -->
-                    <g filter="url(#dropshadow)">
-                        <polygon points="590,480 620,465 650,480 620,495" 
-                                 fill="#ffeb3b" stroke="#333" stroke-width="2"/>
-                        <text x="620" y="485" text-anchor="middle" font-family="Arial, sans-serif" 
-                              font-size="11" font-weight="bold" fill="#333">MENGAJAR</text>
-                    </g>
-                    
-                    <!-- RELATIONSHIP: MENGAMBIL -->
-                    <g filter="url(#dropshadow)">
-                        <polygon points="290,480 320,465 350,480 320,495" 
-                                 fill="#ffeb3b" stroke="#333" stroke-width="2"/>
-                                                <text x="320" y="485" text-anchor="middle" font-family="Arial, sans-serif" 
-                              font-size="11" font-weight="bold" fill="#333">MENGAMBIL</text>
-                        
-                        <!-- Atribut relasi MENGAMBIL -->
-                        <ellipse cx="280" cy="450" rx="35" ry="15" fill="#fff9c4" stroke="#333" stroke-width="1"/>
-                        <text x="280" y="455" text-anchor="middle" font-family="Arial, sans-serif" 
-                              font-size="10" fill="#333">Nilai_Angka</text>
-                        
-                        <ellipse cx="360" cy="450" rx="35" ry="15" fill="#fff9c4" stroke="#333" stroke-width="1"/>
-                        <text x="360" y="455" text-anchor="middle" font-family="Arial, sans-serif" 
-                              font-size="10" fill="#333">Nilai_Huruf</text>
-                        
-                        <ellipse cx="320" cy="420" rx="40" ry="15" fill="#fff9c4" stroke="#333" stroke-width="1"/>
-                        <text x="320" y="425" text-anchor="middle" font-family="Arial, sans-serif" 
-                              font-size="10" fill="#333">Status_Kelulusan</text>
-                    </g>
-                    
-                    <!-- RELATIONSHIP LINES -->
-                    <!-- MATA_KULIAH to MENAWARKAN -->
-                    <line x1="230" y1="580" x2="290" y2="580" stroke="#333" stroke-width="2"/>
-                    <!-- MENAWARKAN to KELAS_PERKULIAHAN -->
-                    <line x1="350" y1="580" x2="350" y2="580" stroke="#333" stroke-width="2"/>
-                    
-                    <!-- DOSEN to MENGAJAR -->
-                    <line x1="640" y1="460" x2="620" y2="465" stroke="#333" stroke-width="2"/>
-                    <!-- MENGAJAR to KELAS_PERKULIAHAN -->
-                    <line x1="620" y1="495" x2="550" y2="520" stroke="#333" stroke-width="2"/>
-                    
-                    <!-- MAHASISWA to MENGAMBIL -->
-                    <line x1="260" y1="460" x2="290" y2="480" stroke="#333" stroke-width="2"/>
-                    <!-- MENGAMBIL to KELAS_PERKULIAHAN -->
-                    <line x1="350" y1="480" x2="350" y2="520" stroke="#333" stroke-width="2"/>
-                    
-                    <!-- Atribut relasi lines -->
-                    <line x1="280" y1="450" x2="310" y2="470" stroke="#333" stroke-width="1"/>
-                    <line x1="360" y1="450" x2="330" y2="470" stroke="#333" stroke-width="1"/>
-                    <line x1="320" y1="420" x2="320" y2="465" stroke="#333" stroke-width="1"/>
-                    
-                    <!-- CARDINALITY LABELS -->
-                    <!-- MATA_KULIAH (1) to KELAS_PERKULIAHAN (N) -->
-                    <circle cx="250" cy="575" r="12" fill="white" stroke="#333" stroke-width="1"/>
-                    <text x="250" y="580" text-anchor="middle" font-family="Arial, sans-serif" 
-                          font-size="12" font-weight="bold" fill="#d32f2f">1</text>
-                    
-                    <circle cx="330" cy="575" r="12" fill="white" stroke="#333" stroke-width="1"/>
-                    <text x="330" y="580" text-anchor="middle" font-family="Arial, sans-serif" 
-                          font-size="12" font-weight="bold" fill="#d32f2f">N</text>
-                    
-                    <!-- DOSEN (1) to KELAS_PERKULIAHAN (N) -->
-                    <circle cx="600" cy="470" r="12" fill="white" stroke="#333" stroke-width="1"/>
-                    <text x="600" y="475" text-anchor="middle" font-family="Arial, sans-serif" 
-                          font-size="12" font-weight="bold" fill="#d32f2f">1</text>
-                    
-                    <circle cx="570" cy="500" r="12" fill="white" stroke="#333" stroke-width="1"/>
-                    <text x="570" y="505" text-anchor="middle" font-family="Arial, sans-serif" 
-                          font-size="12" font-weight="bold" fill="#d32f2f">N</text>
-                    
-                    <!-- MAHASISWA (M) to KELAS_PERKULIAHAN (N) -->
-                    <circle cx="270" cy="470" r="12" fill="white" stroke="#333" stroke-width="1"/>
-                    <text x="270" y="475" text-anchor="middle" font-family="Arial, sans-serif" 
-                          font-size="12" font-weight="bold" fill="#d32f2f">M</text>
-                    
-                    <circle cx="340" cy="500" r="12" fill="white" stroke="#333" stroke-width="1"/>
-                    <text x="340" y="505" text-anchor="middle" font-family="Arial, sans-serif" 
-                          font-size="12" font-weight="bold" fill="#d32f2f">N</text>
-                    
-                    <!-- LEGEND -->
-                    <g transform="translate(600, 50)">
-                        <rect x="0" y="0" width="250" height="180" rx="8" ry="8" 
-                              fill="white" stroke="#666" stroke-width="1" opacity="0.95"/>
-                        
-                        <text x="125" y="20" text-anchor="middle" font-family="Arial, sans-serif" 
-                              font-size="14" font-weight="bold" fill="#333">LEGENDA</text>
-                        
-                        <!-- Legend items -->
-                        <text x="10" y="40" font-family="Arial, sans-serif" font-size="12" fill="#333">
-                            🔑 = Primary Key (underlined)
-                        </text>
-                        <text x="10" y="55" font-family="Arial, sans-serif" font-size="12" fill="#333">
-                            🔸 = Unique Key
-                        </text>
-                        <text x="10" y="70" font-family="Arial, sans-serif" font-size="12" fill="#333">
-                            ◊ = Relationship (Diamond)
-                        </text>
-                        <text x="10" y="85" font-family="Arial, sans-serif" font-size="12" fill="#333">
-                            △ = IS-A (Inheritance)
-                        </text>
-                        <text x="10" y="100" font-family="Arial, sans-serif" font-size="12" fill="#333">
-                            d = Disjoint Constraint
-                        </text>
-                        <text x="10" y="115" font-family="Arial, sans-serif" font-size="12" fill="#333">
-                            (1) = One, (N) = Many
-                        </text>
-                        <text x="10" y="130" font-family="Arial, sans-serif" font-size="12" fill="#333">
-                            (M) = Many (for M:N)
-                        </text>
-                        
-                        <!-- Color legend -->
-                        <rect x="10" y="140" width="15" height="10" fill="url(#supergradient)"/>
-                        <text x="30" y="149" font-family="Arial, sans-serif" font-size="11" fill="#333">Superclass</text>
-                        
-                        <rect x="100" y="140" width="15" height="10" fill="url(#subgradient1)"/>
-                        <text x="120" y="149" font-family="Arial, sans-serif" font-size="11" fill="#333">Subclass</text>
-                        
-                        <rect x="10" y="155" width="15" height="10" fill="url(#entitygradient)"/>
-                        <text x="30" y="164" font-family="Arial, sans-serif" font-size="11" fill="#333">Regular Entity</text>
-                        
-                        <polygon points="110,155 120,150 130,155 120,160" fill="#ffeb3b"/>
-                        <text x="135" y="159" font-family="Arial, sans-serif" font-size="11" fill="#333">Relationship</text>
-                    </g>
-                    
-                    <!-- TITLE -->
-                    <text x="450" y="25" text-anchor="middle" font-family="Arial, sans-serif" 
-                          font-size="18" font-weight="bold" fill="#1565c0">
-                        Enhanced Entity-Relationship (EER) Diagram
-                    </text>
-                    <text x="450" y="40" text-anchor="middle" font-family="Arial, sans-serif" 
-                          font-size="14" fill="#666">
-                        Sistem Informasi Akademik Universitas
-                    </text>
-                </svg>
-            </div>
-            
-            <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin-top: 20px;">
-                <h6 style="color: #1e3c72; margin-bottom: 10px;">📋 Penjelasan Diagram:</h6>
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
-                    <div>
-                        <strong>Inheritance Hierarchy:</strong>
-                        <ul style="margin-top: 5px; margin-left: 20px; font-size: 14px;">
-                            <li>ORANG sebagai superclass dengan atribut umum</li>
-                            <li>MAHASISWA dan DOSEN sebagai subclass</li>
-                            <li>Constraint: Disjoint (d) - tidak bisa overlap</li>
-                            <li>Constraint: Partial - boleh ada ORANG lain</li>
-                        </ul>
-                    </div>
-                    <div>
-                        <strong>Relationships:</strong>
-                        <ul style="margin-top: 5px; margin-left: 20px; font-size: 14px;">
-                            <li>MATA_KULIAH (1:N) KELAS_PERKULIAHAN</li>
-                            <li>DOSEN (1:N) KELAS_PERKULIAHAN</li>
-                            <li>MAHASISWA (M:N) KELAS_PERKULIAHAN</li>
-                            <li>Relasi MENGAMBIL memiliki atribut nilai</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Diagram untuk Sistem Rental Mobil -->
-        <div style="background: white; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
-            <h5 style="color: #2a5298; margin-bottom: 10px;">EER Diagram Sistem Rental Mobil</h5>
-            
-            <div class="diagram-container">
-    <div class="svg-content">
-                <svg width="800" height="400" viewBox="0 0 800 400" style="border: 1px solid #ddd; background: linear-gradient(to bottom, #fafafa, #f0f0f0); border-radius: 8px;">
-                    <defs>
-                        <linearGradient id="entitygrad" x1="0%" y1="0%" x2="0%" y2="100%">
-                            <stop offset="0%" style="stop-color:#e8f5e8;stop-opacity:1" />
-                            <stop offset="100%" style="stop-color:#c8e6c9;stop-opacity:1" />
-                        </linearGradient>
-                        
-                        <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
-                            <feDropShadow dx="2" dy="2" stdDeviation="2" flood-color="#00000020"/>
-                        </filter>
-                    </defs>
-                    
-                    <!-- ENTITY: MOBIL -->
-                    <g filter="url(#shadow)">
-                        <rect x="50" y="50" width="180" height="140" rx="8" ry="8" 
-                              fill="url(#entitygrad)" stroke="#4caf50" stroke-width="2"/>
-                        <line x1="50" y1="90" x2="230" y2="90" stroke="#4caf50" stroke-width="1"/>
-                        
-                        <text x="140" y="75" text-anchor="middle" font-family="Arial, sans-serif" 
-                              font-size="16" font-weight="bold" fill="#2e7d32">MOBIL</text>
-                        
-                        <text x="60" y="108" font-family="Arial, sans-serif" font-size="12" fill="#333">
-                            <tspan font-weight="bold" text-decoration="underline">🔑 No_Polisi</tspan>
-                        </text>
-                        <text x="60" y="125" font-family="Arial, sans-serif" font-size="12" fill="#333">Merk</text>
-                        <text x="60" y="142" font-family="Arial, sans-serif" font-size="12" fill="#333">Model</text>
-                        <text x="60" y="159" font-family="Arial, sans-serif" font-size="12" fill="#333">Tahun, Warna</text>
-                        <text x="60" y="176" font-family="Arial, sans-serif" font-size="12" fill="#333">Harga_Sewa, Status</text>
-                    </g>
-                    
-                    <!-- ENTITY: PELANGGAN -->
-                    <g filter="url(#shadow)">
-                        <rect x="570" y="50" width="180" height="140" rx="8" ry="8" 
-                              fill="url(#entitygrad)" stroke="#2196f3" stroke-width="2"/>
-                        <line x1="570" y1="90" x2="750" y2="90" stroke="#2196f3" stroke-width="1"/>
-                        
-                        <text x="660" y="75" text-anchor="middle" font-family="Arial, sans-serif" 
-                              font-size="16" font-weight="bold" fill="#1565c0">PELANGGAN</text>
-                        
-                        <text x="580" y="108" font-family="Arial, sans-serif" font-size="12" fill="#333">
-                            <tspan font-weight="bold" text-decoration="underline">🔑 No_KTP</tspan>
-                        </text>
-                        <text x="580" y="125" font-family="Arial, sans-serif" font-size="12" fill="#333">Nama_Pelanggan</text>
-                        <text x="580" y="142" font-family="Arial, sans-serif" font-size="12" fill="#333">Alamat_Pelanggan</text>
-                        <text x="580" y="159" font-family="Arial, sans-serif" font-size="12" fill="#333">No_Telepon</text>
-                    </g>
-                    
-                    <!-- ENTITY: PENYEWAAN -->
-                    <g filter="url(#shadow)">
-                        <rect x="310" y="250" width="180" height="140" rx="8" ry="8" 
-                                                            fill="url(#entitygrad)" stroke="#ff9800" stroke-width="2"/>
-                        <line x1="310" y1="290" x2="490" y2="290" stroke="#ff9800" stroke-width="1"/>
-                        
-                        <text x="400" y="275" text-anchor="middle" font-family="Arial, sans-serif" 
-                              font-size="16" font-weight="bold" fill="#ef6c00">PENYEWAAN</text>
-                        
-                        <text x="320" y="308" font-family="Arial, sans-serif" font-size="12" fill="#333">
-                            <tspan font-weight="bold" text-decoration="underline">🔑 No_Transaksi</tspan>
-                        </text>
-                        <text x="320" y="325" font-family="Arial, sans-serif" font-size="12" fill="#333">Tanggal_Sewa</text>
-                        <text x="320" y="342" font-family="Arial, sans-serif" font-size="12" fill="#333">Tgl_Kembali_Rencana</text>
-                        <text x="320" y="359" font-family="Arial, sans-serif" font-size="12" fill="#333">Tgl_Kembali_Aktual</text>
-                        <text x="320" y="376" font-family="Arial, sans-serif" font-size="12" fill="#333">Total_Biaya, Denda</text>
-                    </g>
-                    
-                    <!-- RELATIONSHIP: MENYEWA -->
-                    <g filter="url(#shadow)">
-                        <polygon points="400,200 430,185 460,200 430,215" 
-                                 fill="#ffeb3b" stroke="#333" stroke-width="2"/>
-                        <text x="430" y="205" text-anchor="middle" font-family="Arial, sans-serif" 
-                              font-size="12" font-weight="bold" fill="#333">MENYEWA</text>
-                    </g>
-                    
-                    <!-- RELATIONSHIP LINES -->
-                    <!-- MOBIL to MENYEWA -->
-                    <line x1="230" y1="120" x2="400" y2="200" stroke="#333" stroke-width="2"/>
-                    <!-- PELANGGAN to MENYEWA -->
-                    <line x1="570" y1="120" x2="460" y2="200" stroke="#333" stroke-width="2"/>
-                    <!-- MENYEWA to PENYEWAAN -->
-                    <line x1="430" y1="215" x2="400" y2="250" stroke="#333" stroke-width="2"/>
-                    
-                    <!-- CARDINALITY LABELS -->
-                    <!-- MOBIL (1) -->
-                    <circle cx="280" cy="150" r="12" fill="white" stroke="#333" stroke-width="1"/>
-                    <text x="280" y="155" text-anchor="middle" font-family="Arial, sans-serif" 
-                          font-size="12" font-weight="bold" fill="#d32f2f">1</text>
-                    
-                    <!-- PELANGGAN (1) -->
-                    <circle cx="520" cy="150" r="12" fill="white" stroke="#333" stroke-width="1"/>
-                    <text x="520" y="155" text-anchor="middle" font-family="Arial, sans-serif" 
-                          font-size="12" font-weight="bold" fill="#d32f2f">1</text>
-                    
-                    <!-- PENYEWAAN (N) -->
-                    <circle cx="415" cy="235" r="12" fill="white" stroke="#333" stroke-width="1"/>
-                    <text x="415" y="240" text-anchor="middle" font-family="Arial, sans-serif" 
-                          font-size="12" font-weight="bold" fill="#d32f2f">N</text>
-                    
-                    <!-- TITLE -->
-                    <text x="400" y="25" text-anchor="middle" font-family="Arial, sans-serif" 
-                          font-size="16" font-weight="bold" fill="#1565c0">
-                        ER Diagram - Sistem Rental Mobil
-                    </text>
-                </svg>
-            </div>
-            
-            <div style="background: #f8f9fa; padding: 15px; border-radius: 8px;">
-                <h6 style="color: #1e3c72; margin-bottom: 10px;">📋 Penjelasan Diagram Rental Mobil:</h6>
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
-                    <div>
-                        <strong>Entitas:</strong>
-                        <ul style="margin-top: 5px; margin-left: 20px; font-size: 14px;">
-                            <li><strong>MOBIL:</strong> Data kendaraan yang disewakan</li>
-                            <li><strong>PELANGGAN:</strong> Data penyewa</li>
-                            <li><strong>PENYEWAAN:</strong> Transaksi rental</li>
-                        </ul>
-                    </div>
-                    <div>
-                        <strong>Relasi MENYEWA:</strong>
-                        <ul style="margin-top: 5px; margin-left: 20px; font-size: 14px;">
-                            <li>MOBIL (1) : PENYEWAAN (N)</li>
-                            <li>PELANGGAN (1) : PENYEWAAN (N)</li>
-                            <li>Satu transaksi = 1 mobil + 1 pelanggan</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Sisanya tetap sama seperti kode sebelumnya untuk bagian 2 dan 3 -->
-        <div style="background: white; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
-            <h5 style="color: #2a5298; margin-bottom: 10px;">2. Transformasi EER ke Skema Database Relasional</h5>
-            
-            <div style="margin-bottom: 20px;">
-                <h6 style="color: #1e3c72; margin-bottom: 10px;">📋 Strategi Transformasi Superclass/Subclass</h6>
+        correctAnswer: `
+            <div style="background: #d4edda; padding: 20px; border-radius: 10px;">
+                <h4 style="color: #155724; margin-bottom: 15px;">📝 Jawaban Lengkap dengan EER Diagram:</h4>
                 
-                <div style="background: #fff3cd; padding: 10px; border-radius: 5px; margin-bottom: 15px;">
-                    <strong>Pilihan Transformasi yang Dipilih: Option 1 (Tabel Terpisah)</strong>
-                    <ul style="margin-top: 5px; margin-left: 20px;">
-                        <li>Membuat tabel terpisah untuk superclass dan setiap subclass</li>
-                        <li>Primary Key subclass = Foreign Key ke superclass</li>
-                        <li>Cocok untuk constraint Disjoint dan Partial</li>
-                        <li>Memberikan fleksibilitas dan normalisasi yang baik</li>
-                    </ul>
+                <div style="background: white; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
+                    <h5 style="color: #2a5298; margin-bottom: 10px;">1. Enhanced Entity-Relationship (EER) Diagram</h5>
+                    
+                    <!-- EER Diagram SVG -->
+                    <div style="width: 100%; overflow-x: auto; margin: 20px 0; background: #f9f9f9; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                        <div style="display: flex; justify-content: center; align-items: center; min-height: 700px;">
+                            <svg width="900" height="700" viewBox="0 0 900 700" style="border: 1px solid #ddd; background: linear-gradient(to bottom, #fafafa, #f0f0f0); border-radius: 8px; max-width: 100%; height: auto;">
+                                <defs>
+                                    <pattern id="grid" width="50" height="50" patternUnits="userSpaceOnUse">
+                                        <path d="M 50 0 L 0 0 0 50" fill="none" stroke="#e0e0e0" stroke-width="0.5" opacity="0.3"/>
+                                    </pattern>
+                                    
+                                    <!-- Gradients for entities -->
+                                    <linearGradient id="supergradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                                        <stop offset="0%" style="stop-color:#e3f2fd;stop-opacity:1" />
+                                        <stop offset="100%" style="stop-color:#bbdefb;stop-opacity:1" />
+                                    </linearGradient>
+                                    
+                                    <linearGradient id="subgradient1" x1="0%" y1="0%" x2="0%" y2="100%">
+                                        <stop offset="0%" style="stop-color:#e8f5e8;stop-opacity:1" />
+                                        <stop offset="100%" style="stop-color:#c8e6c9;stop-opacity:1" />
+                                    </linearGradient>
+                                    
+                                    <linearGradient id="subgradient2" x1="0%" y1="0%" x2="0%" y2="100%">
+                                        <stop offset="0%" style="stop-color:#fff3e0;stop-opacity:1" />
+                                        <stop offset="100%" style="stop-color:#ffe0b2;stop-opacity:1" />
+                                    </linearGradient>
+                                    
+                                    <linearGradient id="entitygradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                                        <stop offset="0%" style="stop-color:#f3e5f5;stop-opacity:1" />
+                                        <stop offset="100%" style="stop-color:#e1bee7;stop-opacity:1" />
+                                    </linearGradient>
+                                    
+                                    <linearGradient id="entitygradient2" x1="0%" y1="0%" x2="0%" y2="100%">
+                                        <stop offset="0%" style="stop-color:#fce4ec;stop-opacity:1" />
+                                        <stop offset="100%" style="stop-color:#f8bbd0;stop-opacity:1" />
+                                    </linearGradient>
+                                    
+                                    <!-- Drop shadow filter -->
+                                    <filter id="dropshadow" x="-20%" y="-20%" width="140%" height="140%">
+                                        <feDropShadow dx="3" dy="3" stdDeviation="3" flood-color="#00000030"/>
+                                    </filter>
+                                </defs>
+                                
+                                <!-- Background grid -->
+                                <rect width="100%" height="100%" fill="url(#grid)" />
+                                
+                                <!-- SUPERCLASS: ORANG -->
+                                <g filter="url(#dropshadow)">
+                                    <rect x="350" y="50" width="200" height="120" rx="8" ry="8" 
+                                          fill="url(#supergradient)" stroke="#1976d2" stroke-width="2"/>
+                                    <line x1="350" y1="90" x2="550" y2="90" stroke="#1976d2" stroke-width="1"/>
+                                    
+                                    <!-- Title -->
+                                    <text x="450" y="75" text-anchor="middle" font-family="Arial, sans-serif" 
+                                          font-size="16" font-weight="bold" fill="#1565c0">ORANG</text>
+                                    <text x="450" y="88" text-anchor="middle" font-family="Arial, sans-serif" 
+                                          font-size="11" fill="#1976d2" font-style="italic">(Superclass)</text>
+                                    
+                                    <!-- Attributes -->
+                                    <text x="360" y="108" font-family="Arial, sans-serif" font-size="12" fill="#333">
+                                        <tspan font-weight="bold" text-decoration="underline">NIK</tspan> (PK)
+                                    </text>
+                                    <text x="360" y="125" font-family="Arial, sans-serif" font-size="12" fill="#333">Nama</text>
+                                    <text x="360" y="142" font-family="Arial, sans-serif" font-size="12" fill="#333">Tanggal_Lahir</text>
+                                    <text x="360" y="159" font-family="Arial, sans-serif" font-size="12" fill="#333">Alamat</text>
+                                </g>
+                                
+                                <!-- INHERITANCE SYMBOL -->
+                                <g>
+                                    <!-- Connection line from ORANG -->
+                                    <line x1="450" y1="170" x2="450" y2="200" stroke="#333" stroke-width="2"/>
+                                    
+                                    <!-- Triangle (IS-A symbol) -->
+                                    <polygon points="450,200 440,220 460,220" fill="white" stroke="#333" stroke-width="2"/>
+                                    
+                                    <!-- Specialization circle with constraint -->
+                                    <circle cx="450" cy="240" r="20" fill="white" stroke="#333" stroke-width="2"/>
+                                    <text x="450" y="235" text-anchor="middle" font-family="Arial, sans-serif" 
+                                          font-size="14" font-weight="bold" fill="#d32f2f">d</text>
+                                    <text x="450" y="250" text-anchor="middle" font-family="Arial, sans-serif" 
+                                          font-size="10" fill="#666">Disjoint</text>
+                                    <text x="450" y="275" text-anchor="middle" font-family="Arial, sans-serif" 
+                                          font-size="10" fill="#666">Partial</text>
+                                </g>
+                                
+                                <!-- SUBCLASS: MAHASISWA -->
+                                <g filter="url(#dropshadow)">
+                                    <rect x="150" y="320" width="220" height="140" rx="8" ry="8" 
+                                          fill="url(#subgradient1)" stroke="#4caf50" stroke-width="2"/>
+                                    <line x1="150" y1="360" x2="370" y2="360" stroke="#4caf50" stroke-width="1"/>
+                                    
+                                    <!-- Title -->
+                                    <text x="260" y="345" text-anchor="middle" font-family="Arial, sans-serif" 
+                                          font-size="16" font-weight="bold" fill="#2e7d32">MAHASISWA</text>
+                                    <text x="260" y="358" text-anchor="middle" font-family="Arial, sans-serif" 
+                                          font-size="11" fill="#4caf50" font-style="italic">(Subclass)</text>
+                                    
+                                    <!-- Attributes -->
+                                    <text x="160" y="378" font-family="Arial, sans-serif" font-size="12" fill="#333">
+                                        <tspan font-weight="bold" text-decoration="underline">NIK_Orang</tspan> (PK, FK)
+                                    </text>
+                                    <text x="160" y="395" font-family="Arial, sans-serif" font-size="12" fill="#333">
+                                        <tspan font-weight="bold">NPM</tspan> (Unique)
+                                    </text>
+                                    <text x="160" y="412" font-family="Arial, sans-serif" font-size="12" fill="#333">Program_Studi</text>
+                                    <text x="160" y="429" font-family="Arial, sans-serif" font-size="12" fill="#333">Angkatan</text>
+                                </g>
+                                
+                                <!-- SUBCLASS: DOSEN -->
+                                <g filter="url(#dropshadow)">
+                                    <rect x="530" y="320" width="220" height="140" rx="8" ry="8" 
+                                          fill="url(#subgradient2)" stroke="#ff9800" stroke-width="2"/>
+                                    <line x1="530" y1="360" x2="750" y2="360" stroke="#ff9800" stroke-width="1"/>
+                                    
+                                    <!-- Title -->
+                                    <text x="640" y="345" text-anchor="middle" font-family="Arial, sans-serif" 
+                                          font-size="16" font-weight="bold" fill="#ef6c00">DOSEN</text>
+                                    <text x="640" y="358" text-anchor="middle" font-family="Arial, sans-serif" 
+                                          font-size="11" fill="#ff9800" font-style="italic">(Subclass)</text>
+                                    
+                                    <!-- Attributes -->
+                                    <text x="540" y="378" font-family="Arial, sans-serif" font-size="12" fill="#333">
+                                        <tspan font-weight="bold" text-decoration="underline">NIK_Orang</tspan> (PK, FK)
+                                    </text>
+                                    <text x="540" y="395" font-family="Arial, sans-serif" font-size="12" fill="#333">
+                                        <tspan font-weight="bold">NIDN</tspan> (Unique)
+                                    </text>
+                                    <text x="540" y="412" font-family="Arial, sans-serif" font-size="12" fill="#333">Bidang_Keahlian</text>
+                                </g>
+                                
+                                <!-- Inheritance lines to subclasses -->
+                                <line x1="450" y1="260" x2="260" y2="320" stroke="#333" stroke-width="2"/>
+                                <line x1="450" y1="260" x2="640" y2="320" stroke="#333" stroke-width="2"/>
+                                
+                                <!-- ENTITY: MATA_KULIAH -->
+                                <g filter="url(#dropshadow)">
+                                    <rect x="50" y="520" width="180" height="120" rx="8" ry="8" 
+                                          fill="url(#entitygradient)" stroke="#9c27b0" stroke-width="2"/>
+                                    <line x1="50" y1="560" x2="230" y2="560" stroke="#9c27b0" stroke-width="1"/>
+                                    
+                                    <text x="140" y="545" text-anchor="middle" font-family="Arial, sans-serif" 
+                                          font-size="14" font-weight="bold" fill="#7b1fa2">MATA_KULIAH</text>
+                                    
+                                    <text x="60" y="578" font-family="Arial, sans-serif" font-size="12" fill="#333">
+                                        <tspan font-weight="bold" text-decoration="underline">Kode_MK</tspan> (PK)
+                                    </text>
+                                    <text x="60" y="595" font-family="Arial, sans-serif" font-size="12" fill="#333">Nama_MK</text>
+                                    <text x="60" y="612" font-family="Arial, sans-serif" font-size="12" fill="#333">Jumlah_SKS</text>
+                                </g>
+                                
+                                <!-- ENTITY: KELAS_PERKULIAHAN -->
+                                <g filter="url(#dropshadow)">
+                                    <rect x="350" y="520" width="200" height="140" rx="8" ry="8" 
+                                          fill="url(#entitygradient2)" stroke="#e91e63" stroke-width="2"/>
+                                    <line x1="350" y1="560" x2="550" y2="560" stroke="#e91e63" stroke-width="1"/>
+                                    
+                                    <text x="450" y="545" text-anchor="middle" font-family="Arial, sans-serif" 
+                                          font-size="14" font-weight="bold" fill="#c2185b">KELAS_PERKULIAHAN</text>
+                                    
+                                    <text x="360" y="578" font-family="Arial, sans-serif" font-size="12" fill="#333">
+                                        <tspan font-weight="bold" text-decoration="underline">ID_Kelas</tspan> (PK)
+                                    </text>
+                                    <text x="360" y="595" font-family="Arial, sans-serif" font-size="12" fill="#333">Semester</text>
+                                    <text x="360" y="612" font-family="Arial, sans-serif" font-size="12" fill="#333">Tahun_Akademik</text>
+                                    <text x="360" y="629" font-family="Arial, sans-serif" font-size="12" fill="#333">Ruang</text>
+                                    <text x="360" y="646" font-family="Arial, sans-serif" font-size="12" fill="#333">Jadwal</text>
+                                </g>
+                                
+                                <!-- RELATIONSHIP: MENAWARKAN -->
+                                <g filter="url(#dropshadow)">
+                                    <polygon points="290,580 320,565 350,580 320,595" 
+                                             fill="#ffeb3b" stroke="#333" stroke-width="2"/>
+                                    <text x="320" y="585" text-anchor="middle" font-family="Arial, sans-serif" 
+                                          font-size="11" font-weight="bold" fill="#333">MENAWARKAN</text>
+                                                </g>
+                                
+                                <!-- RELATIONSHIP: MENGAJAR -->
+                                <g filter="url(#dropshadow)">
+                                    <polygon points="590,480 620,465 650,480 620,495" 
+                                             fill="#ffeb3b" stroke="#333" stroke-width="2"/>
+                                    <text x="620" y="485" text-anchor="middle" font-family="Arial, sans-serif" 
+                                          font-size="11" font-weight="bold" fill="#333">MENGAJAR</text>
+                                </g>
+                                
+                                <!-- RELATIONSHIP: MENGAMBIL -->
+                                <g filter="url(#dropshadow)">
+                                    <polygon points="290,480 320,465 350,480 320,495" 
+                                             fill="#ffeb3b" stroke="#333" stroke-width="2"/>
+                                    <text x="320" y="485" text-anchor="middle" font-family="Arial, sans-serif" 
+                                          font-size="11" font-weight="bold" fill="#333">MENGAMBIL</text>
+                                    
+                                    <!-- Atribut relasi MENGAMBIL -->
+                                    <ellipse cx="280" cy="450" rx="35" ry="15" fill="#fff9c4" stroke="#333" stroke-width="1"/>
+                                    <text x="280" y="455" text-anchor="middle" font-family="Arial, sans-serif" 
+                                          font-size="10" fill="#333">Nilai_Angka</text>
+                                    
+                                    <ellipse cx="360" cy="450" rx="35" ry="15" fill="#fff9c4" stroke="#333" stroke-width="1"/>
+                                    <text x="360" y="455" text-anchor="middle" font-family="Arial, sans-serif" 
+                                          font-size="10" fill="#333">Nilai_Huruf</text>
+                                </g>
+                                
+                                <!-- RELATIONSHIP LINES -->
+                                <!-- MATA_KULIAH to MENAWARKAN -->
+                                <line x1="230" y1="580" x2="290" y2="580" stroke="#333" stroke-width="2"/>
+                                <!-- MENAWARKAN to KELAS_PERKULIAHAN -->
+                                <line x1="350" y1="580" x2="350" y2="580" stroke="#333" stroke-width="2"/>
+                                
+                                <!-- DOSEN to MENGAJAR -->
+                                <line x1="640" y1="460" x2="620" y2="465" stroke="#333" stroke-width="2"/>
+                                <!-- MENGAJAR to KELAS_PERKULIAHAN -->
+                                <line x1="620" y1="495" x2="550" y2="520" stroke="#333" stroke-width="2"/>
+                                
+                                <!-- MAHASISWA to MENGAMBIL -->
+                                <line x1="260" y1="460" x2="290" y2="480" stroke="#333" stroke-width="2"/>
+                                <!-- MENGAMBIL to KELAS_PERKULIAHAN -->
+                                <line x1="350" y1="480" x2="350" y2="520" stroke="#333" stroke-width="2"/>
+                                
+                                <!-- Atribut relasi lines -->
+                                <line x1="280" y1="450" x2="310" y2="470" stroke="#333" stroke-width="1"/>
+                                <line x1="360" y1="450" x2="330" y2="470" stroke="#333" stroke-width="1"/>
+                                
+                                <!-- CARDINALITY LABELS -->
+                                <!-- MATA_KULIAH (1) to KELAS_PERKULIAHAN (N) -->
+                                <circle cx="250" cy="575" r="12" fill="white" stroke="#333" stroke-width="1"/>
+                                <text x="250" y="580" text-anchor="middle" font-family="Arial, sans-serif" 
+                                      font-size="12" font-weight="bold" fill="#d32f2f">1</text>
+                                
+                                <circle cx="330" cy="575" r="12" fill="white" stroke="#333" stroke-width="1"/>
+                                <text x="330" y="580" text-anchor="middle" font-family="Arial, sans-serif" 
+                                      font-size="12" font-weight="bold" fill="#d32f2f">N</text>
+                                
+                                <!-- DOSEN (1) to KELAS_PERKULIAHAN (N) -->
+                                <circle cx="600" cy="470" r="12" fill="white" stroke="#333" stroke-width="1"/>
+                                <text x="600" y="475" text-anchor="middle" font-family="Arial, sans-serif" 
+                                      font-size="12" font-weight="bold" fill="#d32f2f">1</text>
+                                
+                                <circle cx="570" cy="500" r="12" fill="white" stroke="#333" stroke-width="1"/>
+                                <text x="570" y="505" text-anchor="middle" font-family="Arial, sans-serif" 
+                                      font-size="12" font-weight="bold" fill="#d32f2f">N</text>
+                                
+                                <!-- MAHASISWA (M) to KELAS_PERKULIAHAN (N) -->
+                                <circle cx="270" cy="470" r="12" fill="white" stroke="#333" stroke-width="1"/>
+                                <text x="270" y="475" text-anchor="middle" font-family="Arial, sans-serif" 
+                                      font-size="12" font-weight="bold" fill="#d32f2f">M</text>
+                                
+                                <circle cx="340" cy="500" r="12" fill="white" stroke="#333" stroke-width="1"/>
+                                <text x="340" y="505" text-anchor="middle" font-family="Arial, sans-serif" 
+                                      font-size="12" font-weight="bold" fill="#d32f2f">N</text>
+                                
+                                <!-- LEGEND -->
+                                <g transform="translate(600, 50)">
+                                    <rect x="0" y="0" width="250" height="180" rx="8" ry="8" 
+                                          fill="white" stroke="#666" stroke-width="1" opacity="0.95"/>
+                                    
+                                    <text x="125" y="20" text-anchor="middle" font-family="Arial, sans-serif" 
+                                          font-size="14" font-weight="bold" fill="#333">LEGENDA</text>
+                                    
+                                    <!-- Legend items -->
+                                    <text x="10" y="40" font-family="Arial, sans-serif" font-size="12" fill="#333">
+                                        PK = Primary Key
+                                    </text>
+                                    <text x="10" y="55" font-family="Arial, sans-serif" font-size="12" fill="#333">
+                                        FK = Foreign Key
+                                    </text>
+                                    <text x="10" y="70" font-family="Arial, sans-serif" font-size="12" fill="#333">
+                                        ◊ = Relationship (Diamond)
+                                    </text>
+                                    <text x="10" y="85" font-family="Arial, sans-serif" font-size="12" fill="#333">
+                                        △ = IS-A (Inheritance)
+                                    </text>
+                                    <text x="10" y="100" font-family="Arial, sans-serif" font-size="12" fill="#333">
+                                        d = Disjoint Constraint
+                                    </text>
+                                    <text x="10" y="115" font-family="Arial, sans-serif" font-size="12" fill="#333">
+                                        (1) = One, (N) = Many
+                                    </text>
+                                    <text x="10" y="130" font-family="Arial, sans-serif" font-size="12" fill="#333">
+                                        (M) = Many (for M:N)
+                                    </text>
+                                    
+                                    <!-- Color legend -->
+                                    <rect x="10" y="140" width="15" height="10" fill="url(#supergradient)"/>
+                                    <text x="30" y="149" font-family="Arial, sans-serif" font-size="11" fill="#333">Superclass</text>
+                                    
+                                    <rect x="100" y="140" width="15" height="10" fill="url(#subgradient1)"/>
+                                    <text x="120" y="149" font-family="Arial, sans-serif" font-size="11" fill="#333">Subclass</text>
+                                    
+                                    <rect x="10" y="155" width="15" height="10" fill="url(#entitygradient)"/>
+                                    <text x="30" y="164" font-family="Arial, sans-serif" font-size="11" fill="#333">Regular Entity</text>
+                                    
+                                    <polygon points="110,155 120,150 130,155 120,160" fill="#ffeb3b"/>
+                                    <text x="135" y="159" font-family="Arial, sans-serif" font-size="11" fill="#333">Relationship</text>
+                                </g>
+                                
+                                <!-- TITLE -->
+                                <text x="450" y="25" text-anchor="middle" font-family="Arial, sans-serif" 
+                                      font-size="18" font-weight="bold" fill="#1565c0">
+                                    Enhanced Entity-Relationship (EER) Diagram
+                                </text>
+                                <text x="450" y="40" text-anchor="middle" font-family="Arial, sans-serif" 
+                                      font-size="14" fill="#666">
+                                    Sistem Informasi Akademik Universitas
+                                </text>
+                            </svg>
+                        </div>
+                    </div>
+                    
+                    <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
+                        <h6 style="color: #1e3c72; margin-bottom: 10px;">📋 Deskripsi Entitas, Atribut, dan Relasi:</h6>
+                        
+                        <div style="margin-bottom: 15px;">
+                            <strong>Superclass: ORANG</strong>
+                            <ul style="margin-top: 5px; margin-left: 20px;">
+                                <li>Atribut: NIK (PK), Nama, Tanggal_Lahir, Alamat</li>
+                            </ul>
+                        </div>
+                        
+                        <div style="margin-bottom: 15px;">
+                            <strong>Subclass dari ORANG: MAHASISWA</strong>
+                            <ul style="margin-top: 5px; margin-left: 20px;">
+                                <li>Atribut Tambahan: NPM (PK alternatif untuk Mahasiswa, unik), Program_Studi, Angkatan</li>
+                                <li>Relasi Inheritance: MAHASISWA IS-A ORANG</li>
+                            </ul>
+                        </div>
+                        
+                        <div style="margin-bottom: 15px;">
+                            <strong>Subclass dari ORANG: DOSEN</strong>
+                            <ul style="margin-top: 5px; margin-left: 20px;">
+                                <li>Atribut Tambahan: NIDN (PK alternatif untuk Dosen, unik), Bidang_Keahlian</li>
+                                <li>Relasi Inheritance: DOSEN IS-A ORANG</li>
+                            </ul>
+                        </div>
+                        
+                        <div style="margin-bottom: 15px;">
+                            <strong>Constraint Spesialisasi untuk ORANG ke (MAHASISWA, DOSEN):</strong>
+                            <ul style="margin-top: 5px; margin-left: 20px;">
+                                <li><strong>Disjoint (d):</strong> Seseorang tidak bisa menjadi Mahasiswa dan Dosen secara bersamaan dalam konteks peran utama ini (asumsi umum).</li>
+                                <li><strong>Partial:</strong> Seseorang bisa saja hanya ORANG (misalnya, staf administrasi yang datanya juga disimpan sebagai ORANG tetapi bukan mahasiswa atau dosen).</li>
+                            </ul>
+                        </div>
+                        
+                        <div style="margin-bottom: 15px;">
+                            <strong>Entitas: MATA_KULIAH</strong>
+                            <ul style="margin-top: 5px; margin-left: 20px;">
+                                <li>Atribut: Kode_MK (PK), Nama_MK, Jumlah_SKS</li>
+                            </ul>
+                        </div>
+                        
+                        <div style="margin-bottom: 15px;">
+                            <strong>Entitas: KELAS_PERKULIAHAN</strong>
+                            <ul style="margin-top: 5px; margin-left: 20px;">
+                                <li>Atribut: ID_Kelas (PK, bisa berupa surrogate key atau gabungan Kode_MK, Semester, Tahun), Semester, Tahun_Akademik, Ruang, Jadwal</li>
+                            </ul>
+                        </div>
+                        
+                        <div style="margin-bottom: 15px;">
+                            <strong>Relasi:</strong>
+                            <ul style="margin-top: 5px; margin-left: 20px;">
+                                <li><strong>Menawarkan</strong> (antara MATA_KULIAH dan KELAS_PERKULIAHAN):
+                                    <ul style="margin-top: 5px; margin-left: 20px;">
+                                        <li>MATA_KULIAH (1) --- Menawarkan --- (N) KELAS_PERKULIAHAN</li>
+                                        <li>Satu Mata Kuliah bisa ditawarkan dalam banyak Kelas Perkuliahan berbeda semester/tahun</li>
+                                        <li>Partisipasi Total dari KELAS_PERKULIAHAN</li>
+                                    </ul>
+                                </li>
+                                <li><strong>Mengajar</strong> (antara DOSEN dan KELAS_PERKULIAHAN):
+                                    <ul style="margin-top: 5px; margin-left: 20px;">
+                                        <li>DOSEN (1) --- Mengajar --- (N) KELAS_PERKULIAHAN</li>
+                                        <li>Satu Dosen bisa mengajar banyak Kelas, satu Kelas diajar satu Dosen</li>
+                                        <li>Partisipasi Total dari KELAS_PERKULIAHAN</li>
+                                    </ul>
+                                </li>
+                                <li><strong>Mengambil</strong> (antara MAHASISWA dan KELAS_PERKULIAHAN):
+                                    <ul style="margin-top: 5px; margin-left: 20px;">
+                                        <li>Relasi Many-to-Many (N-M)</li>
+                                        <li>MAHASISWA (N) --- Mengambil --- (M) KELAS_PERKULIAHAN</li>
+                                        <li>Atribut pada relasi Mengambil: Nilai_Angka, Nilai_Huruf</li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+                        
+                                                <div style="background: #e3f2fd; padding: 10px; border-radius: 5px;">
+                            <strong>Penjelasan EER:</strong>
+                            <ul style="margin-top: 5px; margin-left: 20px;">
+                                <li>Penggunaan superclass ORANG dengan subclass MAHASISWA dan DOSEN memanfaatkan konsep spesialisasi dan inheritance</li>
+                                <li>Constraint Disjoint dipilih karena umumnya peran mahasiswa dan dosen adalah eksklusif</li>
+                                <li>Partial dipilih untuk mengakomodasi ORANG lain yang mungkin ada di sistem</li>
+                                <li>Relasi Menawarkan dan Mengajar adalah one-to-many</li>
+                                <li>Relasi Mengambil adalah many-to-many dengan atribut nilai</li>
+                            </ul>
+                        </div>
+                    </div>
                 </div>
-            </div>
-            
-            <pre style="background: #f4f4f4; padding: 15px; border-radius: 5px; overflow-x: auto; margin-bottom: 15px;">
--- Tabel Superclass ORANG
+                
+                <div style="background: white; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
+                    <h5 style="color: #2a5298; margin-bottom: 10px;">2. Transformasi EER ke Skema Database Relasional</h5>
+                    
+                    <div style="margin-bottom: 20px;">
+                        <p style="margin-bottom: 10px;">Menggunakan <strong>Pilihan 1</strong> (tabel terpisah untuk superclass dan setiap subclass) untuk transformasi superclass/subclass. Ini lebih umum dan jelas.</p>
+                    </div>
+                    
+                    <pre style="background: #f4f4f4; padding: 15px; border-radius: 5px; overflow-x: auto; margin-bottom: 15px;">
 CREATE TABLE Orang (
     NIK VARCHAR(20) PRIMARY KEY,
     Nama VARCHAR(100) NOT NULL,
     Tanggal_Lahir DATE,
-    Alamat TEXT,
-    CONSTRAINT chk_nik_format CHECK (LENGTH(NIK) = 16)
+    Alamat TEXT
 );
 
--- Tabel Subclass MAHASISWA
 CREATE TABLE Mahasiswa (
-    NIK_Orang VARCHAR(20) PRIMARY KEY,
+    NIK_Orang VARCHAR(20) PRIMARY KEY, -- PK dan FK
     NPM VARCHAR(15) UNIQUE NOT NULL,
-    Program_Studi VARCHAR(50) NOT NULL,
-    Angkatan INT NOT NULL,
-    Status_Mahasiswa VARCHAR(20) DEFAULT 'Aktif',
-    FOREIGN KEY (NIK_Orang) REFERENCES Orang(NIK) 
-        ON DELETE CASCADE ON UPDATE CASCADE,
-    CONSTRAINT chk_npm_format CHECK (LENGTH(NPM) >= 8),
-    CONSTRAINT chk_angkatan CHECK (Angkatan >= 1900 AND Angkatan <= YEAR(CURDATE())),
-    CONSTRAINT chk_status_mhs CHECK (Status_Mahasiswa IN ('Aktif', 'Cuti', 'Lulus', 'DO'))
+    Program_Studi VARCHAR(50),
+    Angkatan INT,
+    FOREIGN KEY (NIK_Orang) REFERENCES Orang(NIK) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
--- Tabel Subclass DOSEN
 CREATE TABLE Dosen (
-    NIK_Orang VARCHAR(20) PRIMARY KEY,
+    NIK_Orang VARCHAR(20) PRIMARY KEY, -- PK dan FK
     NIDN VARCHAR(15) UNIQUE NOT NULL,
     Bidang_Keahlian VARCHAR(100),
-    Status_Dosen VARCHAR(20) DEFAULT 'Aktif',
-    Tanggal_Mulai_Kerja DATE,
-    FOREIGN KEY (NIK_Orang) REFERENCES Orang(NIK) 
-        ON DELETE CASCADE ON UPDATE CASCADE,
-    CONSTRAINT chk_nidn_format CHECK (LENGTH(NIDN) = 10),
-    CONSTRAINT chk_status_dosen CHECK (Status_Dosen IN ('Aktif', 'Cuti', 'Pensiun', 'Resign'))
+    FOREIGN KEY (NIK_Orang) REFERENCES Orang(NIK) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
--- Tabel MATA_KULIAH
 CREATE TABLE Mata_Kuliah (
     Kode_MK VARCHAR(10) PRIMARY KEY,
     Nama_MK VARCHAR(100) NOT NULL,
-    Jumlah_SKS INT NOT NULL,
-    Deskripsi TEXT,
-    Prasyarat VARCHAR(10),
-    CONSTRAINT chk_sks CHECK (Jumlah_SKS > 0 AND Jumlah_SKS <= 6),
-    FOREIGN KEY (Prasyarat) REFERENCES Mata_Kuliah(Kode_MK)
+    Jumlah_SKS INT NOT NULL
 );
 
--- Tabel KELAS_PERKULIAHAN
 CREATE TABLE Kelas_Perkuliahan (
-    ID_Kelas VARCHAR(20) PRIMARY KEY,
-    Kode_MK VARCHAR(10) NOT NULL,
-    NIDN_Dosen VARCHAR(15) NOT NULL,
-    Semester VARCHAR(10) NOT NULL,
-    Tahun_Akademik VARCHAR(9) NOT NULL,
+    ID_Kelas VARCHAR(20) PRIMARY KEY, -- Bisa juga gabungan Kode_MK, Semester, Tahun_Akademik
+    Kode_MK_Referensi VARCHAR(10) NOT NULL,
+    NIDN_Dosen_Pengajar VARCHAR(15) NOT NULL, -- Menggunakan NIDN dari Dosen
+    Semester VARCHAR(10) NOT NULL, -- Misal: 'Ganjil', 'Genap'
+    Tahun_Akademik VARCHAR(9) NOT NULL, -- Misal: '2023/2024'
     Ruang VARCHAR(20),
-    Jadwal VARCHAR(100),
-    Kapasitas_Maksimal INT DEFAULT 40,
-    Jumlah_Peserta INT DEFAULT 0,
-    Status_Kelas VARCHAR(20) DEFAULT 'Dibuka',
-    FOREIGN KEY (Kode_MK) REFERENCES Mata_Kuliah(Kode_MK) 
-        ON UPDATE CASCADE,
-    FOREIGN KEY (NIDN_Dosen) REFERENCES Dosen(NIDN) 
-        ON UPDATE CASCADE,
-    CONSTRAINT chk_semester CHECK (Semester IN ('Ganjil', 'Genap', 'Pendek')),
-    CONSTRAINT chk_tahun_akademik CHECK (Tahun_Akademik REGEXP '^[0-9]{4}/[0-9]{4}$'),
-    CONSTRAINT chk_kapasitas CHECK (Kapasitas_Maksimal > 0),
-    CONSTRAINT chk_peserta CHECK (Jumlah_Peserta >= 0 AND Jumlah_Peserta <= Kapasitas_Maksimal),
-    CONSTRAINT chk_status_kelas CHECK (Status_Kelas IN ('Dibuka', 'Ditutup', 'Berjalan', 'Selesai')),
-    UNIQUE KEY unique_kelas (Kode_MK, Semester, Tahun_Akademik, NIDN_Dosen)
+    Jadwal VARCHAR(100), -- Misal: 'Senin 08:00-10:00'
+    FOREIGN KEY (Kode_MK_Referensi) REFERENCES Mata_Kuliah(Kode_MK) ON UPDATE CASCADE,
+    FOREIGN KEY (NIDN_Dosen_Pengajar) REFERENCES Dosen(NIDN) ON UPDATE CASCADE
+    -- Alternatif jika FK ke Dosen.NIK_Orang: FOREIGN KEY (NIK_Dosen_Pengajar) REFERENCES Dosen(NIK_Orang)
 );
 
--- Tabel Relasi Many-to-Many: PENGAMBILAN_KELAS
 CREATE TABLE Pengambilan_Kelas (
     NPM_Mahasiswa VARCHAR(15) NOT NULL,
-    ID_Kelas VARCHAR(20) NOT NULL,
-    Tanggal_Daftar DATE DEFAULT (CURRENT_DATE),
+    ID_Kelas_Perkuliahan VARCHAR(20) NOT NULL,
     Nilai_Angka DECIMAL(5,2),
     Nilai_Huruf VARCHAR(2),
-    Status_Kelulusan VARCHAR(20) DEFAULT 'Sedang Berjalan',
-    Kehadiran_Persen DECIMAL(5,2),
-    PRIMARY KEY (NPM_Mahasiswa, ID_Kelas),
-    FOREIGN KEY (NPM_Mahasiswa) REFERENCES Mahasiswa(NPM) 
-        ON DELETE CASCADE ON UPDATE CASCADE,
-    FOREIGN KEY (ID_Kelas) REFERENCES Kelas_Perkuliahan(ID_Kelas) 
-        ON DELETE CASCADE ON UPDATE CASCADE,
-    CONSTRAINT chk_nilai_angka CHECK (Nilai_Angka >= 0 AND Nilai_Angka <= 100),
-    CONSTRAINT chk_nilai_huruf CHECK (Nilai_Huruf IN ('A', 'A-', 'B+', 'B', 'B-', 'C+', 'C', 'C-', 'D+', 'D', 'E')),
-    CONSTRAINT chk_status_lulus CHECK (Status_Kelulusan IN ('Sedang Berjalan', 'Lulus', 'Tidak Lulus', 'Mengulang')),
-    CONSTRAINT chk_kehadiran CHECK (Kehadiran_Persen >= 0 AND Kehadiran_Persen <= 100)
+    PRIMARY KEY (NPM_Mahasiswa, ID_Kelas_Perkuliahan),
+    FOREIGN KEY (NPM_Mahasiswa) REFERENCES Mahasiswa(NPM) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (ID_Kelas_Perkuliahan) REFERENCES Kelas_Perkuliahan(ID_Kelas) ON DELETE CASCADE ON UPDATE CASCADE
 );</pre>
-        </div>
-        
-        <div style="background: white; padding: 15px; border-radius: 8px;">
-            <h5 style="color: #2a5298; margin-bottom: 10px;">3. Konsep Object-Oriented Database (OODB)</h5>
-            
-            <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
-                <strong>Keuntungan OODB untuk Sistem Akademik:</strong>
-                
-                <div style="margin: 15px 0;">
-                    <strong>1. Inheritance Alami:</strong>
-                    <ul style="margin-top: 5px; margin-left: 20px;">
-                        <li>MAHASISWA dan DOSEN otomatis mewarisi atribut dari ORANG</li>
-                        <li>Tidak perlu JOIN untuk mendapatkan data lengkap</li>
-                        <li>Polymorphic queries secara natural</li>
-                    </ul>
+                    
+                    <div style="background: #e3f2fd; padding: 15px; border-radius: 5px;">
+                        <h6 style="color: #1e3c72; margin-bottom: 10px;">📝 Penjelasan Transformasi SQL:</h6>
+                        <ul style="margin-top: 5px; margin-left: 20px;">
+                            <li>Setiap entitas menjadi tabel.</li>
+                            <li>Untuk hubungan superclass/subclass ORANG ke MAHASISWA dan DOSEN, digunakan pendekatan di mana Primary Key dari subclass (NIK_Orang) juga merupakan Foreign Key yang mereferensi Primary Key superclass (Orang.NIK).</li>
+                            <li>Atribut unik seperti NPM dan NIDN juga didefinisikan.</li>
+                            <li>Relasi one-to-many (Menawarkan, Mengajar) diimplementasikan dengan menambahkan Foreign Key di sisi "many" (Kelas_Perkuliahan memiliki Kode_MK_Referensi dan NIDN_Dosen_Pengajar).</li>
+                            <li>Relasi many-to-many (Mengambil) diimplementasikan dengan membuat tabel persimpangan baru (Pengambilan_Kelas) yang Primary Key-nya adalah gabungan dari Primary Key kedua entitas yang berelasi.</li>
+                        </ul>
+                    </div>
                 </div>
                 
-                <div style="margin: 15px 0;">
-                    <strong>2. Complex Data Types:</strong>
-                    <ul style="margin-top: 5px; margin-left: 20px;">
-                        <li>List&lt;KelasPerkuliahan&gt; langsung sebagai atribut</li>
-                        <li>Nested objects untuk data kompleks</li>
-                        <li>User-defined types untuk domain spesifik</li>
-                    </ul>
+                <div style="background: white; padding: 15px; border-radius: 8px;">
+                    <h5 style="color: #2a5298; margin-bottom: 10px;">3. Penjelasan Konsep OODB untuk Sistem Informasi Akademik</h5>
+                    
+                    <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
+                        <p style="margin-bottom: 10px;">Konsep Object-Oriented Database (OODB) dapat memberikan keuntungan dalam memodelkan bagian tertentu dari sistem informasi akademik ini, terutama karena adanya konsep inheritance dan complex objects.</p>
+                        
+                        <div style="margin: 15px 0;">
+                            <strong>1. Representasi Pewarisan (Inheritance):</strong>
+                            <p style="margin: 5px 0 5px 20px;">Struktur ORANG sebagai superclass dengan MAHASISWA dan DOSEN sebagai subclass sangat cocok dengan model objek. Dalam OODB, MAHASISWA dan DOSEN dapat secara langsung mewarisi atribut dan metode (jika ada perilaku yang didefinisikan) dari ORANG. Ini lebih alami dibandingkan representasi relasional yang memerlukan join antar tabel (misalnya, untuk mendapatkan semua data seorang mahasiswa, perlu join tabel Mahasiswa dan Orang). OODB dapat menyimpan objek Mahasiswa sebagai satu kesatuan yang sudah mencakup atribut dari Orang.</p>
+                        </div>
+                        
+                        <div style="margin: 15px 0;">
+                            <strong>2. Penanganan Atribut Kompleks atau Multivalue:</strong>
+                            <p style="margin: 5px 0 5px 20px;">Misalnya, jika seorang DOSEN memiliki beberapa Publikasi (dengan atribut Judul, Tahun, Jurnal) atau Riwayat_Mengajar yang kompleks, OODB dapat menyimpan ini sebagai atribut multivalue atau sebagai objek bersarang (nested objects) di dalam objek DOSEN itu sendiri. Dalam model relasional, ini biasanya memerlukan tabel terpisah dan join.</p>
+                        </div>
+                        
+                        <div style="margin: 15px 0;">
+                            <strong>3. Navigasi Antar Objek:</strong>
+                            <p style="margin: 5px 0 5px 20px;">Dalam OODB, relasi antar objek sering direpresentasikan sebagai referensi objek langsung (mirip pointer). Misalnya, objek KELAS_PERKULIAHAN bisa langsung memiliki referensi ke objek DOSEN yang mengajarnya, dan kumpulan referensi ke objek-objek MAHASISWA yang mengambil kelas tersebut. Navigasi melalui referensi objek ini bisa lebih intuitif dan terkadang lebih performan untuk query tertentu dibandingkan join pada RDBMS, terutama untuk hubungan yang kompleks dan traversal data yang dalam.</p>
+                        </div>
+                        
+                        <div style="margin: 15px 0;">
+                            <strong>Contoh Penerapan:</strong>
+                            <p style="margin: 5px 0 5px 20px;">Bayangkan kita ingin menampilkan profil lengkap seorang DOSEN, termasuk data pribadi (dari ORANG), data spesifik dosen, daftar mata kuliah yang pernah diajar, dan daftar publikasinya. Dalam OODB, ini bisa dimodelkan sebagai satu objek DOSEN yang kompleks yang sudah mengandung semua informasi ini atau memiliki referensi langsung ke objek-objek terkait. Query untuk mengambil informasi ini bisa lebih sederhana karena tidak memerlukan banyak operasi join antar tabel yang berbeda.</p>
+                        </div>
+                        
+                        <div style="background: #d4edda; padding: 10px; border-radius: 5px; margin-top: 15px;">
+                            <strong>Kesimpulan:</strong> Secara keseluruhan, OODB menawarkan cara yang lebih natural untuk memetakan konsep-konsep dari dunia nyata yang memiliki struktur hierarkis atau hubungan objek yang kompleks ke dalam database, mengurangi impedance mismatch antara model aplikasi (yang seringkali object-oriented) dan model database.
+                        </div>
+                    </div>
                 </div>
                 
-                <div style="margin: 15px 0;">
-                    <strong>3. Object Navigation:</strong>
-                    <ul style="margin-top: 5px; margin-left: 20px;">
-                        <li>Direct object references tanpa JOIN</li>
-                        <li>Path expressions yang intuitif</li>
-                        <li>Bidirectional navigation</li>
-                    </ul>
+                <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin-top: 15px;">
+                    <h5 style="color: #2a5298; margin-bottom: 10px;">📊 Skema Relasional untuk Visualisasi</h5>
+                    
+                    <div style="background: white; padding: 15px; border-radius: 5px; margin-bottom: 15px;">
+                        <h6 style="color: #1e3c72; margin-bottom: 10px;">Skema Sistem Informasi Akademik:</h6>
+                        <pre style="background: #f4f4f4; padding: 10px; border-radius: 5px; overflow-x: auto;">
+Table Orang:
+  NIK VARCHAR(20) (PK)
+  Nama VARCHAR(100)
+  Tanggal_Lahir DATE
+  Alamat TEXT
+
+Table Mahasiswa:
+  NIK_Orang VARCHAR(20) (PK, FK references Orang.NIK)
+  NPM VARCHAR(15) (UNIQUE)
+  Program_Studi VARCHAR(50)
+  Angkatan INT
+
+Table Dosen:
+  NIK_Orang VARCHAR(20) (PK, FK references Orang.NIK)
+  NIDN VARCHAR(15) (UNIQUE)
+  Bidang_Keahlian VARCHAR(100)
+
+Table Mata_Kuliah:
+  Kode_MK VARCHAR(10) (PK)
+  Nama_MK VARCHAR(100)
+  Jumlah_SKS INT
+
+Table Kelas_Perkuliahan:
+  ID_Kelas VARCHAR(20) (PK)
+  Kode_MK_Referensi VARCHAR(10) (FK references Mata_Kuliah.Kode_MK)
+  NIDN_Dosen_Pengajar VARCHAR(15) (FK references Dosen.NIDN)
+  Semester VARCHAR(10)
+  Tahun_Akademik VARCHAR(9)
+  Ruang VARCHAR(20)
+  Jadwal VARCHAR(100)
+
+Table Pengambilan_Kelas:
+  NPM_Mahasiswa VARCHAR(15) (PK, FK references Mahasiswa.NPM)
+  ID_Kelas_Perkuliahan VARCHAR(20) (PK, FK references Kelas_Perkuliahan.ID_Kelas)
+  Nilai_Angka DECIMAL(5,2)
+  Nilai_Huruf VARCHAR(2)</pre>
+                    </div>
+                    
+                    <div style="background: #e3f2fd; padding: 10px; border-radius: 5px;">
+                        <p>Format ini mendefinisikan setiap tabel, kolom-kolomnya beserta tipe data, dan menandai Primary Key (PK) serta Foreign Key (FK) beserta tabel dan kolom yang direferensikannya. Ini adalah informasi dasar yang dibutuhkan untuk memahami struktur relasional.</p>
+                    </div>
                 </div>
             </div>
-            
-            <pre style="background: #f4f4f4; padding: 15px; border-radius: 5px; overflow-x: auto;">
-// Contoh Class Hierarchy dalam OODB
-class Orang {
-    String NIK;
-    String nama;
-    Date tanggalLahir;
-    String alamat;
-    
-    public String getInfoDasar() { ... }
-    public int hitungUmur() { ... }
-}
-
-class Mahasiswa extends Orang {
-    String NPM;
-    String programStudi;
-    int angkatan;
-        List<KelasPerkuliahan> kelasYangDiambil;
-    Map<String, Nilai> transkrip;
-    
-    // Inherited methods dari Orang + methods khusus
-    public double hitungIPK() { ... }
-    public List<MataKuliah> getMataKuliahLulus() { ... }
-    public void daftarKelas(KelasPerkuliahan kelas) { ... }
-}
-
-class Dosen extends Orang {
-    String NIDN;
-    String bidangKeahlian;
-    List<KelasPerkuliahan> kelasYangDiajar;
-    List<Publikasi> daftarPublikasi;
-    
-    // Inherited methods dari Orang + methods khusus
-    public void assignKelas(KelasPerkuliahan kelas) { ... }
-    public void inputNilai(Mahasiswa mhs, double nilai) { ... }
-    public List<Mahasiswa> getDaftarMahasiswaBimbingan() { ... }
-}
-
-// Contoh Query OODB vs Relational
-// OODB - Natural dan Intuitif
-Dosen prof = database.getDosen("NIDN123456789");
-String info = prof.nama + " (" + prof.bidangKeahlian + ")";
-List<KelasPerkuliahan> kelasAktif = prof.kelasYangDiajar
-    .filter(k -> k.tahunAkademik.equals("2024/2025"));
-
-// Relational - Memerlukan Multiple JOINs
-// SELECT o.Nama, d.Bidang_Keahlian, kp.*
-// FROM Orang o 
-// JOIN Dosen d ON o.NIK = d.NIK_Orang
-// JOIN Kelas_Perkuliahan kp ON d.NIDN = kp.NIDN_Dosen
-// WHERE d.NIDN = 'NIDN123456789' 
-//   AND kp.Tahun_Akademik = '2024/2025';</pre>
-            
-            <div style="background: #e3f2fd; padding: 15px; border-radius: 8px; margin-top: 15px;">
-                <strong>Perbandingan Keuntungan:</strong>
-                
-                <table style="width: 100%; border-collapse: collapse; margin-top: 10px;">
-                    <tr style="background: #f8f9fa;">
-                        <th style="border: 1px solid #ddd; padding: 8px; text-align: left;">Aspek</th>
-                        <th style="border: 1px solid #ddd; padding: 8px; text-align: left;">OODB</th>
-                        <th style="border: 1px solid #ddd; padding: 8px; text-align: left;">Relational DB</th>
-                    </tr>
-                    <tr>
-                        <td style="border: 1px solid #ddd; padding: 8px;"><strong>Inheritance</strong></td>
-                        <td style="border: 1px solid #ddd; padding: 8px;">Natural, otomatis</td>
-                        <td style="border: 1px solid #ddd; padding: 8px;">Memerlukan JOIN, manual</td>
-                    </tr>
-                    <tr style="background: #f8f9fa;">
-                        <td style="border: 1px solid #ddd; padding: 8px;"><strong>Complex Types</strong></td>
-                        <td style="border: 1px solid #ddd; padding: 8px;">Langsung didukung</td>
-                        <td style="border: 1px solid #ddd; padding: 8px;">Perlu normalisasi</td>
-                    </tr>
-                    <tr>
-                        <td style="border: 1px solid #ddd; padding: 8px;"><strong>Navigation</strong></td>
-                        <td style="border: 1px solid #ddd; padding: 8px;">Object references</td>
-                        <td style="border: 1px solid #ddd; padding: 8px;">Foreign key JOINs</td>
-                    </tr>
-                    <tr style="background: #f8f9fa;">
-                        <td style="border: 1px solid #ddd; padding: 8px;"><strong>Query Complexity</strong></td>
-                        <td style="border: 1px solid #ddd; padding: 8px;">Path expressions</td>
-                        <td style="border: 1px solid #ddd; padding: 8px;">Multiple JOINs</td>
-                    </tr>
-                    <tr>
-                        <td style="border: 1px solid #ddd; padding: 8px;"><strong>Impedance Mismatch</strong></td>
-                        <td style="border: 1px solid #ddd; padding: 8px;">Minimal</td>
-                        <td style="border: 1px solid #ddd; padding: 8px;">Signifikan</td>
-                    </tr>
-                </table>
-            </div>
-        </div>
-        
-        <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin-top: 15px;">
-            <h5 style="color: #2a5298; margin-bottom: 10px;">🔍 Ringkasan Komprehensif</h5>
-            
-            <div style="margin-bottom: 15px;">
-                <strong>1. EER Diagram yang Dirancang:</strong>
-                <ul style="margin-top: 5px; margin-left: 20px;">
-                    <li>Implementasi inheritance dengan constraint Disjoint-Partial</li>
-                    <li>Relasi 1:N untuk Mengajar dan Menawarkan</li>
-                    <li>Relasi M:N untuk Mengambil dengan atribut relasi</li>
-                    <li>Proper key constraints dan participation constraints</li>
-                </ul>
-            </div>
-            
-            <div style="margin-bottom: 15px;">
-                <strong>2. Transformasi Relasional yang Optimal:</strong>
-                <ul style="margin-top: 5px; margin-left: 20px;">
-                    <li>Strategi tabel terpisah untuk superclass/subclass</li>
-                    <li>Comprehensive constraints dan validations</li>
-                    <li>Referential integrity dengan CASCADE options</li>
-                    <li>Additional features: audit trail, self-referencing</li>
-                </ul>
-            </div>
-            
-            <div style="margin-bottom: 15px;">
-                <strong>3. OODB Advantages yang Signifikan:</strong>
-                <ul style="margin-top: 5px; margin-left: 20px;">
-                    <li>Natural inheritance tanpa impedance mismatch</li>
-                    <li>Complex data types dan nested objects</li>
-                    <li>Intuitive object navigation dan path expressions</li>
-                    <li>Reduced query complexity untuk hierarchical data</li>
-                </ul>
-            </div>
-            
-            <div style="background: #d4edda; padding: 10px; border-radius: 5px;">
-                <strong>Kesimpulan:</strong> Sistem akademik dengan struktur inheritance yang kompleks sangat cocok untuk pendekatan OODB atau hybrid ORM, karena dapat merepresentasikan hubungan natural antara ORANG, MAHASISWA, dan DOSEN dengan lebih intuitif dan efisien dibandingkan pure relational approach.
-            </div>
-        </div>
-    </div>
-`,
-        explanation: "Jawaban harus mencakup EER diagram visual yang rapi dengan SVG, analisis constraint spesialisasi yang detail, transformasi ke relasional dengan SQL komprehensif termasuk validations dan constraints, serta penjelasan mendalam tentang keuntungan OODB dengan contoh implementasi praktis dan perbandingan dengan relational database."
+        `,
+        explanation: "Jawaban harus mencakup EER diagram visual lengkap dengan SVG, deskripsi detail constraint spesialisasi (Disjoint dan Partial), transformasi ke relasional dengan SQL CREATE TABLE yang sesuai dengan penjelasan, serta penjelasan mendalam tentang keuntungan OODB dalam konteks sistem informasi akademik."
     }
 ];
-
-
         // Combine all questions
         const allQuestions = [
             ...multipleChoiceQuestions.map((q, i) => ({...q, type: 'multiple', originalIndex: i})),
