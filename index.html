@@ -1,0 +1,4051 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UTS Sistem Basis Data 2 - Sistem Ujian Online</title>
+    
+    <!-- MathJax untuk render persamaan matematika -->
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            max-width: 900px;
+            width: 100%;
+            overflow: hidden;
+            animation: slideIn 0.5s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .header {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .start-screen, .question-screen, .result-screen {
+            padding: 40px;
+            display: none;
+        }
+
+        .start-screen.active, .question-screen.active, .result-screen.active {
+            display: block;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .info-box {
+            background: #f8f9fa;
+            border-left: 4px solid #2a5298;
+            padding: 20px;
+            margin-bottom: 30px;
+            border-radius: 8px;
+        }
+
+        .info-box h3 {
+            color: #2a5298;
+            margin-bottom: 10px;
+        }
+
+        .info-box ul {
+            list-style: none;
+            padding-left: 20px;
+        }
+
+        .info-box li {
+            margin: 8px 0;
+            position: relative;
+        }
+
+        .info-box li:before {
+            content: "✓";
+            position: absolute;
+            left: -20px;
+            color: #2a5298;
+            font-weight: bold;
+        }
+
+        /* Settings Box */
+        .settings-box {
+            background: #e3f2fd;
+            border: 2px solid #2a5298;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+
+        .settings-box h3 {
+            color: #2a5298;
+            margin-bottom: 15px;
+        }
+
+        .setting-item {
+            margin: 15px 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .toggle-switch {
+            position: relative;
+            width: 60px;
+            height: 30px;
+            background: #ccc;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .toggle-switch.active {
+            background: #2a5298;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            top: 3px;
+            left: 3px;
+            width: 24px;
+            height: 24px;
+            background: white;
+            border-radius: 50%;
+            transition: transform 0.3s;
+        }
+
+        .toggle-switch.active .toggle-slider {
+            transform: translateX(30px);
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.1em;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-block;
+            text-decoration: none;
+            margin: 10px 5px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(42, 82, 152, 0.3);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+        }
+
+        .btn-warning {
+            background: #ffc107;
+            color: #333;
+        }
+
+        .btn-danger {
+            background: #dc3545;
+        }
+
+        .progress-bar {
+            background: #e9ecef;
+            height: 8px;
+            border-radius: 4px;
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            height: 100%;
+            width: 0%;
+            transition: width 0.5s ease;
+            border-radius: 4px;
+        }
+
+        .question-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            color: #6c757d;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .question-number {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #2a5298;
+        }
+
+        .question-type {
+            background: #e3f2fd;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            color: #2a5298;
+            font-weight: bold;
+        }
+
+        .timer {
+            font-size: 1.1em;
+            font-weight: bold;
+            color: #dc3545;
+        }
+
+        .timer.warning {
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+
+        .question-text {
+            font-size: 1.2em;
+            line-height: 1.6;
+            margin-bottom: 30px;
+            color: #333;
+        }
+
+        /* Question Image */
+        .question-image {
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .question-image img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            cursor: zoom-in;
+            transition: transform 0.3s;
+        }
+
+        .question-image img:hover {
+            transform: scale(1.02);
+        }
+
+        /* Image Modal */
+        .image-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 2000;
+            cursor: zoom-out;
+        }
+
+        .image-modal.show {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .image-modal img {
+            max-width: 90%;
+            max-height: 90%;
+            border-radius: 10px;
+        }
+
+        .image-modal-close {
+            position: absolute;
+            top: 20px;
+            right: 40px;
+            color: white;
+            font-size: 40px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .image-modal-close:hover {
+            color: #2a5298;
+        }
+
+        /* Multiple Choice Options */
+        .options {
+            list-style: none;
+        }
+
+        .option {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            padding: 15px 20px;
+            margin-bottom: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .option:hover {
+            background: #e9ecef;
+            transform: translateX(5px);
+        }
+
+        .option.selected {
+            background: #2a5298 !important;
+            color: white !important;
+            border-color: #2a5298 !important;
+            transform: scale(1.02);
+        }
+
+        .option.selected .option-label {
+            color: white !important;
+        }
+
+        .option.correct {
+            background: #28a745;
+            color: white;
+            border-color: #28a745;
+        }
+
+        .option.incorrect {
+            background: #dc3545;
+            color: white;
+            border-color: #dc3545;
+        }
+
+        .option-label {
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        /* Essay Answer Area */
+        .essay-container {
+            margin-top: 20px;
+        }
+
+        .essay-textarea {
+            width: 100%;
+            min-height: 250px;
+            padding: 15px;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            font-size: 1.1em;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            resize: vertical;
+            transition: border-color 0.3s;
+        }
+
+        .essay-textarea:focus {
+            outline: none;
+            border-color: #2a5298;
+            box-shadow: 0 0 0 3px rgba(42, 82, 152, 0.1);
+        }
+
+        .char-counter {
+            text-align: right;
+            margin-top: 10px;
+            color: #6c757d;
+            font-size: 0.9em;
+        }
+
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        /* Question Navigator */
+        .question-navigator {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .question-navigator.show {
+            display: block;
+        }
+
+        .nav-grid {
+            display: grid;
+            grid-template-columns: repeat(10, 1fr);
+            gap: 5px;
+            margin-top: 10px;
+        }
+
+        .nav-item {
+            width: 40px;
+            height: 40px;
+            border: 2px solid #e9ecef;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+            position: relative;
+            font-size: 0.9em;
+        }
+
+        .nav-item:hover {
+            background: #e9ecef;
+        }
+
+        .nav-item.answered {
+            background: #2a5298;
+            color: white;
+            border-color: #2a5298;
+        }
+
+        .nav-item.current {
+            border-color: #1e3c72;
+            box-shadow: 0 0 0 3px rgba(30, 60, 114, 0.3);
+        }
+
+        .nav-item.flagged {
+            background: #ffc107;
+            color: #333;
+            border-color: #ffc107;
+        }
+
+        .nav-item.essay::after {
+            content: "E";
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: #28a745;
+            color: white;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            font-size: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Flag Button */
+        .flag-button {
+            background: #ffc107;
+            color: #333;
+            padding: 10px 20px;
+            border-radius: 25px;
+            border: none;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: all 0.3s;
+        }
+
+        .flag-button:hover {
+            background: #ffb300;
+        }
+
+        .flag-button.flagged {
+            background: #ff6b6b;
+            color: white;
+        }
+
+        .result-summary {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .score-circle {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 30px;
+            position: relative;
+            box-shadow: 0 10px 30px rgba(42, 82, 152, 0.3);
+        }
+
+        .score-text {
+            color: white;
+            font-size: 3em;
+            font-weight: bold;
+        }
+
+        .grade {
+            font-size: 2em;
+            font-weight: bold;
+            margin: 20px 0;
+        }
+
+        .grade.excellent { color: #28a745; }
+        .grade.good { color: #17a2b8; }
+        .grade.fair { color: #ffc107; }
+        .grade.poor { color: #dc3545; }
+
+        .answer-review {
+            margin-top: 40px;
+        }
+
+        .review-item {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+                        margin-bottom: 20px;
+            border-left: 4px solid #e9ecef;
+        }
+
+        .review-item.correct {
+            border-left-color: #28a745;
+        }
+
+        .review-item.incorrect {
+            border-left-color: #dc3545;
+        }
+
+        .review-item.essay {
+            border-left-color: #17a2b8;
+        }
+
+        .review-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+
+        .review-status {
+            font-weight: bold;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
+        }
+
+        .review-status.correct {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .review-status.incorrect {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .review-status.essay {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+
+        .review-question {
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .review-answer {
+            margin: 5px 0;
+            padding-left: 20px;
+        }
+
+        .your-answer {
+            color: #dc3545;
+        }
+
+        .correct-answer {
+            color: #28a745;
+            font-weight: bold;
+        }
+
+        .essay-answer {
+            background: #f0f0f0;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 10px;
+            white-space: pre-wrap;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .stat-card {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2em;
+            font-weight: bold;
+            color: #2a5298;
+        }
+
+        .stat-label {
+            color: #6c757d;
+            margin-top: 5px;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            max-width: 500px;
+            width: 90%;
+            animation: modalSlideIn 0.3s ease-out;
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal-header {
+            font-size: 1.5em;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .modal-body {
+            margin-bottom: 20px;
+            color: #666;
+        }
+
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+
+        /* Dark Mode */
+        body.dark-mode {
+            background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 100%);
+        }
+
+        body.dark-mode .container {
+            background: #1e1e1e;
+            color: #e8e8e8;
+        }
+
+        body.dark-mode .header {
+            background: linear-gradient(135deg, #2a5298 0%, #1e3c72 100%);
+        }
+
+        body.dark-mode .info-box,
+        body.dark-mode .settings-box,
+        body.dark-mode .option,
+        body.dark-mode .review-item,
+        body.dark-mode .stat-card,
+        body.dark-mode .question-navigator {
+            background: #2a2a2a;
+            border-color: #2a5298;
+        }
+
+        body.dark-mode .option.selected {
+            background: #2a5298 !important;
+            color: white !important;
+            border-color: #2a5298 !important;
+        }
+
+        body.dark-mode .question-text,
+        body.dark-mode .review-question {
+            color: #e8e8e8;
+        }
+
+        body.dark-mode .modal-content {
+            background: #2a2a2a;
+            color: #e8e8e8;
+        }
+
+        body.dark-mode .modal-header {
+            color: #e8e8e8;
+        }
+
+        body.dark-mode .essay-textarea {
+            background: #2a2a2a;
+            color: #e8e8e8;
+            border-color: #444;
+        }
+
+        /* Table Styles for Database Questions */
+        .db-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 0.9em;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .db-table thead {
+            background: #2a5298;
+            color: white;
+        }
+
+        .db-table th,
+        .db-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+
+        .db-table tbody tr {
+            background: #f8f9fa;
+        }
+
+        .db-table tbody tr:nth-child(even) {
+            background: #f0f0f0;
+        }
+
+        .db-table tbody tr:hover {
+            background: #e9ecef;
+        }
+
+        body.dark-mode .db-table thead {
+            background: #1e3c72;
+        }
+
+        body.dark-mode .db-table tbody tr {
+            background: #2a2a2a;
+            color: #e8e8e8;
+        }
+
+        body.dark-mode .db-table tbody tr:nth-child(even) {
+            background: #333;
+        }
+
+        body.dark-mode .db-table tbody tr:hover {
+            background: #3a3a3a;
+        }
+
+        body.dark-mode .db-table th,
+        body.dark-mode .db-table td {
+            border-color: #555;
+        }
+
+        /* Code Block Styles */
+        .code-block {
+            background: #f4f4f4;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            overflow-x: auto;
+        }
+
+        body.dark-mode .code-block {
+            background: #1e1e1e;
+            border-color: #444;
+            color: #e8e8e8;
+        }
+
+        @media (max-width: 600px) {
+            .header h1 {
+                font-size: 1.8em;
+            }
+            
+            .container {
+                margin: 10px;
+            }
+            
+            .start-screen, .question-screen, .result-screen {
+                padding: 20px;
+            }
+            
+            .score-circle {
+                width: 150px;
+                height: 150px;
+            }
+            
+            .score-text {
+                font-size: 2em;
+            }
+
+            .nav-grid {
+                grid-template-columns: repeat(5, 1fr);
+            }
+
+            .nav-item {
+                width: 35px;
+                height: 35px;
+                font-size: 0.8em;
+            }
+
+            .question-info {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .db-table {
+                font-size: 0.8em;
+            }
+
+            .db-table th,
+            .db-table td {
+                padding: 8px 10px;
+            }
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .slide-in {
+            animation: slideIn 0.5s ease-out;
+        }
+
+        @media print {
+            body {
+                background: white;
+            }
+            
+            .container {
+                box-shadow: none;
+                max-width: 100%;
+            }
+            
+            .btn {
+                display: none;
+            }
+            
+            .result-screen {
+                padding: 20px;
+            }
+            
+            .score-circle {
+                box-shadow: none;
+                border: 3px solid #2a5298;
+            }
+            
+            .review-item {
+                page-break-inside: avoid;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🗄️ UTS Sistem Basis Data 2</h1>
+            <p>Sistem Ujian Online - 50 Pilihan Ganda + 2 Essay</p>
+        </div>
+
+        <!-- Start Screen -->
+        <div class="start-screen active">
+            <div class="info-box">
+                <h3>📋 Informasi Ujian</h3>
+                <ul>
+                    <li>Total Soal: 52 (50 Pilihan Ganda + 2 Essay)</li>
+                    <li>Waktu: 120 menit</li>
+                    <li>Bobot: Pilihan Ganda 70%, Essay 30%</li>
+                    <li>Passing Grade: 60%</li>
+                </ul>
+            </div>
+
+            <div class="info-box">
+                <h3>📚 Materi yang Diujikan</h3>
+                <ul>
+                    <li>Normalisasi Database (1NF, 2NF, 3NF, BCNF, 4NF, 5NF)</li>
+                    <li>Enhanced Entity Relationship (EER)</li>
+                    <li>Proses Perancangan Database</li>
+                    <li>Object-Oriented Database (OODB)</li>
+                    <li>Database Integrity & Constraints</li>
+                    <li>VIEW dalam Database</li>
+                    <li>Recovery Control</li>
+                    <li>Pengontrolan Konkurensi</li>
+                    <li>Database Security & Otorisasi</li>
+                </ul>
+            </div>
+
+            <div class="settings-box">
+                <h3>⚙️ Pengaturan Ujian</h3>
+                <div class="setting-item">
+                    <label>Acak Soal</label>
+                    <div class="toggle-switch" id="randomizeToggle" onclick="toggleSetting('randomize')">
+                        <div class="toggle-slider"></div>
+                    </div>
+                </div>
+                <div class="setting-item">
+                    <label>Acak Pilihan Jawaban</label>
+                    <div class="toggle-switch" id="randomizeOptionsToggle" onclick="toggleSetting('randomizeOptions')">
+                        <div class="toggle-slider"></div>
+                    </div>
+                </div>
+                <div class="setting-item">
+                    <label>Mode Gelap</label>
+                    <div class="toggle-switch" id="darkModeToggle" onclick="toggleSetting('darkMode')">
+                        <div class="toggle-slider"></div>
+                    </div>
+                </div>
+                <div class="setting-item">
+                    <label>Tampilkan Navigator Soal</label>
+                    <div class="toggle-switch active" id="showNavigatorToggle" onclick="toggleSetting('showNavigator')">
+                        <div class="toggle-slider"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="info-box">
+                <h3>⚠️ Peraturan Ujian</h3>
+                <ul>
+                    <li>Jawab semua soal sebelum waktu habis</li>
+                    <li>Perhatikan tabel dan diagram yang ditampilkan</li>
+                    <li>Essay minimal 200 karakter</li>
+                    <li>Gunakan tombol flag untuk menandai soal yang ragu</li>
+                    <li>Hasil akan ditampilkan setelah ujian selesai</li>
+                </ul>
+            </div>
+
+            <div style="text-align: center;">
+                <button class="btn" onclick="startExam()">Mulai Ujian</button>
+            </div>
+        </div>
+
+        <!-- Question Screen -->
+        <div class="question-screen">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressBar"></div>
+            </div>
+
+            <div class="question-info">
+                <div class="question-number" id="questionNumber">Soal 1 dari 52</div>
+                <div class="question-type" id="questionType">Pilihan Ganda</div>
+                <div class="timer" id="timer">120:00</div>
+            </div>
+
+            <div class="question-navigator" id="questionNavigator">
+                <h4>Navigator Soal</h4>
+                <div class="nav-grid" id="navGrid"></div>
+            </div>
+
+            <div class="question-text" id="questionText"></div>
+
+            <div class="question-image" id="questionImage" style="display: none;">
+                <img id="questionImg" src="" alt="Gambar Soal" onclick="openImageModal(this.src)">
+            </div>
+
+            <ul class="options" id="optionsList" style="display: none;"></ul>
+
+            <div class="essay-container" id="essayContainer" style="display: none;">
+                <textarea class="essay-textarea" id="essayAnswer" placeholder="Tulis jawaban Anda di sini..."></textarea>
+                <div class="char-counter" id="charCounter">0 karakter</div>
+            </div>
+
+            <div class="navigation">
+                <button class="flag-button" onclick="toggleFlag()" id="flagBtn">
+                    🚩 Tandai Soal
+                </button>
+                <div class="nav-buttons">
+                    <button class="btn btn-secondary" onclick="previousQuestion()" id="prevBtn">← Sebelumnya</button>
+                    <button class="btn" onclick="nextQuestion()" id="nextBtn">Selanjutnya →</button>
+                </div>
+            </div>
+
+            <div style="text-align: center; margin-top: 20px;">
+                                <button class="btn btn-warning" onclick="showSubmitConfirmation()">Submit Ujian</button>
+            </div>
+        </div>
+
+        <!-- Result Screen -->
+        <div class="result-screen">
+            <div class="result-summary">
+                <h2>🎉 Ujian Selesai!</h2>
+                <div class="score-circle">
+                    <div class="score-text" id="scoreText">0%</div>
+                </div>
+                <div class="grade" id="gradeText"></div>
+                <p id="gradeMessage"></p>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value" id="correctCount">0</div>
+                    <div class="stat-label">PG Benar</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="incorrectCount">0</div>
+                    <div class="stat-label">PG Salah</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="essayCount">0</div>
+                    <div class="stat-label">Essay Dijawab</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="timeSpent">0:00</div>
+                    <div class="stat-label">Waktu</div>
+                </div>
+            </div>
+
+            <div class="answer-review" id="answerReview">
+                <h3>📝 Review Jawaban</h3>
+            </div>
+
+            <div style="text-align: center; margin-top: 30px;">
+                <button class="btn" onclick="retakeExam()">Ulangi Ujian</button>
+                <button class="btn btn-secondary" onclick="downloadResult()">Download Hasil</button>
+                <button class="btn btn-secondary" onclick="printResult()">Cetak Hasil</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Submit Confirmation Modal -->
+    <div class="modal" id="submitModal">
+        <div class="modal-content">
+            <div class="modal-header">Konfirmasi Submit</div>
+            <div class="modal-body">
+                <p>Apakah Anda yakin ingin mengakhiri ujian?</p>
+                <p id="unansweredWarning"></p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal()">Batal</button>
+                <button class="btn btn-danger" onclick="finishExam()">Submit</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Image Modal -->
+    <div class="image-modal" id="imageModal" onclick="closeImageModal()">
+        <span class="image-modal-close">&times;</span>
+        <img id="modalImage" src="" alt="Enlarged Image">
+    </div>
+
+    <script>
+        // Configure MathJax
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            },
+            svg: {
+                fontCache: 'global'
+            }
+        };
+
+        // Settings
+        const settings = {
+            randomize: false,
+            randomizeOptions: false,
+            darkMode: false,
+            showNavigator: true
+        };
+
+        // Multiple Choice Questions for Sistem Basis Data 2
+        const multipleChoiceQuestions = [
+            {
+                question: "Tujuan utama dari normalisasi database adalah untuk:",
+                options: [
+                    "Mempercepat query",
+                    "Mengurangi redundansi data dan anomali",
+                    "Meningkatkan kapasitas penyimpanan",
+                    "Mempermudah backup data"
+                ],
+                correct: 1,
+                explanation: "Normalisasi bertujuan utama untuk mengorganisir data agar tidak ada pengulangan yang tidak perlu (redundansi) yang dapat menyebabkan anomali saat update, insert, atau delete data."
+            },
+            {
+                question: "Sebuah tabel dikatakan dalam bentuk normal pertama (1NF) jika:",
+                options: [
+                    "Semua atributnya adalah numerik",
+                    "Tidak ada ketergantungan transitif",
+                    "Setiap sel tabel berisi nilai tunggal (atomik) dan tidak ada repeating groups",
+                    "Semua non-key atribut bergantung penuh pada primary key"
+                ],
+                correct: 2,
+                explanation: "Syarat utama 1NF adalah setiap atribut harus bernilai atomik (tidak dapat dibagi lagi) dan tidak boleh ada kelompok atribut yang berulang dalam satu baris."
+            },
+            {
+                question: "Ketergantungan fungsional (Functional Dependency) A → B berarti:",
+                options: [
+                    "Nilai A ditentukan oleh nilai B",
+                    "Nilai B ditentukan oleh nilai A",
+                    "A dan B saling menentukan",
+                    "A dan B tidak berhubungan"
+                ],
+                correct: 1,
+                explanation: "Dalam FD A → B, A disebut determinan dan B adalah dependen. Ini berarti untuk setiap nilai A yang unik, akan ada satu nilai B yang terkait secara unik."
+            },
+            {
+                question: "Bentuk normal kedua (2NF) mensyaratkan bahwa tabel sudah dalam 1NF dan:",
+                options: [
+                    "Tidak ada ketergantungan transitif",
+                    "Semua non-key atribut bergantung penuh pada keseluruhan primary key (tidak ada ketergantungan parsial)",
+                    "Setiap determinan adalah candidate key",
+                    "Tidak ada multivalued dependency"
+                ],
+                correct: 1,
+                explanation: "2NF menghilangkan ketergantungan parsial, di mana sebuah non-key atribut hanya bergantung pada sebagian dari composite primary key."
+            },
+            {
+                question: "Ketergantungan transitif terjadi ketika:",
+                options: [
+                    "Non-key atribut bergantung pada non-key atribut lainnya",
+                    "Primary key bergantung pada non-key atribut",
+                    "Non-key atribut bergantung pada sebagian primary key",
+                    "Semua atribut adalah primary key"
+                ],
+                correct: 0,
+                explanation: "Ketergantungan transitif (misalnya, A → B dan B → C, sehingga A → C melalui B) adalah kondisi di mana sebuah non-key atribut menentukan non-key atribut lainnya. Ini dihilangkan dalam 3NF."
+            },
+            {
+                question: "Boyce-Codd Normal Form (BCNF) lebih ketat dari 3NF karena:",
+                options: [
+                    "BCNF menghilangkan semua jenis ketergantungan",
+                    "Dalam BCNF, setiap determinan harus merupakan candidate key",
+                    "BCNF hanya berlaku untuk tabel dengan satu candidate key",
+                    "BCNF mengizinkan ketergantungan parsial"
+                ],
+                correct: 1,
+                explanation: "BCNF adalah bentuk normal yang lebih kuat dari 3NF. Syaratnya adalah untuk setiap ketergantungan fungsional non-trivial X → Y, X harus merupakan superkey (atau candidate key)."
+            },
+            {
+                question: "Multivalued Dependency (MVD) A →→ B berarti:",
+                options: [
+                    "Untuk setiap nilai A, ada satu set nilai B yang terkait, dan set nilai B ini tidak bergantung pada atribut lain dalam tabel",
+                    "Nilai A selalu sama dengan nilai B",
+                    "B adalah bagian dari primary key",
+                    "A adalah foreign key"
+                ],
+                correct: 0,
+                explanation: "MVD terjadi ketika satu atribut (atau sekelompok atribut) menentukan sekelompok nilai untuk atribut lain, secara independen dari atribut lain dalam relasi tersebut. Ini ditangani di 4NF."
+            },
+            {
+                question: "Bentuk Normal Kelima (5NF) berkaitan dengan:",
+                options: [
+                    "Ketergantungan Fungsional",
+                    "Ketergantungan Multivalue",
+                    "Ketergantungan Join (Join Dependency)",
+                    "Ketergantungan Parsial"
+                ],
+                correct: 2,
+                explanation: "5NF, juga dikenal sebagai Project-Join Normal Form (PJNF), dirancang untuk menghilangkan redundansi yang disebabkan oleh join dependencies."
+            },
+            {
+                question: "Fase pertama dalam proses perancangan database adalah:",
+                options: [
+                    "Perancangan Fisik",
+                    "Perancangan Logikal",
+                    "Pengumpulan dan Analisis Permintaan",
+                    "Implementasi"
+                ],
+                correct: 2,
+                explanation: "Proses perancangan database dimulai dengan pengumpulan kebutuhan dari pengguna dan analisis terhadap sistem yang akan dibuat."
+            },
+            {
+                question: "Strategi perancangan database yang dimulai dari pendefinisian entitas-entitas umum kemudian dipecah menjadi entitas yang lebih spesifik disebut:",
+                options: [
+                    "Bottom-Up Strategy",
+                    "Top-Down Strategy",
+                    "Inside-Out Strategy",
+                    "Mixed Strategy"
+                ],
+                correct: 1,
+                explanation: "Top-Down Strategy (menggunakan spesialisasi) dimulai dari entitas level tinggi dan dipecah menjadi entitas yang lebih detail."
+            },
+            {
+                question: "Dalam model EER, entitas yang merupakan induk dari sub-kelas disebut:",
+                options: [
+                    "Subclass",
+                    "Superclass",
+                    "Attribute",
+                    "Relationship"
+                ],
+                correct: 1,
+                explanation: "Superclass adalah entitas yang lebih umum yang memiliki satu atau lebih subclass (kelompok entitas yang lebih spesifik)."
+            },
+            {
+                question: "Proses pemecahan entitas menjadi beberapa sub-kelas beserta atribut-atributnya dalam EER disebut:",
+                options: [
+                    "Generalisasi",
+                    "Spesialisasi",
+                    "Agregasi",
+                    "Komposisi"
+                ],
+                correct: 1,
+                explanation: "Spesialisasi adalah proses mendefinisikan himpunan subclass dari sebuah superclass berdasarkan karakteristik tertentu."
+            },
+            {
+                question: "Jika sebuah entitas dalam superclass HARUS merupakan anggota dari salah satu sub-kelasnya, maka ini adalah contoh dari:",
+                options: [
+                    "Partial Specialization",
+                    "Total Specialization",
+                    "Disjoint Constraint",
+                    "Overlapping Constraint"
+                ],
+                correct: 1,
+                explanation: "Total Specialization (biasanya ditandai dengan garis ganda) berarti setiap instance dari superclass harus termasuk dalam setidaknya satu subclass."
+            },
+            {
+                question: "Constraint yang menyatakan bahwa sebuah entitas hanya dapat menjadi anggota dari SATU sub-kelas dalam sebuah spesialisasi adalah:",
+                options: [
+                    "Overlapping Constraint (o)",
+                    "Disjoint Constraint (d)",
+                    "Partial Constraint",
+                    "Total Constraint"
+                ],
+                correct: 1,
+                explanation: "Disjoint Constraint (d) memastikan bahwa subclass-subclass dalam spesialisasi tidak memiliki anggota yang sama."
+            },
+            {
+                question: "Konsep di mana sub-kelas mewarisi semua atribut dari super-kelasnya disebut:",
+                options: [
+                    "Attribute Specialization",
+                    "Attribute Generalization",
+                    "Attribute Inheritance",
+                    "Attribute Aggregation"
+                ],
+                correct: 2,
+                explanation: "Attribute Inheritance adalah fitur fundamental dari hubungan superclass/subclass di mana subclass secara otomatis memiliki semua atribut dari superclassnya."
+            },
+            {
+                question: "Manakah pilihan transformasi EER ke relasional yang paling sesuai jika spesialisasi bersifat Disjoint Total?",
+                options: [
+                    "Buat relasi untuk superclass dan setiap subclass",
+                    "Buat relasi hanya untuk setiap subclass, dengan atribut dari superclass ditambahkan",
+                    "Buat satu relasi gabungan atribut superclass dan semua subclass",
+                    "Buat satu relasi gabungan dengan flag untuk menandakan tipe subclass"
+                ],
+                correct: 1,
+                explanation: "Untuk Disjoint Total, membuat tabel hanya untuk setiap subclass adalah efisien karena setiap entitas superclass pasti ada di salah satu subclass."
+            },
+            {
+                question: "Sebuah sub-kelas yang memiliki lebih dari satu super-kelas disebut:",
+                options: [
+                    "Multiple Inheritance",
+                    "Specialization Lattice",
+                    "Shared Subclass",
+                    "Union Type (Category)"
+                ],
+                correct: 2,
+                explanation: "Shared Subclass adalah subclass yang mewarisi atribut dan relasi dari lebih dari satu superclass."
+            },
+            {
+                question: "Dalam diagram EER, constraint overlapping (o) berarti:",
+                options: [
+                    "Sebuah entitas superclass harus menjadi anggota salah satu subclass",
+                    "Sebuah entitas superclass bisa menjadi anggota lebih dari satu subclass secara bersamaan",
+                    "Sebuah entitas superclass tidak harus menjadi anggota subclass manapun",
+                    "Subclass-subclass tidak memiliki atribut yang sama"
+                ],
+                correct: 1,
+                explanation: "Overlapping constraint (o) mengizinkan sebuah instance dari superclass untuk menjadi anggota dari beberapa subclass secara simultan."
+            },
+            {
+                question: "Manakah yang BUKAN merupakan konsep inti dalam Object-Oriented Database?",
+                options: [
+                    "Objek dan Class",
+                    "Inheritance",
+                    "Normalisasi",
+                    "Enkapsulasi"
+                ],
+                correct: 2,
+                explanation: "Normalisasi adalah konsep utama dalam database relasional. OODB memiliki cara sendiri untuk mengelola integritas dan struktur data."
+            },
+            {
+                question: "Kemampuan sebuah objek dalam OODB untuk menyimpan state dan behavior-nya secara permanen disebut:",
+                options: [
+                    "Object Identity",
+                    "Object Persistence",
+                    "Object Encapsulation",
+                    "Object Polymorphism"
+                ],
+                correct: 1,
+                                explanation: "Object Persistence adalah kemampuan OODBMS untuk menyimpan objek sehingga mereka tetap ada bahkan setelah program yang membuatnya berhenti berjalan."
+            },
+            {
+                question: "Keuntungan utama menggunakan OODB dibandingkan RDBMS seringkali terlihat pada:",
+                options: [
+                    "Kinerja query yang lebih sederhana pada data tabular",
+                    "Penanganan tipe data kompleks dan hubungan antar objek yang rumit",
+                    "Dukungan transaksi ACID yang lebih baik",
+                    "Skalabilitas horizontal yang lebih mudah"
+                ],
+                correct: 1,
+                explanation: "OODB dirancang untuk menangani data yang kompleks dan hubungan antar objek yang sulit dimodelkan secara efisien dalam model relasional."
+            },
+            {
+                question: "Aturan yang memastikan bahwa setiap nilai primary key harus unik dan tidak boleh NULL disebut:",
+                options: [
+                    "Domain Integrity",
+                    "Referential Integrity",
+                    "Entity Integrity",
+                    "User-defined Integrity"
+                ],
+                correct: 2,
+                explanation: "Entity Integrity Constraint menyatakan bahwa tidak ada atribut primary key yang boleh bernilai NULL dan harus unik."
+            },
+            {
+                question: "Jika pada aturan DELETE untuk referential integrity dipilih CASCADE, maka:",
+                options: [
+                    "Penghapusan record di tabel parent akan ditolak jika ada record terkait di tabel child",
+                    "Penghapusan record di tabel parent akan menyebabkan nilai foreign key di tabel child menjadi NULL",
+                    "Penghapusan record di tabel parent akan menyebabkan semua record terkait di tabel child ikut terhapus",
+                    "Penghapusan record di tabel parent akan menyebabkan nilai foreign key di tabel child diisi nilai default"
+                ],
+                correct: 2,
+                explanation: "ON DELETE CASCADE berarti jika sebuah record di tabel parent dihapus, maka semua record di tabel child yang memiliki foreign key yang merujuk ke record tersebut juga akan otomatis terhapus."
+            },
+            {
+                question: "Sebuah prosedur tersimpan yang dieksekusi secara otomatis sebagai respons terhadap event modifikasi data (INSERT, UPDATE, DELETE) pada tabel tertentu adalah:",
+                options: [
+                    "Assertion",
+                    "Trigger",
+                    "View",
+                    "Index"
+                ],
+                correct: 1,
+                explanation: "Trigger adalah blok kode SQL yang secara otomatis dijalankan oleh DBMS ketika event DML tertentu terjadi pada sebuah tabel."
+            },
+            {
+                question: "Manakah pernyataan yang paling tepat mengenai VIEW dalam database?",
+                options: [
+                    "VIEW menyimpan salinan fisik data dari tabel aslinya",
+                    "VIEW adalah tabel virtual yang definisinya disimpan sebagai query",
+                    "Perubahan pada VIEW tidak akan mempengaruhi tabel aslinya",
+                    "VIEW selalu dapat di-update"
+                ],
+                correct: 1,
+                explanation: "View tidak menyimpan data sendiri, melainkan merupakan query yang disimpan yang mengambil data dari satu atau lebih tabel basis saat view tersebut diakses."
+            },
+            {
+                question: "Keuntungan menggunakan VIEW adalah, kecuali:",
+                options: [
+                    "Menyederhanakan persepsi pemakai terhadap data kompleks",
+                    "Meningkatkan keamanan dengan membatasi akses data",
+                    "Mempercepat semua jenis operasi query secara signifikan",
+                    "Meminimalkan modifikasi aplikasi saat tabel basis direstrukturisasi"
+                ],
+                correct: 2,
+                explanation: "Meskipun view dapat menyederhanakan query, ia tidak secara otomatis mempercepat semua jenis query. Kinerja tergantung pada kompleksitas query view dan optimasi DBMS."
+            },
+            {
+                question: "Perintah WITH CHECK OPTION pada CREATE VIEW digunakan untuk:",
+                options: [
+                    "Memeriksa apakah view sudah ada sebelum dibuat",
+                    "Memastikan bahwa data yang di-INSERT atau di-UPDATE melalui view memenuhi kondisi WHERE pada definisi view",
+                    "Memeriksa integritas referensial pada tabel basis",
+                    "Mengoptimalkan query pada view"
+                ],
+                correct: 1,
+                explanation: "WITH CHECK OPTION memastikan bahwa setiap baris yang dimasukkan atau diubah melalui view harus memenuhi kriteria yang ditentukan dalam klausa WHERE dari definisi view tersebut."
+            },
+            {
+                question: "Sebuah VIEW umumnya TIDAK dapat di-update jika:",
+                options: [
+                    "Dibuat dari satu tabel saja",
+                    "Menggunakan fungsi agregat (seperti SUM(), AVG())",
+                    "Hanya memilih subset kolom dari tabel basis",
+                    "Menggunakan klausa WHERE untuk memfilter baris"
+                ],
+                correct: 1,
+                explanation: "View yang melibatkan fungsi agregat, GROUP BY, atau DISTINCT biasanya tidak updatable karena DBMS tidak dapat secara ambigu menentukan baris mana di tabel basis yang harus diubah."
+            },
+            {
+                question: "Proses mengembalikan database ke keadaan konsisten sebelumnya setelah terjadi kegagalan disebut:",
+                options: [
+                    "Concurrency Control",
+                    "Database Normalization",
+                    "Database Recovery",
+                    "Database Security"
+                ],
+                correct: 2,
+                explanation: "Database recovery adalah serangkaian mekanisme untuk memastikan database dapat dikembalikan ke keadaan yang benar dan konsisten setelah terjadi kegagalan."
+            },
+            {
+                question: "Catatan kronologis semua perubahan yang dilakukan pada database oleh transaksi disebut:",
+                options: [
+                    "Checkpoint File",
+                    "Backup File",
+                    "Log File (Transaction Log)",
+                    "Data Dictionary"
+                ],
+                correct: 2,
+                explanation: "Log file mencatat semua operasi transaksi, termasuk nilai sebelum dan sesudah perubahan, yang penting untuk proses UNDO dan REDO saat recovery."
+            },
+            {
+                question: "Operasi yang membatalkan perubahan yang dibuat oleh transaksi yang belum di-commit disebut:",
+                options: [
+                    "REDO",
+                    "UNDO",
+                    "COMMIT",
+                    "CHECKPOINT"
+                ],
+                correct: 1,
+                explanation: "Operasi UNDO mengembalikan nilai data ke keadaan sebelum dimodifikasi oleh transaksi yang gagal atau di-rollback."
+            },
+            {
+                question: "Dalam teknik recovery Deferred Update, perubahan data oleh transaksi ditulis ke database:",
+                options: [
+                    "Segera setelah setiap operasi tulis",
+                    "Hanya setelah transaksi melakukan COMMIT",
+                    "Sebelum transaksi dimulai",
+                    "Setiap kali checkpoint terjadi"
+                ],
+                correct: 1,
+                explanation: "Pada Deferred Update, modifikasi data oleh transaksi hanya dicatat di log dan baru diterapkan ke database fisik ketika transaksi tersebut berhasil di-commit."
+            },
+            {
+                question: "Titik sinkronisasi dalam log file yang menandai bahwa semua perubahan dari transaksi yang sudah commit sebelum titik tersebut telah ditulis ke disk disebut:",
+                options: [
+                    "Commit Point",
+                    "Rollback Point",
+                    "Checkpoint",
+                    "Savepoint"
+                ],
+                correct: 2,
+                explanation: "Checkpoint adalah mekanisme untuk mengurangi waktu recovery dengan memastikan bahwa semua buffer database yang dimodifikasi oleh transaksi yang telah commit ditulis ke disk."
+            },
+            {
+                question: "Masalah yang terjadi ketika dua transaksi membaca nilai yang sama, kemudian keduanya memodifikasi nilai tersebut, dan salah satu modifikasi hilang karena ditimpa oleh yang lain, disebut:",
+                options: [
+                    "Dirty Read",
+                    "Lost Update",
+                    "Incorrect Summary",
+                    "Deadlock"
+                ],
+                correct: 1,
+                explanation: "Lost Update terjadi ketika efek dari satu transaksi hilang karena ditimpa oleh transaksi lain yang berjalan secara konkuren."
+            },
+            {
+                question: "Jenis kunci (lock) yang memungkinkan beberapa transaksi membaca data yang sama secara bersamaan adalah:",
+                options: [
+                    "Exclusive Lock (X-lock)",
+                    "Shared Lock (S-lock)",
+                    "Update Lock",
+                    "Write Lock"
+                ],
+                correct: 1,
+                explanation: "Shared Lock (S-lock) mengizinkan beberapa transaksi untuk membaca item data yang sama secara bersamaan, tetapi tidak untuk memodifikasinya."
+            },
+            {
+                question: "Situasi di mana dua atau lebih transaksi saling menunggu sumber daya (kunci) yang dipegang oleh transaksi lain sehingga tidak ada yang bisa melanjutkan disebut:",
+                options: [
+                    "Livelock",
+                    "Starvation",
+                    "Deadlock",
+                    "Race Condition"
+                ],
+                correct: 2,
+                explanation: "Deadlock adalah kondisi di mana sekumpulan proses atau transaksi terblokir karena masing-masing menunggu sumber daya yang dipegang oleh proses/transaksi lain dalam kumpulan tersebut."
+            },
+            {
+                question: "Protokol Two-Phase Locking (2PL) memiliki dua fase, yaitu:",
+                options: [
+                    "Read Phase dan Write Phase",
+                    "Growing Phase dan Shrinking Phase",
+                    "Commit Phase dan Rollback Phase",
+                    "Lock Phase dan Unlock Phase"
+                ],
+                correct: 1,
+                explanation: "Dalam 2PL, transaksi melalui Growing Phase (hanya memperoleh kunci) diikuti oleh Shrinking Phase (hanya melepaskan kunci) untuk menjamin serializability."
+            },
+            {
+                question: "Jika transaksi T2 membaca data yang ditulis oleh transaksi T1, dan kemudian T1 di-rollback, maka T2 juga harus di-rollback. Ini adalah contoh dari:",
+                options: [
+                    "Lost Update",
+                    "Deadlock",
+                    "Cascading Rollback",
+                    "Incorrect Summary"
+                ],
+                correct: 2,
+                explanation: "Cascading Rollback terjadi ketika kegagalan satu transaksi menyebabkan serangkaian rollback pada transaksi lain yang bergantung pada data yang belum di-commit dari transaksi yang gagal tersebut."
+            },
+            {
+                question: "Perintah SQL yang digunakan untuk memberikan hak akses kepada pemakai database adalah:",
+                options: [
+                    "REVOKE",
+                    "COMMIT",
+                    "GRANT",
+                    "ALTER USER"
+                ],
+                correct: 2,
+                explanation: "Perintah GRANT digunakan untuk memberikan privileges (hak akses) kepada pengguna atau peran pada objek database."
+            },
+            {
+                question: "Hak akses yang memungkinkan pengguna untuk mengubah struktur tabel adalah:",
+                options: [
+                    "SELECT",
+                    "UPDATE",
+                    "INSERT",
+                    "ALTER"
+                ],
+                correct: 3,
+                explanation: "Privilege ALTER mengizinkan pengguna untuk memodifikasi definisi (struktur) dari sebuah tabel, seperti menambah atau menghapus kolom."
+            },
+            {
+                question: "Jika seorang pemakai diberikan hak akses WITH GRANT OPTION, artinya pemakai tersebut:",
+                options: [
+                    "Hanya bisa memberikan hak akses kepada dirinya sendiri",
+                    "Bisa memberikan hak akses yang sama yang dimilikinya kepada pemakai lain",
+                    "Tidak bisa memberikan hak akses kepada siapapun",
+                    "Hak aksesnya akan otomatis dicabut setelah beberapa waktu"
+                ],
+                correct: 1,
+                explanation: "WITH GRANT OPTION memungkinkan penerima privilege untuk kemudian memberikan privilege tersebut kepada pengguna lain."
+            },
+            {
+                question: "Menarik kembali hak akses yang telah diberikan kepada pemakai menggunakan perintah SQL:",
+                options: [
+                    "GRANT",
+                    "REMOVE",
+                    "DELETE PRIVILEGE",
+                    "REVOKE"
+                ],
+                correct: 3,
+                explanation: "Perintah REVOKE digunakan untuk mencabut privileges yang sebelumnya telah diberikan kepada pengguna atau peran."
+            },
+            {
+                question: "Memberikan hak akses SELECT pada sebuah tabel kepada semua pengguna dapat dilakukan dengan klausa TO:",
+                options: [
+                    "ALL USERS",
+                    "EVERYONE",
+                    "PUBLIC",
+                    "ANY"
+                ],
+                correct: 2,
+                explanation: "Kata kunci PUBLIC digunakan dalam perintah GRANT untuk memberikan privilege kepada semua pengguna database saat ini dan di masa depan."
+            },
+            {
+                question: "Manakah yang paling tepat menggambarkan hubungan antara Normalisasi dan Perancangan EER?",
+                options: [
+                    "Normalisasi dilakukan sebelum membuat EER diagram",
+                    "EER diagram digunakan untuk memvalidasi hasil normalisasi",
+                    "Perancangan EER (model konseptual) biasanya diikuti dengan transformasi ke model relasional, yang kemudian dinormalisasi",
+                    "Keduanya adalah proses yang sepenuhnya terpisah dan tidak berhubungan"
+                ],
+                correct: 2,
+                explanation: "Umumnya, model konseptual (seperti EER) dibuat terlebih dahulu, kemudian ditransformasikan ke skema relasional. Skema relasional inilah yang kemudian dianalisis dan dinormalisasi untuk memastikan kualitas desain."
+            },
+            {
+                question: "Penggunaan VIEW dapat meningkatkan keamanan database dengan cara:",
+                options: [
+                    "Mengenkripsi data yang ditampilkan",
+                    "Membatasi kolom dan baris yang dapat diakses oleh pengguna tertentu",
+                    "Membuat backup data secara otomatis",
+                    "Mencegah semua jenis serangan SQL Injection"
+                ],
+                correct: 1,
+                                explanation: "View dapat dirancang untuk hanya menampilkan subset data (kolom atau baris tertentu) dari tabel basis, sehingga pengguna hanya melihat apa yang relevan dan diizinkan untuk mereka."
+            },
+            {
+                question: "Dalam konteks transaksi konkuren, jika sebuah VIEW didefinisikan dengan SELECT * FROM Penjualan WHERE Tanggal = CURRENT_DATE, dan beberapa transaksi mencoba meng-INSERT data penjualan baru, mekanisme apa yang paling penting untuk menjaga konsistensi data pada tabel Penjualan?",
+                options: [
+                    "Normalisasi tabel Penjualan hingga 5NF",
+                    "Penggunaan WITH CHECK OPTION pada VIEW",
+                    "Mekanisme Penguncian (Locking) pada tabel Penjualan",
+                    "Backup log transaksi secara berkala"
+                ],
+                correct: 2,
+                explanation: "Mekanisme locking pada tabel Penjualan adalah yang paling langsung menangani masalah konkurensi seperti lost update atau data tidak konsisten saat banyak transaksi meng-INSERT ke tabel basis."
+            },
+            {
+                question: "Jika sebuah tabel Mahasiswa memiliki atribut NPM (Primary Key), Nama, dan AlamatLengkap (yang terdiri dari Jalan, Kota, KodePos), langkah pertama normalisasi (ke 1NF) yang paling tepat adalah:",
+                options: [
+                    "Memastikan NPM unik",
+                    "Memecah AlamatLengkap menjadi atribut-atribut atomik: Jalan, Kota, KodePos",
+                    "Membuat tabel terpisah untuk Alamat",
+                    "Menambahkan foreign key ke tabel Dosen"
+                ],
+                correct: 1,
+                explanation: "Untuk mencapai 1NF, semua atribut harus atomik. AlamatLengkap yang terdiri dari beberapa komponen sebaiknya dipecah menjadi atribut-atribut yang lebih kecil dan atomik."
+            },
+            {
+                question: "Seorang DBA ingin memberikan hak kepada user Analyst untuk hanya bisa membaca data dari tabel Transaksi dan membuat VIEW berdasarkan tabel tersebut, tetapi tidak bisa memodifikasi data Transaksi. Perintah GRANT yang paling sesuai adalah:",
+                options: [
+                    "GRANT SELECT, CREATE VIEW ON Transaksi TO Analyst;",
+                    "GRANT SELECT ON Transaksi TO Analyst WITH GRANT OPTION;",
+                    "GRANT SELECT, VIEW ON Transaksi TO Analyst;",
+                    "GRANT SELECT ON Transaksi TO Analyst; GRANT CREATE VIEW TO Analyst;"
+                ],
+                correct: 3,
+                explanation: "Hak SELECT pada tabel diperlukan untuk membaca data. Hak CREATE VIEW adalah privilege level database yang memungkinkan user membuat view."
+            },
+            {
+                question: "Manakah dari berikut ini yang merupakan contoh dari kegagalan media dalam database?",
+                options: [
+                    "Aplikasi klien crash saat melakukan transaksi",
+                    "Terjadi bug pada software DBMS yang menyebabkan transaksi berhenti",
+                    "Hard disk tempat penyimpanan file database mengalami kerusakan fisik",
+                    "Jaringan antara klien dan server database terputus"
+                ],
+                correct: 2,
+                explanation: "Kegagalan media adalah kegagalan yang merusak database secara fisik, seperti kerusakan pada disk penyimpanan."
+            },
+            {
+                question: "Dalam EER diagram, jika entitas KENDARAAN memiliki subclass MOBIL dan MOTOR, dan setiap KENDARAAN pasti salah satu dari MOBIL atau MOTOR (tidak bisa keduanya dan tidak bisa bukan keduanya), maka constraint yang paling tepat adalah:",
+                options: [
+                    "Partial, Overlapping",
+                    "Total, Overlapping",
+                    "Partial, Disjoint",
+                    "Total, Disjoint"
+                ],
+                correct: 3,
+                explanation: "'Pasti salah satu' mengindikasikan Total Specialization. 'Tidak bisa keduanya' mengindikasikan Disjoint Constraint."
+            }
+        ];
+
+// Essay Questions for Sistem Basis Data 2 - Enhanced Version
+const essayQuestions = [
+    {
+        question: `
+            <div style="background: #f8f9fa; padding: 20px; border-radius: 10px; margin-bottom: 20px;">
+                <h3 style="color: #2a5298; margin-bottom: 15px;">Kasus: Sistem Database Rental Mobil</h3>
+                
+                <p style="margin-bottom: 15px;">Sebuah perusahaan rental mobil sederhana ingin membuat sistem database untuk mengelola data mobil, pelanggan, dan transaksi penyewaan. Informasi yang perlu dicatat adalah sebagai berikut:</p>
+                
+                <div style="background: white; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
+                    <h4 style="color: #1e3c72; margin-bottom: 10px;">📚 Entitas dan Atribut:</h4>
+                    
+                    <div style="margin-bottom: 10px;">
+                        <strong style="color: #2a5298;">1. Mobil:</strong>
+                        <ul style="margin-top: 5px; margin-left: 20px;">
+                            <li>Nomor Polisi (unik)</li>
+                            <li>Merk</li>
+                            <li>Model</li>
+                            <li>Tahun</li>
+                            <li>Warna</li>
+                            <li>Harga Sewa per Hari</li>
+                            <li>Status Ketersediaan (Tersedia/Disewa)</li>
+                        </ul>
+                    </div>
+                    
+                    <div style="margin-bottom: 10px;">
+                        <strong style="color: #2a5298;">2. Pelanggan:</strong>
+                        <ul style="margin-top: 5px; margin-left: 20px;">
+                            <li>Nomor KTP (unik)</li>
+                            <li>Nama Pelanggan</li>
+                            <li>Alamat Pelanggan</li>
+                            <li>Nomor Telepon Pelanggan</li>
+                        </ul>
+                    </div>
+                    
+                    <div style="margin-bottom: 10px;">
+                        <strong style="color: #2a5298;">3. Penyewaan:</strong>
+                        <ul style="margin-top: 5px; margin-left: 20px;">
+                            <li>Nomor Transaksi (unik)</li>
+                            <li>Tanggal Sewa</li>
+                            <li>Tanggal Kembali Rencana</li>
+                            <li>Tanggal Kembali Aktual</li>
+                            <li>Total Biaya</li>
+                            <li>Denda (jika ada)</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div style="background: #e3f2fd; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
+                    <h4 style="color: #1e3c72; margin-bottom: 10px;">📋 Aturan Bisnis:</h4>
+                    <ul style="margin-left: 20px;">
+                        <li>Setiap transaksi penyewaan melibatkan <strong>satu pelanggan</strong> dan <strong>satu mobil</strong></li>
+                        <li>Sebuah mobil bisa disewa berkali-kali oleh pelanggan yang berbeda atau sama (pada waktu yang berbeda)</li>
+                        <li>Seorang pelanggan bisa melakukan banyak transaksi penyewaan</li>
+                    </ul>
+                </div>
+                
+                <div style="background: #fff3cd; padding: 15px; border-radius: 8px;">
+                    <h4 style="color: #856404; margin-bottom: 10px;">✏️ Yang Harus Dikerjakan:</h4>
+                    <ol style="margin-left: 20px;">
+                        <li style="margin-bottom: 10px;">
+                            <strong>Rancangan Database Awal</strong><br>
+                            Buatlah rancangan database awal dalam bentuk tabel-tabel dengan atribut-atributnya berdasarkan deskripsi di atas. Identifikasi primary key untuk setiap tabel.
+                        </li>
+                        <li style="margin-bottom: 10px;">
+                            <strong>Proses Normalisasi</strong><br>
+                            Lakukan proses normalisasi pada rancangan database Anda hingga mencapai Bentuk Normal Ketiga (3NF). Tunjukkan setiap tahapan normalisasi (1NF, 2NF, 3NF) dan jelaskan:
+                            <ul style="margin-top: 5px;">
+                                <li>Ketergantungan fungsional (Functional Dependencies) yang Anda identifikasi</li>
+                                <li>Alasan pemecahan tabel pada setiap tahap</li>
+                            </ul>
+                        </li>
+                        <li>
+                            <strong>CREATE VIEW</strong><br>
+                            Setelah normalisasi, tuliskan perintah SQL CREATE VIEW untuk membuat sebuah view bernama <code style="background: #f4f4f4; padding: 2px 5px; border-radius: 3px;">InfoSewaAktif</code> yang menampilkan:
+                            <ul style="margin-top: 5px;">
+                                <li>Nomor Polisi</li>
+                                <li>Merk Mobil</li>
+                                <li>Model Mobil</li>
+                                <li>Nama Pelanggan</li>
+                                <li>Tanggal Kembali Rencana</li>
+                            </ul>
+                            untuk semua mobil yang saat ini statusnya "Disewa".
+                        </li>
+                    </ol>
+                </div>
+            </div>
+        `,
+        minLength: 200,
+        correctAnswer: `
+            <div style="background: #d4edda; padding: 20px; border-radius: 10px;">
+                <h4 style="color: #155724; margin-bottom: 15px;">📝 Jawaban Lengkap dan Detail:</h4>
+                
+                <div style="background: white; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
+                    <h5 style="color: #2a5298; margin-bottom: 10px;">1. Rancangan Database Awal (Bentuk Tidak Normal/UNF)</h5>
+                    
+                    <p style="margin-bottom: 15px;">Pada tahap ini, kita mencoba menangkap semua informasi yang dibutuhkan dalam beberapa tabel utama, meskipun masih mengandung redundansi data.</p>
+                    
+                    <div style="margin-bottom: 15px;">
+                        <strong>Tabel Mobil (Sudah cukup baik):</strong>
+                        <ul style="margin-top: 5px; margin-left: 20px;">
+                            <li><code>No_Polisi</code> VARCHAR(15) <span style="color: #dc3545;">[PRIMARY KEY]</span></li>
+                            <li><code>Merk</code> VARCHAR(50)</li>
+                            <li><code>Model</code> VARCHAR(50)</li>
+                            <li><code>Tahun</code> INT</li>
+                            <li><code>Warna</code> VARCHAR(30)</li>
+                            <li><code>Harga_Sewa_Per_Hari</code> DECIMAL(10,2)</li>
+                            <li><code>Status_Ketersediaan</code> VARCHAR(20)</li>
+                        </ul>
+                    </div>
+                    
+                    <div style="margin-bottom: 15px;">
+                        <strong>Tabel Pelanggan (Sudah cukup baik):</strong>
+                        <ul style="margin-top: 5px; margin-left: 20px;">
+                            <li><code>No_KTP</code> VARCHAR(20) <span style="color: #dc3545;">[PRIMARY KEY]</span></li>
+                            <li><code>Nama_Pelanggan</code> VARCHAR(100)</li>
+                            <li><code>Alamat_Pelanggan</code> TEXT</li>
+                            <li><code>No_Telepon_Pelanggan</code> VARCHAR(20)</li>
+                        </ul>
+                    </div>
+                    
+                    <div style="margin-bottom: 15px;">
+                        <strong>Tabel Penyewaan (Mengandung Redundansi - Perlu Normalisasi):</strong>
+                        <ul style="margin-top: 5px; margin-left: 20px;">
+                            <li><code>No_Transaksi</code> VARCHAR(20) <span style="color: #dc3545;">[PRIMARY KEY]</span></li>
+                            <li><code>No_KTP_Pelanggan</code> VARCHAR(20)</li>
+                            <li><code>Nama_Pelanggan</code> VARCHAR(100) <span style="color: #dc3545;">[REDUNDAN]</span></li>
+                            <li><code>Alamat_Pelanggan</code> TEXT <span style="color: #dc3545;">[REDUNDAN]</span></li>
+                            <li><code>No_Telepon_Pelanggan</code> VARCHAR(20) <span style="color: #dc3545;">[REDUNDAN]</span></li>
+                            <li><code>No_Polisi_Mobil</code> VARCHAR(15)</li>
+                            <li><code>Merk_Mobil</code> VARCHAR(50) <span style="color: #dc3545;">[REDUNDAN]</span></li>
+                            <li><code>Model_Mobil</code> VARCHAR(50) <span style="color: #dc3545;">[REDUNDAN]</span></li>
+                            <li><code>Harga_Sewa_Per_Hari_Mobil</code> DECIMAL(10,2) <span style="color: #dc3545;">[REDUNDAN]</span></li>
+                            <li><code>Tanggal_Sewa</code> DATE</li>
+                            <li><code>Tanggal_Kembali_Rencana</code> DATE</li>
+                            <li><code>Tanggal_Kembali_Aktual</code> DATE (nullable)</li>
+                            <li><code>Total_Biaya</code> DECIMAL(12,2)</li>
+                            <li><code>Denda</code> DECIMAL(10,2) (nullable)</li>
+                        </ul>
+                    </div>
+                    
+                    <div style="background: #fff3cd; padding: 10px; border-radius: 5px;">
+                        <strong>Masalah Rancangan Awal:</strong> Tabel Penyewaan mengandung banyak redundansi data dari tabel Pelanggan dan Mobil, yang dapat menyebabkan anomali insert, update, dan delete.
+                    </div>
+                </div>
+                
+                <div style="background: white; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
+                    <h5 style="color: #2a5298; margin-bottom: 10px;">2. Proses Normalisasi Lengkap hingga 3NF</h5>
+                    
+                    <div style="margin-bottom: 20px;">
+                        <h6 style="color: #1e3c72; margin-bottom: 10px;">📋 Bentuk Normal Pertama (1NF)</h6>
+                        <div style="background: #e3f2fd; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
+                            <strong>Syarat 1NF:</strong>
+                            <ul style="margin-top: 5px; margin-left: 20px;">
+                                <li>Semua atribut harus atomik (tidak dapat dibagi lagi)</li>
+                                <li>Tidak ada repeating groups dalam satu baris</li>
+                                <li>Setiap tabel memiliki Primary Key</li>
+                            </ul>
+                        </div>
+                        <p><strong>Analisis:</strong> Rancangan awal kita sudah memenuhi 1NF karena:</p>
+                        <ul style="margin-left: 20px;">
+                            <li>Semua atribut sudah atomik (Alamat_Pelanggan diasumsikan sebagai satu string)</li>
+                            <li>Tidak ada repeating groups</li>
+                            <li>Setiap tabel memiliki Primary Key yang jelas</li>
+                        </ul>
+                    </div>
+                    
+                    <div style="margin-bottom: 20px;">
+                        <h6 style="color: #1e3c72; margin-bottom: 10px;">📋 Bentuk Normal Kedua (2NF)</h6>
+                        <div style="background: #e3f2fd; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
+                            <strong>Syarat 2NF:</strong>
+                            <ul style="margin-top: 5px; margin-left: 20px;">
+                                <li>Sudah dalam 1NF</li>
+                                <li>Semua non-key atribut bergantung penuh pada keseluruhan primary key</li>
+                                <li>Tidak ada ketergantungan parsial (partial dependency)</li>
+                            </ul>
+                        </div>
+                        
+                        <div style="margin-bottom: 15px;">
+                            <strong>Identifikasi Ketergantungan Fungsional:</strong>
+                            <ul style="margin-top: 5px; margin-left: 20px;">
+                                <li><code>No_Transaksi → No_KTP_Pelanggan, No_Polisi_Mobil, Tanggal_Sewa, ...</code></li>
+                                <li><code>No_KTP_Pelanggan → Nama_Pelanggan, Alamat_Pelanggan, No_Telepon_Pelanggan</code></li>
+                                <li><code>No_Polisi_Mobil → Merk_Mobil, Model_Mobil, Harga_Sewa_Per_Hari_Mobil</code></li>
+                            </ul>
+                        </div>
+                        
+                        <div style="background: #fff3cd; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
+                            <strong>Masalah yang Ditemukan:</strong> Dalam tabel Penyewaan, atribut seperti Nama_Pelanggan bergantung pada No_KTP_Pelanggan, bukan pada No_Transaksi. Ini menunjukkan adanya redundansi yang harus dihilangkan.
+                        </div>
+                        
+                        <p><strong>Solusi:</strong> Menghilangkan atribut redundan dari tabel Penyewaan dan hanya menyimpan Foreign Key.</p>
+                    </div>
+                    
+                    <div style="margin-bottom: 20px;">
+                                                <h6 style="color: #1e3c72; margin-bottom: 10px;">📋 Bentuk Normal Ketiga (3NF)</h6>
+                        <div style="background: #e3f2fd; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
+                            <strong>Syarat 3NF:</strong>
+                            <ul style="margin-top: 5px; margin-left: 20px;">
+                                <li>Sudah dalam 2NF</li>
+                                <li>Tidak ada ketergantungan transitif</li>
+                                <li>Semua non-key atribut bergantung langsung pada primary key</li>
+                            </ul>
+                        </div>
+                        
+                        <div style="margin-bottom: 15px;">
+                            <strong>Analisis Ketergantungan Transitif:</strong>
+                            <p style="margin: 5px 0;">Setelah penyesuaian 2NF, kita periksa apakah ada ketergantungan transitif dalam tabel Penyewaan:</p>
+                            <ul style="margin-top: 5px; margin-left: 20px;">
+                                <li><code>Total_Biaya</code> mungkin dihitung dari <code>Harga_Sewa_Per_Hari</code> × <code>Lama_Sewa</code></li>
+                                <li>Namun, <code>Total_Biaya</code> dan <code>Denda</code> adalah hasil dari transaksi spesifik</li>
+                                <li>Tidak ada non-key atribut yang bergantung pada non-key atribut lain</li>
+                            </ul>
+                        </div>
+                        
+                        <div style="background: #d4edda; padding: 10px; border-radius: 5px;">
+                            <strong>Kesimpulan:</strong> Setelah menghilangkan redundansi pada tahap 2NF, struktur database sudah memenuhi 3NF karena tidak ada ketergantungan transitif.
+                        </div>
+                    </div>
+                    
+                    <div style="background: #f8f9fa; padding: 15px; border-radius: 8px;">
+                        <h6 style="color: #2a5298; margin-bottom: 10px;">🎯 Skema Database Final (3NF):</h6>
+                        
+                        <div style="margin-bottom: 10px;">
+                            <strong>Tabel Mobil:</strong>
+                            <ul style="margin-top: 5px; margin-left: 20px;">
+                                <li><code>No_Polisi</code> VARCHAR(15) <span style="color: #dc3545;">[PRIMARY KEY]</span></li>
+                                <li><code>Merk</code> VARCHAR(50)</li>
+                                <li><code>Model</code> VARCHAR(50)</li>
+                                <li><code>Tahun</code> INT</li>
+                                <li><code>Warna</code> VARCHAR(30)</li>
+                                <li><code>Harga_Sewa_Per_Hari</code> DECIMAL(10,2)</li>
+                                <li><code>Status_Ketersediaan</code> VARCHAR(20)</li>
+                            </ul>
+                        </div>
+                        
+                        <div style="margin-bottom: 10px;">
+                            <strong>Tabel Pelanggan:</strong>
+                            <ul style="margin-top: 5px; margin-left: 20px;">
+                                <li><code>No_KTP</code> VARCHAR(20) <span style="color: #dc3545;">[PRIMARY KEY]</span></li>
+                                <li><code>Nama_Pelanggan</code> VARCHAR(100)</li>
+                                <li><code>Alamat_Pelanggan</code> TEXT</li>
+                                <li><code>No_Telepon_Pelanggan</code> VARCHAR(20)</li>
+                            </ul>
+                        </div>
+                        
+                        <div style="margin-bottom: 10px;">
+                            <strong>Tabel Penyewaan (Setelah Normalisasi):</strong>
+                            <ul style="margin-top: 5px; margin-left: 20px;">
+                                <li><code>No_Transaksi</code> VARCHAR(20) <span style="color: #dc3545;">[PRIMARY KEY]</span></li>
+                                <li><code>No_KTP_Pelanggan</code> VARCHAR(20) <span style="color: #17a2b8;">[FOREIGN KEY → Pelanggan.No_KTP]</span></li>
+                                <li><code>No_Polisi_Mobil</code> VARCHAR(15) <span style="color: #17a2b8;">[FOREIGN KEY → Mobil.No_Polisi]</span></li>
+                                <li><code>Tanggal_Sewa</code> DATE</li>
+                                <li><code>Tanggal_Kembali_Rencana</code> DATE</li>
+                                <li><code>Tanggal_Kembali_Aktual</code> DATE (nullable)</li>
+                                <li><code>Total_Biaya</code> DECIMAL(12,2)</li>
+                                <li><code>Denda</code> DECIMAL(10,2) (nullable)</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <div style="background: white; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
+                    <h5 style="color: #2a5298; margin-bottom: 10px;">3. Perintah SQL CREATE VIEW InfoSewaAktif</h5>
+                    
+                    <div style="margin-bottom: 15px;">
+                        <strong>Analisis Kebutuhan View:</strong>
+                        <ul style="margin-top: 5px; margin-left: 20px;">
+                            <li>Menampilkan informasi mobil yang sedang disewa</li>
+                            <li>Menggabungkan data dari 3 tabel: Mobil, Penyewaan, dan Pelanggan</li>
+                            <li>Filter berdasarkan status mobil dan kondisi penyewaan aktif</li>
+                        </ul>
+                    </div>
+                    
+                    <pre style="background: #f4f4f4; padding: 15px; border-radius: 5px; overflow-x: auto; margin-bottom: 15px;">
+CREATE VIEW InfoSewaAktif AS
+SELECT 
+    M.No_Polisi,
+    M.Merk AS Merk_Mobil,
+    M.Model AS Model_Mobil,
+    P.Nama_Pelanggan,
+    Py.Tanggal_Kembali_Rencana
+FROM 
+    Mobil M
+    INNER JOIN Penyewaan Py ON M.No_Polisi = Py.No_Polisi_Mobil
+    INNER JOIN Pelanggan P ON Py.No_KTP_Pelanggan = P.No_KTP
+WHERE 
+    M.Status_Ketersediaan = 'Disewa' 
+    AND Py.Tanggal_Kembali_Aktual IS NULL;</pre>
+                    
+                    <div style="background: #e3f2fd; padding: 15px; border-radius: 5px;">
+                        <h6 style="color: #1e3c72; margin-bottom: 10px;">📝 Penjelasan Detail Query:</h6>
+                        <ul style="margin-top: 5px; margin-left: 20px;">
+                            <li><strong>SELECT Clause:</strong> Memilih kolom yang diminta dengan alias yang jelas</li>
+                            <li><strong>FROM & JOIN:</strong> 
+                                <ul style="margin-top: 5px; margin-left: 20px;">
+                                    <li>INNER JOIN Penyewaan: Menghubungkan mobil dengan transaksi penyewaan</li>
+                                    <li>INNER JOIN Pelanggan: Mendapatkan informasi pelanggan yang menyewa</li>
+                                </ul>
+                            </li>
+                            <li><strong>WHERE Clause:</strong>
+                                <ul style="margin-top: 5px; margin-left: 20px;">
+                                    <li><code>Status_Ketersediaan = 'Disewa'</code>: Filter mobil yang statusnya disewa</li>
+                                    <li><code>Tanggal_Kembali_Aktual IS NULL</code>: Memastikan mobil belum dikembalikan</li>
+                                </ul>
+                            </li>
+                        </ul>
+                        
+                        <div style="margin-top: 10px; background: #fff3cd; padding: 10px; border-radius: 5px;">
+                            <strong>Keuntungan View:</strong>
+                            <ul style="margin-top: 5px; margin-left: 20px;">
+                                <li>Menyederhanakan query kompleks untuk pengguna</li>
+                                <li>Menyediakan abstraksi data yang aman</li>
+                                <li>Memudahkan maintenance dan konsistensi query</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <div style="background: #f8f9fa; padding: 15px; border-radius: 8px;">
+                    <h5 style="color: #2a5298; margin-bottom: 10px;">🔍 Ringkasan Proses Normalisasi</h5>
+                    
+                    <div style="margin-bottom: 15px;">
+                        <strong>Manfaat yang Dicapai:</strong>
+                        <ul style="margin-top: 5px; margin-left: 20px;">
+                            <li><strong>Eliminasi Redundansi:</strong> Data pelanggan dan mobil tidak lagi duplikat di tabel Penyewaan</li>
+                            <li><strong>Konsistensi Data:</strong> Perubahan data pelanggan/mobil hanya perlu dilakukan di satu tempat</li>
+                            <li><strong>Efisiensi Storage:</strong> Mengurangi ukuran database secara keseluruhan</li>
+                            <li><strong>Integritas Data:</strong> Foreign key constraints memastikan referential integrity</li>
+                        </ul>
+                    </div>
+                    
+                    <div style="background: #e3f2fd; padding: 10px; border-radius: 5px;">
+                        <strong>Ketergantungan Fungsional Final:</strong>
+                        <ul style="margin-top: 5px; margin-left: 20px;">
+                            <li><strong>Mobil:</strong> No_Polisi → {Merk, Model, Tahun, Warna, Harga_Sewa_Per_Hari, Status_Ketersediaan}</li>
+                            <li><strong>Pelanggan:</strong> No_KTP → {Nama_Pelanggan, Alamat_Pelanggan, No_Telepon_Pelanggan}</li>
+                            <li><strong>Penyewaan:</strong> No_Transaksi → {No_KTP_Pelanggan, No_Polisi_Mobil, Tanggal_Sewa, Tanggal_Kembali_Rencana, Tanggal_Kembali_Aktual, Total_Biaya, Denda}</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        `,
+        explanation: "Jawaban harus mencakup rancangan database awal dengan identifikasi redundansi, proses normalisasi step-by-step dengan analisis ketergantungan fungsional yang detail, dan query CREATE VIEW dengan penjelasan komprehensif."
+    },
+    {
+        question: `
+            <div style="background: #f8f9fa; padding: 20px; border-radius: 10px; margin-bottom: 20px;">
+                <h3 style="color: #2a5298; margin-bottom: 15px;">Kasus: Sistem Informasi Akademik Universitas</h3>
+                
+                <p style="margin-bottom: 15px;">Sebuah universitas ingin mengembangkan sistem informasi akademik yang lebih canggih. Pertimbangkan entitas-entitas berikut dan hubungan di antaranya:</p>
+                
+                <div style="background: white; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
+                    <h4 style="color: #1e3c72; margin-bottom: 10px;">📚 Entitas dan Atribut:</h4>
+                    
+                    <div style="margin-bottom: 15px;">
+                        <strong style="color: #2a5298;">1. ORANG (Superclass)</strong>
+                        <ul style="margin-top: 5px; margin-left: 20px;">
+                            <li>NIK</li>
+                            <li>Nama</li>
+                            <li>Tanggal Lahir</li>
+                            <li>Alamat</li>
+                        </ul>
+                    </div>
+                    
+                    <div style="margin-bottom: 15px;">
+                        <strong style="color: #2a5298;">2. MAHASISWA (Subclass dari ORANG)</strong>
+                        <ul style="margin-top: 5px; margin-left: 20px;">
+                            <li>NPM (unik)</li>
+                            <li>Program Studi</li>
+                            <li>Angkatan</li>
+                        </ul>
+                        <em style="color: #666; font-size: 0.9em;">→ Seorang mahasiswa bisa mengambil banyak kelas perkuliahan</em>
+                    </div>
+                    
+                    <div style="margin-bottom: 15px;">
+                        <strong style="color: #2a5298;">3. DOSEN (Subclass dari ORANG)</strong>
+                        <ul style="margin-top: 5px; margin-left: 20px;">
+                            <li>NIDN (unik)</li>
+                            <li>Bidang Keahlian</li>
+                        </ul>
+                        <em style="color: #666; font-size: 0.9em;">→ Seorang dosen bisa mengajar banyak kelas perkuliahan</em>
+                    </div>
+                    
+                    <div style="margin-bottom: 15px;">
+                        <strong style="color: #2a5298;">4. MATA_KULIAH</strong>
+                        <ul style="margin-top: 5px; margin-left: 20px;">
+                            <li>Kode MK (unik)</li>
+                            <li>Nama MK</li>
+                            <li>Jumlah SKS</li>
+                        </ul>
+                    </div>
+                    
+                    <div style="margin-bottom: 15px;">
+                        <strong style="color: #2a5298;">5. KELAS_PERKULIAHAN</strong>
+                        <p style="margin: 5px 0 5px 20px; color: #666;">Instance spesifik dari sebuah MATA_KULIAH yang ditawarkan pada semester dan tahun tertentu</p>
+                        <ul style="margin-top: 5px; margin-left: 20px;">
+                                                        <li>Semester</li>
+                            <li>Tahun</li>
+                            <li>Ruang</li>
+                            <li>Jadwal</li>
+                        </ul>
+                        <em style="color: #666; font-size: 0.9em; margin-left: 20px;">→ Diajar oleh satu dosen, diikuti oleh banyak mahasiswa</em>
+                    </div>
+                </div>
+                
+                <div style="background: #fff3cd; padding: 15px; border-radius: 8px;">
+                    <h4 style="color: #856404; margin-bottom: 10px;">✏️ Yang Harus Dikerjakan:</h4>
+                    <ol style="margin-left: 20px;">
+                        <li style="margin-bottom: 15px;">
+                            <strong>Enhanced Entity-Relationship (EER) Diagram</strong><br>
+                            Buatlah EER Diagram yang lengkap dengan memperhatikan:
+                            <ul style="margin-top: 5px;">
+                                <li>Minimal 4 entitas (boleh menambahkan entitas lain jika perlu)</li>
+                                <li>Hubungan superclass/subclass (spesialisasi/generalisasi) untuk ORANG, MAHASISWA, dan DOSEN</li>
+                                <li>Tentukan constraint spesialisasi:
+                                    <ul>
+                                        <li>Disjoint/Overlapping</li>
+                                        <li>Total/Partial</li>
+                                        <li>Berikan alasan untuk pilihan Anda</li>
+                                    </ul>
+                                </li>
+                                <li>Semua relasi antar entitas beserta kardinalitas dan partisipasinya</li>
+                                <li>Atribut-atribut penting termasuk primary key dan foreign key</li>
+                            </ul>
+                        </li>
+                        <li style="margin-bottom: 15px;">
+                            <strong>Transformasi ke Skema Relasional</strong><br>
+                            Transformasikan EER diagram menjadi skema database relasional:
+                            <ul style="margin-top: 5px;">
+                                <li>Tuliskan perintah SQL CREATE TABLE untuk setiap tabel</li>
+                                <li>Definisikan primary key, foreign key, dan constraint NOT NULL yang relevan</li>
+                            </ul>
+                        </li>
+                        <li>
+                            <strong>Konsep Object-Oriented Database (OODB)</strong><br>
+                            Jelaskan secara singkat bagaimana konsep OODB dapat:
+                            <ul style="margin-top: 5px;">
+                                <li>Diterapkan untuk sistem ini</li>
+                                <li>Memberikan keuntungan dalam merepresentasikan struktur ORANG dengan berbagai perannya</li>
+                            </ul>
+                        </li>
+                    </ol>
+                </div>
+            </div>
+        `,
+        minLength: 200,
+correctAnswer: `
+    <div style="background: #d4edda; padding: 20px; border-radius: 10px;">
+        <h4 style="color: #155724; margin-bottom: 15px;">📝 Jawaban Lengkap dengan EER Diagram:</h4>
+        
+        <div style="background: white; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
+            <h5 style="color: #2a5298; margin-bottom: 10px;">1. EER Diagram Sistem Akademik</h5>
+            
+            <div style="text-align: center; margin-bottom: 20px;">
+                <svg width="900" height="700" viewBox="0 0 900 700" style="border: 1px solid #ddd; background: linear-gradient(to bottom, #fafafa, #f0f0f0); border-radius: 8px;">
+                    <!-- Grid background (optional, for development) -->
+                    <defs>
+                        <pattern id="grid" width="50" height="50" patternUnits="userSpaceOnUse">
+                            <path d="M 50 0 L 0 0 0 50" fill="none" stroke="#e0e0e0" stroke-width="0.5" opacity="0.3"/>
+                        </pattern>
+                        
+                        <!-- Gradients for entities -->
+                        <linearGradient id="supergradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                            <stop offset="0%" style="stop-color:#e3f2fd;stop-opacity:1" />
+                            <stop offset="100%" style="stop-color:#bbdefb;stop-opacity:1" />
+                        </linearGradient>
+                        
+                        <linearGradient id="subgradient1" x1="0%" y1="0%" x2="0%" y2="100%">
+                            <stop offset="0%" style="stop-color:#e8f5e8;stop-opacity:1" />
+                            <stop offset="100%" style="stop-color:#c8e6c9;stop-opacity:1" />
+                        </linearGradient>
+                        
+                        <linearGradient id="subgradient2" x1="0%" y1="0%" x2="0%" y2="100%">
+                            <stop offset="0%" style="stop-color:#fff3e0;stop-opacity:1" />
+                            <stop offset="100%" style="stop-color:#ffe0b2;stop-opacity:1" />
+                        </linearGradient>
+                        
+                        <linearGradient id="entitygradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                            <stop offset="0%" style="stop-color:#f3e5f5;stop-opacity:1" />
+                            <stop offset="100%" style="stop-color:#e1bee7;stop-opacity:1" />
+                        </linearGradient>
+                        
+                        <!-- Drop shadow filter -->
+                        <filter id="dropshadow" x="-20%" y="-20%" width="140%" height="140%">
+                            <feDropShadow dx="3" dy="3" stdDeviation="3" flood-color="#00000030"/>
+                        </filter>
+                    </defs>
+                    
+                    <!-- Background grid -->
+                    <rect width="100%" height="100%" fill="url(#grid)" />
+                    
+                    <!-- SUPERCLASS: ORANG -->
+                    <g filter="url(#dropshadow)">
+                        <rect x="350" y="50" width="200" height="120" rx="8" ry="8" 
+                              fill="url(#supergradient)" stroke="#1976d2" stroke-width="2"/>
+                        <line x1="350" y1="90" x2="550" y2="90" stroke="#1976d2" stroke-width="1"/>
+                        
+                        <!-- Title -->
+                        <text x="450" y="75" text-anchor="middle" font-family="Arial, sans-serif" 
+                              font-size="16" font-weight="bold" fill="#1565c0">ORANG</text>
+                        <text x="450" y="88" text-anchor="middle" font-family="Arial, sans-serif" 
+                              font-size="11" fill="#1976d2" font-style="italic">(Superclass)</text>
+                        
+                        <!-- Attributes -->
+                        <text x="360" y="108" font-family="Arial, sans-serif" font-size="12" fill="#333">
+                            <tspan font-weight="bold" text-decoration="underline">🔑 NIK</tspan>
+                        </text>
+                        <text x="360" y="125" font-family="Arial, sans-serif" font-size="12" fill="#333">Nama</text>
+                        <text x="360" y="142" font-family="Arial, sans-serif" font-size="12" fill="#333">Tanggal_Lahir</text>
+                        <text x="360" y="159" font-family="Arial, sans-serif" font-size="12" fill="#333">Alamat</text>
+                    </g>
+                    
+                    <!-- INHERITANCE SYMBOL -->
+                    <g>
+                        <!-- Connection line from ORANG -->
+                        <line x1="450" y1="170" x2="450" y2="200" stroke="#333" stroke-width="2"/>
+                        
+                        <!-- Triangle (IS-A symbol) -->
+                        <polygon points="450,200 440,220 460,220" fill="white" stroke="#333" stroke-width="2"/>
+                        
+                        <!-- Specialization circle with constraint -->
+                        <circle cx="450" cy="240" r="20" fill="white" stroke="#333" stroke-width="2"/>
+                        <text x="450" y="235" text-anchor="middle" font-family="Arial, sans-serif" 
+                              font-size="14" font-weight="bold" fill="#d32f2f">d</text>
+                        <text x="450" y="250" text-anchor="middle" font-family="Arial, sans-serif" 
+                              font-size="10" fill="#666">Disjoint</text>
+                        <text x="450" y="275" text-anchor="middle" font-family="Arial, sans-serif" 
+                              font-size="10" fill="#666">Partial</text>
+                    </g>
+                    
+                    <!-- SUBCLASS: MAHASISWA -->
+                    <g filter="url(#dropshadow)">
+                        <rect x="150" y="320" width="220" height="140" rx="8" ry="8" 
+                              fill="url(#subgradient1)" stroke="#4caf50" stroke-width="2"/>
+                        <line x1="150" y1="360" x2="370" y2="360" stroke="#4caf50" stroke-width="1"/>
+                        
+                        <!-- Title -->
+                        <text x="260" y="345" text-anchor="middle" font-family="Arial, sans-serif" 
+                              font-size="16" font-weight="bold" fill="#2e7d32">MAHASISWA</text>
+                        <text x="260" y="358" text-anchor="middle" font-family="Arial, sans-serif" 
+                              font-size="11" fill="#4caf50" font-style="italic">(Subclass)</text>
+                        
+                        <!-- Attributes -->
+                        <text x="160" y="378" font-family="Arial, sans-serif" font-size="12" fill="#333">
+                            <tspan font-weight="bold" text-decoration="underline">🔑 NIK_Orang</tspan>
+                        </text>
+                        <text x="160" y="395" font-family="Arial, sans-serif" font-size="12" fill="#333">
+                            <tspan font-weight="bold">🔸 NPM</tspan> (Unique)
+                        </text>
+                        <text x="160" y="412" font-family="Arial, sans-serif" font-size="12" fill="#333">Program_Studi</text>
+                        <text x="160" y="429" font-family="Arial, sans-serif" font-size="12" fill="#333">Angkatan</text>
+                        <text x="160" y="446" font-family="Arial, sans-serif" font-size="12" fill="#333">Status_Mahasiswa</text>
+                    </g>
+                    
+                    <!-- SUBCLASS: DOSEN -->
+                    <g filter="url(#dropshadow)">
+                        <rect x="530" y="320" width="220" height="140" rx="8" ry="8" 
+                              fill="url(#subgradient2)" stroke="#ff9800" stroke-width="2"/>
+                        <line x1="530" y1="360" x2="750" y2="360" stroke="#ff9800" stroke-width="1"/>
+                        
+                        <!-- Title -->
+                        <text x="640" y="345" text-anchor="middle" font-family="Arial, sans-serif" 
+                              font-size="16" font-weight="bold" fill="#ef6c00">DOSEN</text>
+                        <text x="640" y="358" text-anchor="middle" font-family="Arial, sans-serif" 
+                              font-size="11" fill="#ff9800" font-style="italic">(Subclass)</text>
+                        
+                        <!-- Attributes -->
+                        <text x="540" y="378" font-family="Arial, sans-serif" font-size="12" fill="#333">
+                            <tspan font-weight="bold" text-decoration="underline">🔑 NIK_Orang</tspan>
+                        </text>
+                        <text x="540" y="395" font-family="Arial, sans-serif" font-size="12" fill="#333">
+                            <tspan font-weight="bold">🔸 NIDN</tspan> (Unique)
+                        </text>
+                        <text x="540" y="412" font-family="Arial, sans-serif" font-size="12" fill="#333">Bidang_Keahlian</text>
+                        <text x="540" y="429" font-family="Arial, sans-serif" font-size="12" fill="#333">Status_Dosen</text>
+                        <text x="540" y="446" font-family="Arial, sans-serif" font-size="12" fill="#333">Tanggal_Mulai_Kerja</text>
+                    </g>
+                    
+                    <!-- Inheritance lines to subclasses -->
+                    <line x1="450" y1="260" x2="260" y2="320" stroke="#333" stroke-width="2"/>
+                    <line x1="450" y1="260" x2="640" y2="320" stroke="#333" stroke-width="2"/>
+                    
+                    <!-- ENTITY: MATA_KULIAH -->
+                    <g filter="url(#dropshadow)">
+                        <rect x="50" y="520" width="180" height="120" rx="8" ry="8" 
+                              fill="url(#entitygradient)" stroke="#9c27b0" stroke-width="2"/>
+                        <line x1="50" y1="560" x2="230" y2="560" stroke="#9c27b0" stroke-width="1"/>
+                        
+                        <text x="140" y="545" text-anchor="middle" font-family="Arial, sans-serif" 
+                              font-size="14" font-weight="bold" fill="#7b1fa2">MATA_KULIAH</text>
+                        
+                        <text x="60" y="578" font-family="Arial, sans-serif" font-size="12" fill="#333">
+                            <tspan font-weight="bold" text-decoration="underline">🔑 Kode_MK</tspan>
+                        </text>
+                        <text x="60" y="595" font-family="Arial, sans-serif" font-size="12" fill="#333">Nama_MK</text>
+                        <text x="60" y="612" font-family="Arial, sans-serif" font-size="12" fill="#333">Jumlah_SKS</text>
+                        <text x="60" y="629" font-family="Arial, sans-serif" font-size="12" fill="#333">Deskripsi</text>
+                    </g>
+                    
+                    <!-- ENTITY: KELAS_PERKULIAHAN -->
+                    <g filter="url(#dropshadow)">
+                        <rect x="350" y="520" width="200" height="140" rx="8" ry="8" 
+                              fill="url(#entitygradient)" stroke="#e91e63" stroke-width="2"/>
+                        <line x1="350" y1="560" x2="550" y2="560" stroke="#e91e63" stroke-width="1"/>
+                        
+                        <text x="450" y="545" text-anchor="middle" font-family="Arial, sans-serif" 
+                              font-size="14" font-weight="bold" fill="#c2185b">KELAS_PERKULIAHAN</text>
+                        
+                        <text x="360" y="578" font-family="Arial, sans-serif" font-size="12" fill="#333">
+                            <tspan font-weight="bold" text-decoration="underline">🔑 ID_Kelas</tspan>
+                        </text>
+                        <text x="360" y="595" font-family="Arial, sans-serif" font-size="12" fill="#333">Semester</text>
+                        <text x="360" y="612" font-family="Arial, sans-serif" font-size="12" fill="#333">Tahun_Akademik</text>
+                        <text x="360" y="629" font-family="Arial, sans-serif" font-size="12" fill="#333">Ruang</text>
+                        <text x="360" y="646" font-family="Arial, sans-serif" font-size="12" fill="#333">Jadwal</text>
+                    </g>
+                    
+                    <!-- RELATIONSHIP: MENAWARKAN -->
+                    <g filter="url(#dropshadow)">
+                        <polygon points="290,580 320,565 350,580 320,595" 
+                                 fill="#ffeb3b" stroke="#333" stroke-width="2"/>
+                        <text x="320" y="585" text-anchor="middle" font-family="Arial, sans-serif" 
+                              font-size="11" font-weight="bold" fill="#333">MENAWARKAN</text>
+                    </g>
+                    
+                    <!-- RELATIONSHIP: MENGAJAR -->
+                    <g filter="url(#dropshadow)">
+                        <polygon points="590,480 620,465 650,480 620,495" 
+                                 fill="#ffeb3b" stroke="#333" stroke-width="2"/>
+                        <text x="620" y="485" text-anchor="middle" font-family="Arial, sans-serif" 
+                              font-size="11" font-weight="bold" fill="#333">MENGAJAR</text>
+                    </g>
+                    
+                    <!-- RELATIONSHIP: MENGAMBIL -->
+                    <g filter="url(#dropshadow)">
+                        <polygon points="290,480 320,465 350,480 320,495" 
+                                 fill="#ffeb3b" stroke="#333" stroke-width="2"/>
+                                                <text x="320" y="485" text-anchor="middle" font-family="Arial, sans-serif" 
+                              font-size="11" font-weight="bold" fill="#333">MENGAMBIL</text>
+                        
+                        <!-- Atribut relasi MENGAMBIL -->
+                        <ellipse cx="280" cy="450" rx="35" ry="15" fill="#fff9c4" stroke="#333" stroke-width="1"/>
+                        <text x="280" y="455" text-anchor="middle" font-family="Arial, sans-serif" 
+                              font-size="10" fill="#333">Nilai_Angka</text>
+                        
+                        <ellipse cx="360" cy="450" rx="35" ry="15" fill="#fff9c4" stroke="#333" stroke-width="1"/>
+                        <text x="360" y="455" text-anchor="middle" font-family="Arial, sans-serif" 
+                              font-size="10" fill="#333">Nilai_Huruf</text>
+                        
+                        <ellipse cx="320" cy="420" rx="40" ry="15" fill="#fff9c4" stroke="#333" stroke-width="1"/>
+                        <text x="320" y="425" text-anchor="middle" font-family="Arial, sans-serif" 
+                              font-size="10" fill="#333">Status_Kelulusan</text>
+                    </g>
+                    
+                    <!-- RELATIONSHIP LINES -->
+                    <!-- MATA_KULIAH to MENAWARKAN -->
+                    <line x1="230" y1="580" x2="290" y2="580" stroke="#333" stroke-width="2"/>
+                    <!-- MENAWARKAN to KELAS_PERKULIAHAN -->
+                    <line x1="350" y1="580" x2="350" y2="580" stroke="#333" stroke-width="2"/>
+                    
+                    <!-- DOSEN to MENGAJAR -->
+                    <line x1="640" y1="460" x2="620" y2="465" stroke="#333" stroke-width="2"/>
+                    <!-- MENGAJAR to KELAS_PERKULIAHAN -->
+                    <line x1="620" y1="495" x2="550" y2="520" stroke="#333" stroke-width="2"/>
+                    
+                    <!-- MAHASISWA to MENGAMBIL -->
+                    <line x1="260" y1="460" x2="290" y2="480" stroke="#333" stroke-width="2"/>
+                    <!-- MENGAMBIL to KELAS_PERKULIAHAN -->
+                    <line x1="350" y1="480" x2="350" y2="520" stroke="#333" stroke-width="2"/>
+                    
+                    <!-- Atribut relasi lines -->
+                    <line x1="280" y1="450" x2="310" y2="470" stroke="#333" stroke-width="1"/>
+                    <line x1="360" y1="450" x2="330" y2="470" stroke="#333" stroke-width="1"/>
+                    <line x1="320" y1="420" x2="320" y2="465" stroke="#333" stroke-width="1"/>
+                    
+                    <!-- CARDINALITY LABELS -->
+                    <!-- MATA_KULIAH (1) to KELAS_PERKULIAHAN (N) -->
+                    <circle cx="250" cy="575" r="12" fill="white" stroke="#333" stroke-width="1"/>
+                    <text x="250" y="580" text-anchor="middle" font-family="Arial, sans-serif" 
+                          font-size="12" font-weight="bold" fill="#d32f2f">1</text>
+                    
+                    <circle cx="330" cy="575" r="12" fill="white" stroke="#333" stroke-width="1"/>
+                    <text x="330" y="580" text-anchor="middle" font-family="Arial, sans-serif" 
+                          font-size="12" font-weight="bold" fill="#d32f2f">N</text>
+                    
+                    <!-- DOSEN (1) to KELAS_PERKULIAHAN (N) -->
+                    <circle cx="600" cy="470" r="12" fill="white" stroke="#333" stroke-width="1"/>
+                    <text x="600" y="475" text-anchor="middle" font-family="Arial, sans-serif" 
+                          font-size="12" font-weight="bold" fill="#d32f2f">1</text>
+                    
+                    <circle cx="570" cy="500" r="12" fill="white" stroke="#333" stroke-width="1"/>
+                    <text x="570" y="505" text-anchor="middle" font-family="Arial, sans-serif" 
+                          font-size="12" font-weight="bold" fill="#d32f2f">N</text>
+                    
+                    <!-- MAHASISWA (M) to KELAS_PERKULIAHAN (N) -->
+                    <circle cx="270" cy="470" r="12" fill="white" stroke="#333" stroke-width="1"/>
+                    <text x="270" y="475" text-anchor="middle" font-family="Arial, sans-serif" 
+                          font-size="12" font-weight="bold" fill="#d32f2f">M</text>
+                    
+                    <circle cx="340" cy="500" r="12" fill="white" stroke="#333" stroke-width="1"/>
+                    <text x="340" y="505" text-anchor="middle" font-family="Arial, sans-serif" 
+                          font-size="12" font-weight="bold" fill="#d32f2f">N</text>
+                    
+                    <!-- LEGEND -->
+                    <g transform="translate(600, 50)">
+                        <rect x="0" y="0" width="250" height="180" rx="8" ry="8" 
+                              fill="white" stroke="#666" stroke-width="1" opacity="0.95"/>
+                        
+                        <text x="125" y="20" text-anchor="middle" font-family="Arial, sans-serif" 
+                              font-size="14" font-weight="bold" fill="#333">LEGENDA</text>
+                        
+                        <!-- Legend items -->
+                        <text x="10" y="40" font-family="Arial, sans-serif" font-size="12" fill="#333">
+                            🔑 = Primary Key (underlined)
+                        </text>
+                        <text x="10" y="55" font-family="Arial, sans-serif" font-size="12" fill="#333">
+                            🔸 = Unique Key
+                        </text>
+                        <text x="10" y="70" font-family="Arial, sans-serif" font-size="12" fill="#333">
+                            ◊ = Relationship (Diamond)
+                        </text>
+                        <text x="10" y="85" font-family="Arial, sans-serif" font-size="12" fill="#333">
+                            △ = IS-A (Inheritance)
+                        </text>
+                        <text x="10" y="100" font-family="Arial, sans-serif" font-size="12" fill="#333">
+                            d = Disjoint Constraint
+                        </text>
+                        <text x="10" y="115" font-family="Arial, sans-serif" font-size="12" fill="#333">
+                            (1) = One, (N) = Many
+                        </text>
+                        <text x="10" y="130" font-family="Arial, sans-serif" font-size="12" fill="#333">
+                            (M) = Many (for M:N)
+                        </text>
+                        
+                        <!-- Color legend -->
+                        <rect x="10" y="140" width="15" height="10" fill="url(#supergradient)"/>
+                        <text x="30" y="149" font-family="Arial, sans-serif" font-size="11" fill="#333">Superclass</text>
+                        
+                        <rect x="100" y="140" width="15" height="10" fill="url(#subgradient1)"/>
+                        <text x="120" y="149" font-family="Arial, sans-serif" font-size="11" fill="#333">Subclass</text>
+                        
+                        <rect x="10" y="155" width="15" height="10" fill="url(#entitygradient)"/>
+                        <text x="30" y="164" font-family="Arial, sans-serif" font-size="11" fill="#333">Regular Entity</text>
+                        
+                        <polygon points="110,155 120,150 130,155 120,160" fill="#ffeb3b"/>
+                        <text x="135" y="159" font-family="Arial, sans-serif" font-size="11" fill="#333">Relationship</text>
+                    </g>
+                    
+                    <!-- TITLE -->
+                    <text x="450" y="25" text-anchor="middle" font-family="Arial, sans-serif" 
+                          font-size="18" font-weight="bold" fill="#1565c0">
+                        Enhanced Entity-Relationship (EER) Diagram
+                    </text>
+                    <text x="450" y="40" text-anchor="middle" font-family="Arial, sans-serif" 
+                          font-size="14" fill="#666">
+                        Sistem Informasi Akademik Universitas
+                    </text>
+                </svg>
+            </div>
+            
+            <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin-top: 20px;">
+                <h6 style="color: #1e3c72; margin-bottom: 10px;">📋 Penjelasan Diagram:</h6>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                    <div>
+                        <strong>Inheritance Hierarchy:</strong>
+                        <ul style="margin-top: 5px; margin-left: 20px; font-size: 14px;">
+                            <li>ORANG sebagai superclass dengan atribut umum</li>
+                            <li>MAHASISWA dan DOSEN sebagai subclass</li>
+                            <li>Constraint: Disjoint (d) - tidak bisa overlap</li>
+                            <li>Constraint: Partial - boleh ada ORANG lain</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <strong>Relationships:</strong>
+                        <ul style="margin-top: 5px; margin-left: 20px; font-size: 14px;">
+                            <li>MATA_KULIAH (1:N) KELAS_PERKULIAHAN</li>
+                            <li>DOSEN (1:N) KELAS_PERKULIAHAN</li>
+                            <li>MAHASISWA (M:N) KELAS_PERKULIAHAN</li>
+                            <li>Relasi MENGAMBIL memiliki atribut nilai</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Diagram untuk Sistem Rental Mobil -->
+        <div style="background: white; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
+            <h5 style="color: #2a5298; margin-bottom: 10px;">EER Diagram Sistem Rental Mobil</h5>
+            
+            <div style="text-align: center; margin-bottom: 20px;">
+                <svg width="800" height="400" viewBox="0 0 800 400" style="border: 1px solid #ddd; background: linear-gradient(to bottom, #fafafa, #f0f0f0); border-radius: 8px;">
+                    <defs>
+                        <linearGradient id="entitygrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                            <stop offset="0%" style="stop-color:#e8f5e8;stop-opacity:1" />
+                            <stop offset="100%" style="stop-color:#c8e6c9;stop-opacity:1" />
+                        </linearGradient>
+                        
+                        <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+                            <feDropShadow dx="2" dy="2" stdDeviation="2" flood-color="#00000020"/>
+                        </filter>
+                    </defs>
+                    
+                    <!-- ENTITY: MOBIL -->
+                    <g filter="url(#shadow)">
+                        <rect x="50" y="50" width="180" height="140" rx="8" ry="8" 
+                              fill="url(#entitygrad)" stroke="#4caf50" stroke-width="2"/>
+                        <line x1="50" y1="90" x2="230" y2="90" stroke="#4caf50" stroke-width="1"/>
+                        
+                        <text x="140" y="75" text-anchor="middle" font-family="Arial, sans-serif" 
+                              font-size="16" font-weight="bold" fill="#2e7d32">MOBIL</text>
+                        
+                        <text x="60" y="108" font-family="Arial, sans-serif" font-size="12" fill="#333">
+                            <tspan font-weight="bold" text-decoration="underline">🔑 No_Polisi</tspan>
+                        </text>
+                        <text x="60" y="125" font-family="Arial, sans-serif" font-size="12" fill="#333">Merk</text>
+                        <text x="60" y="142" font-family="Arial, sans-serif" font-size="12" fill="#333">Model</text>
+                        <text x="60" y="159" font-family="Arial, sans-serif" font-size="12" fill="#333">Tahun, Warna</text>
+                        <text x="60" y="176" font-family="Arial, sans-serif" font-size="12" fill="#333">Harga_Sewa, Status</text>
+                    </g>
+                    
+                    <!-- ENTITY: PELANGGAN -->
+                    <g filter="url(#shadow)">
+                        <rect x="570" y="50" width="180" height="140" rx="8" ry="8" 
+                              fill="url(#entitygrad)" stroke="#2196f3" stroke-width="2"/>
+                        <line x1="570" y1="90" x2="750" y2="90" stroke="#2196f3" stroke-width="1"/>
+                        
+                        <text x="660" y="75" text-anchor="middle" font-family="Arial, sans-serif" 
+                              font-size="16" font-weight="bold" fill="#1565c0">PELANGGAN</text>
+                        
+                        <text x="580" y="108" font-family="Arial, sans-serif" font-size="12" fill="#333">
+                            <tspan font-weight="bold" text-decoration="underline">🔑 No_KTP</tspan>
+                        </text>
+                        <text x="580" y="125" font-family="Arial, sans-serif" font-size="12" fill="#333">Nama_Pelanggan</text>
+                        <text x="580" y="142" font-family="Arial, sans-serif" font-size="12" fill="#333">Alamat_Pelanggan</text>
+                        <text x="580" y="159" font-family="Arial, sans-serif" font-size="12" fill="#333">No_Telepon</text>
+                    </g>
+                    
+                    <!-- ENTITY: PENYEWAAN -->
+                    <g filter="url(#shadow)">
+                        <rect x="310" y="250" width="180" height="140" rx="8" ry="8" 
+                                                            fill="url(#entitygrad)" stroke="#ff9800" stroke-width="2"/>
+                        <line x1="310" y1="290" x2="490" y2="290" stroke="#ff9800" stroke-width="1"/>
+                        
+                        <text x="400" y="275" text-anchor="middle" font-family="Arial, sans-serif" 
+                              font-size="16" font-weight="bold" fill="#ef6c00">PENYEWAAN</text>
+                        
+                        <text x="320" y="308" font-family="Arial, sans-serif" font-size="12" fill="#333">
+                            <tspan font-weight="bold" text-decoration="underline">🔑 No_Transaksi</tspan>
+                        </text>
+                        <text x="320" y="325" font-family="Arial, sans-serif" font-size="12" fill="#333">Tanggal_Sewa</text>
+                        <text x="320" y="342" font-family="Arial, sans-serif" font-size="12" fill="#333">Tgl_Kembali_Rencana</text>
+                        <text x="320" y="359" font-family="Arial, sans-serif" font-size="12" fill="#333">Tgl_Kembali_Aktual</text>
+                        <text x="320" y="376" font-family="Arial, sans-serif" font-size="12" fill="#333">Total_Biaya, Denda</text>
+                    </g>
+                    
+                    <!-- RELATIONSHIP: MENYEWA -->
+                    <g filter="url(#shadow)">
+                        <polygon points="400,200 430,185 460,200 430,215" 
+                                 fill="#ffeb3b" stroke="#333" stroke-width="2"/>
+                        <text x="430" y="205" text-anchor="middle" font-family="Arial, sans-serif" 
+                              font-size="12" font-weight="bold" fill="#333">MENYEWA</text>
+                    </g>
+                    
+                    <!-- RELATIONSHIP LINES -->
+                    <!-- MOBIL to MENYEWA -->
+                    <line x1="230" y1="120" x2="400" y2="200" stroke="#333" stroke-width="2"/>
+                    <!-- PELANGGAN to MENYEWA -->
+                    <line x1="570" y1="120" x2="460" y2="200" stroke="#333" stroke-width="2"/>
+                    <!-- MENYEWA to PENYEWAAN -->
+                    <line x1="430" y1="215" x2="400" y2="250" stroke="#333" stroke-width="2"/>
+                    
+                    <!-- CARDINALITY LABELS -->
+                    <!-- MOBIL (1) -->
+                    <circle cx="280" cy="150" r="12" fill="white" stroke="#333" stroke-width="1"/>
+                    <text x="280" y="155" text-anchor="middle" font-family="Arial, sans-serif" 
+                          font-size="12" font-weight="bold" fill="#d32f2f">1</text>
+                    
+                    <!-- PELANGGAN (1) -->
+                    <circle cx="520" cy="150" r="12" fill="white" stroke="#333" stroke-width="1"/>
+                    <text x="520" y="155" text-anchor="middle" font-family="Arial, sans-serif" 
+                          font-size="12" font-weight="bold" fill="#d32f2f">1</text>
+                    
+                    <!-- PENYEWAAN (N) -->
+                    <circle cx="415" cy="235" r="12" fill="white" stroke="#333" stroke-width="1"/>
+                    <text x="415" y="240" text-anchor="middle" font-family="Arial, sans-serif" 
+                          font-size="12" font-weight="bold" fill="#d32f2f">N</text>
+                    
+                    <!-- TITLE -->
+                    <text x="400" y="25" text-anchor="middle" font-family="Arial, sans-serif" 
+                          font-size="16" font-weight="bold" fill="#1565c0">
+                        ER Diagram - Sistem Rental Mobil
+                    </text>
+                </svg>
+            </div>
+            
+            <div style="background: #f8f9fa; padding: 15px; border-radius: 8px;">
+                <h6 style="color: #1e3c72; margin-bottom: 10px;">📋 Penjelasan Diagram Rental Mobil:</h6>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                    <div>
+                        <strong>Entitas:</strong>
+                        <ul style="margin-top: 5px; margin-left: 20px; font-size: 14px;">
+                            <li><strong>MOBIL:</strong> Data kendaraan yang disewakan</li>
+                            <li><strong>PELANGGAN:</strong> Data penyewa</li>
+                            <li><strong>PENYEWAAN:</strong> Transaksi rental</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <strong>Relasi MENYEWA:</strong>
+                        <ul style="margin-top: 5px; margin-left: 20px; font-size: 14px;">
+                            <li>MOBIL (1) : PENYEWAAN (N)</li>
+                            <li>PELANGGAN (1) : PENYEWAAN (N)</li>
+                            <li>Satu transaksi = 1 mobil + 1 pelanggan</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Sisanya tetap sama seperti kode sebelumnya untuk bagian 2 dan 3 -->
+        <div style="background: white; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
+            <h5 style="color: #2a5298; margin-bottom: 10px;">2. Transformasi EER ke Skema Database Relasional</h5>
+            
+            <div style="margin-bottom: 20px;">
+                <h6 style="color: #1e3c72; margin-bottom: 10px;">📋 Strategi Transformasi Superclass/Subclass</h6>
+                
+                <div style="background: #fff3cd; padding: 10px; border-radius: 5px; margin-bottom: 15px;">
+                    <strong>Pilihan Transformasi yang Dipilih: Option 1 (Tabel Terpisah)</strong>
+                    <ul style="margin-top: 5px; margin-left: 20px;">
+                        <li>Membuat tabel terpisah untuk superclass dan setiap subclass</li>
+                        <li>Primary Key subclass = Foreign Key ke superclass</li>
+                        <li>Cocok untuk constraint Disjoint dan Partial</li>
+                        <li>Memberikan fleksibilitas dan normalisasi yang baik</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <pre style="background: #f4f4f4; padding: 15px; border-radius: 5px; overflow-x: auto; margin-bottom: 15px;">
+-- Tabel Superclass ORANG
+CREATE TABLE Orang (
+    NIK VARCHAR(20) PRIMARY KEY,
+    Nama VARCHAR(100) NOT NULL,
+    Tanggal_Lahir DATE,
+    Alamat TEXT,
+    CONSTRAINT chk_nik_format CHECK (LENGTH(NIK) = 16)
+);
+
+-- Tabel Subclass MAHASISWA
+CREATE TABLE Mahasiswa (
+    NIK_Orang VARCHAR(20) PRIMARY KEY,
+    NPM VARCHAR(15) UNIQUE NOT NULL,
+    Program_Studi VARCHAR(50) NOT NULL,
+    Angkatan INT NOT NULL,
+    Status_Mahasiswa VARCHAR(20) DEFAULT 'Aktif',
+    FOREIGN KEY (NIK_Orang) REFERENCES Orang(NIK) 
+        ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT chk_npm_format CHECK (LENGTH(NPM) >= 8),
+    CONSTRAINT chk_angkatan CHECK (Angkatan >= 1900 AND Angkatan <= YEAR(CURDATE())),
+    CONSTRAINT chk_status_mhs CHECK (Status_Mahasiswa IN ('Aktif', 'Cuti', 'Lulus', 'DO'))
+);
+
+-- Tabel Subclass DOSEN
+CREATE TABLE Dosen (
+    NIK_Orang VARCHAR(20) PRIMARY KEY,
+    NIDN VARCHAR(15) UNIQUE NOT NULL,
+    Bidang_Keahlian VARCHAR(100),
+    Status_Dosen VARCHAR(20) DEFAULT 'Aktif',
+    Tanggal_Mulai_Kerja DATE,
+    FOREIGN KEY (NIK_Orang) REFERENCES Orang(NIK) 
+        ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT chk_nidn_format CHECK (LENGTH(NIDN) = 10),
+    CONSTRAINT chk_status_dosen CHECK (Status_Dosen IN ('Aktif', 'Cuti', 'Pensiun', 'Resign'))
+);
+
+-- Tabel MATA_KULIAH
+CREATE TABLE Mata_Kuliah (
+    Kode_MK VARCHAR(10) PRIMARY KEY,
+    Nama_MK VARCHAR(100) NOT NULL,
+    Jumlah_SKS INT NOT NULL,
+    Deskripsi TEXT,
+    Prasyarat VARCHAR(10),
+    CONSTRAINT chk_sks CHECK (Jumlah_SKS > 0 AND Jumlah_SKS <= 6),
+    FOREIGN KEY (Prasyarat) REFERENCES Mata_Kuliah(Kode_MK)
+);
+
+-- Tabel KELAS_PERKULIAHAN
+CREATE TABLE Kelas_Perkuliahan (
+    ID_Kelas VARCHAR(20) PRIMARY KEY,
+    Kode_MK VARCHAR(10) NOT NULL,
+    NIDN_Dosen VARCHAR(15) NOT NULL,
+    Semester VARCHAR(10) NOT NULL,
+    Tahun_Akademik VARCHAR(9) NOT NULL,
+    Ruang VARCHAR(20),
+    Jadwal VARCHAR(100),
+    Kapasitas_Maksimal INT DEFAULT 40,
+    Jumlah_Peserta INT DEFAULT 0,
+    Status_Kelas VARCHAR(20) DEFAULT 'Dibuka',
+    FOREIGN KEY (Kode_MK) REFERENCES Mata_Kuliah(Kode_MK) 
+        ON UPDATE CASCADE,
+    FOREIGN KEY (NIDN_Dosen) REFERENCES Dosen(NIDN) 
+        ON UPDATE CASCADE,
+    CONSTRAINT chk_semester CHECK (Semester IN ('Ganjil', 'Genap', 'Pendek')),
+    CONSTRAINT chk_tahun_akademik CHECK (Tahun_Akademik REGEXP '^[0-9]{4}/[0-9]{4}$'),
+    CONSTRAINT chk_kapasitas CHECK (Kapasitas_Maksimal > 0),
+    CONSTRAINT chk_peserta CHECK (Jumlah_Peserta >= 0 AND Jumlah_Peserta <= Kapasitas_Maksimal),
+    CONSTRAINT chk_status_kelas CHECK (Status_Kelas IN ('Dibuka', 'Ditutup', 'Berjalan', 'Selesai')),
+    UNIQUE KEY unique_kelas (Kode_MK, Semester, Tahun_Akademik, NIDN_Dosen)
+);
+
+-- Tabel Relasi Many-to-Many: PENGAMBILAN_KELAS
+CREATE TABLE Pengambilan_Kelas (
+    NPM_Mahasiswa VARCHAR(15) NOT NULL,
+    ID_Kelas VARCHAR(20) NOT NULL,
+    Tanggal_Daftar DATE DEFAULT (CURRENT_DATE),
+    Nilai_Angka DECIMAL(5,2),
+    Nilai_Huruf VARCHAR(2),
+    Status_Kelulusan VARCHAR(20) DEFAULT 'Sedang Berjalan',
+    Kehadiran_Persen DECIMAL(5,2),
+    PRIMARY KEY (NPM_Mahasiswa, ID_Kelas),
+    FOREIGN KEY (NPM_Mahasiswa) REFERENCES Mahasiswa(NPM) 
+        ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (ID_Kelas) REFERENCES Kelas_Perkuliahan(ID_Kelas) 
+        ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT chk_nilai_angka CHECK (Nilai_Angka >= 0 AND Nilai_Angka <= 100),
+    CONSTRAINT chk_nilai_huruf CHECK (Nilai_Huruf IN ('A', 'A-', 'B+', 'B', 'B-', 'C+', 'C', 'C-', 'D+', 'D', 'E')),
+    CONSTRAINT chk_status_lulus CHECK (Status_Kelulusan IN ('Sedang Berjalan', 'Lulus', 'Tidak Lulus', 'Mengulang')),
+    CONSTRAINT chk_kehadiran CHECK (Kehadiran_Persen >= 0 AND Kehadiran_Persen <= 100)
+);</pre>
+        </div>
+        
+        <div style="background: white; padding: 15px; border-radius: 8px;">
+            <h5 style="color: #2a5298; margin-bottom: 10px;">3. Konsep Object-Oriented Database (OODB)</h5>
+            
+            <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
+                <strong>Keuntungan OODB untuk Sistem Akademik:</strong>
+                
+                <div style="margin: 15px 0;">
+                    <strong>1. Inheritance Alami:</strong>
+                    <ul style="margin-top: 5px; margin-left: 20px;">
+                        <li>MAHASISWA dan DOSEN otomatis mewarisi atribut dari ORANG</li>
+                        <li>Tidak perlu JOIN untuk mendapatkan data lengkap</li>
+                        <li>Polymorphic queries secara natural</li>
+                    </ul>
+                </div>
+                
+                <div style="margin: 15px 0;">
+                    <strong>2. Complex Data Types:</strong>
+                    <ul style="margin-top: 5px; margin-left: 20px;">
+                        <li>List&lt;KelasPerkuliahan&gt; langsung sebagai atribut</li>
+                        <li>Nested objects untuk data kompleks</li>
+                        <li>User-defined types untuk domain spesifik</li>
+                    </ul>
+                </div>
+                
+                <div style="margin: 15px 0;">
+                    <strong>3. Object Navigation:</strong>
+                    <ul style="margin-top: 5px; margin-left: 20px;">
+                        <li>Direct object references tanpa JOIN</li>
+                        <li>Path expressions yang intuitif</li>
+                        <li>Bidirectional navigation</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <pre style="background: #f4f4f4; padding: 15px; border-radius: 5px; overflow-x: auto;">
+// Contoh Class Hierarchy dalam OODB
+class Orang {
+    String NIK;
+    String nama;
+    Date tanggalLahir;
+    String alamat;
+    
+    public String getInfoDasar() { ... }
+    public int hitungUmur() { ... }
+}
+
+class Mahasiswa extends Orang {
+    String NPM;
+    String programStudi;
+    int angkatan;
+        List<KelasPerkuliahan> kelasYangDiambil;
+    Map<String, Nilai> transkrip;
+    
+    // Inherited methods dari Orang + methods khusus
+    public double hitungIPK() { ... }
+    public List<MataKuliah> getMataKuliahLulus() { ... }
+    public void daftarKelas(KelasPerkuliahan kelas) { ... }
+}
+
+class Dosen extends Orang {
+    String NIDN;
+    String bidangKeahlian;
+    List<KelasPerkuliahan> kelasYangDiajar;
+    List<Publikasi> daftarPublikasi;
+    
+    // Inherited methods dari Orang + methods khusus
+    public void assignKelas(KelasPerkuliahan kelas) { ... }
+    public void inputNilai(Mahasiswa mhs, double nilai) { ... }
+    public List<Mahasiswa> getDaftarMahasiswaBimbingan() { ... }
+}
+
+// Contoh Query OODB vs Relational
+// OODB - Natural dan Intuitif
+Dosen prof = database.getDosen("NIDN123456789");
+String info = prof.nama + " (" + prof.bidangKeahlian + ")";
+List<KelasPerkuliahan> kelasAktif = prof.kelasYangDiajar
+    .filter(k -> k.tahunAkademik.equals("2024/2025"));
+
+// Relational - Memerlukan Multiple JOINs
+// SELECT o.Nama, d.Bidang_Keahlian, kp.*
+// FROM Orang o 
+// JOIN Dosen d ON o.NIK = d.NIK_Orang
+// JOIN Kelas_Perkuliahan kp ON d.NIDN = kp.NIDN_Dosen
+// WHERE d.NIDN = 'NIDN123456789' 
+//   AND kp.Tahun_Akademik = '2024/2025';</pre>
+            
+            <div style="background: #e3f2fd; padding: 15px; border-radius: 8px; margin-top: 15px;">
+                <strong>Perbandingan Keuntungan:</strong>
+                
+                <table style="width: 100%; border-collapse: collapse; margin-top: 10px;">
+                    <tr style="background: #f8f9fa;">
+                        <th style="border: 1px solid #ddd; padding: 8px; text-align: left;">Aspek</th>
+                        <th style="border: 1px solid #ddd; padding: 8px; text-align: left;">OODB</th>
+                        <th style="border: 1px solid #ddd; padding: 8px; text-align: left;">Relational DB</th>
+                    </tr>
+                    <tr>
+                        <td style="border: 1px solid #ddd; padding: 8px;"><strong>Inheritance</strong></td>
+                        <td style="border: 1px solid #ddd; padding: 8px;">Natural, otomatis</td>
+                        <td style="border: 1px solid #ddd; padding: 8px;">Memerlukan JOIN, manual</td>
+                    </tr>
+                    <tr style="background: #f8f9fa;">
+                        <td style="border: 1px solid #ddd; padding: 8px;"><strong>Complex Types</strong></td>
+                        <td style="border: 1px solid #ddd; padding: 8px;">Langsung didukung</td>
+                        <td style="border: 1px solid #ddd; padding: 8px;">Perlu normalisasi</td>
+                    </tr>
+                    <tr>
+                        <td style="border: 1px solid #ddd; padding: 8px;"><strong>Navigation</strong></td>
+                        <td style="border: 1px solid #ddd; padding: 8px;">Object references</td>
+                        <td style="border: 1px solid #ddd; padding: 8px;">Foreign key JOINs</td>
+                    </tr>
+                    <tr style="background: #f8f9fa;">
+                        <td style="border: 1px solid #ddd; padding: 8px;"><strong>Query Complexity</strong></td>
+                        <td style="border: 1px solid #ddd; padding: 8px;">Path expressions</td>
+                        <td style="border: 1px solid #ddd; padding: 8px;">Multiple JOINs</td>
+                    </tr>
+                    <tr>
+                        <td style="border: 1px solid #ddd; padding: 8px;"><strong>Impedance Mismatch</strong></td>
+                        <td style="border: 1px solid #ddd; padding: 8px;">Minimal</td>
+                        <td style="border: 1px solid #ddd; padding: 8px;">Signifikan</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        
+        <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin-top: 15px;">
+            <h5 style="color: #2a5298; margin-bottom: 10px;">🔍 Ringkasan Komprehensif</h5>
+            
+            <div style="margin-bottom: 15px;">
+                <strong>1. EER Diagram yang Dirancang:</strong>
+                <ul style="margin-top: 5px; margin-left: 20px;">
+                    <li>Implementasi inheritance dengan constraint Disjoint-Partial</li>
+                    <li>Relasi 1:N untuk Mengajar dan Menawarkan</li>
+                    <li>Relasi M:N untuk Mengambil dengan atribut relasi</li>
+                    <li>Proper key constraints dan participation constraints</li>
+                </ul>
+            </div>
+            
+            <div style="margin-bottom: 15px;">
+                <strong>2. Transformasi Relasional yang Optimal:</strong>
+                <ul style="margin-top: 5px; margin-left: 20px;">
+                    <li>Strategi tabel terpisah untuk superclass/subclass</li>
+                    <li>Comprehensive constraints dan validations</li>
+                    <li>Referential integrity dengan CASCADE options</li>
+                    <li>Additional features: audit trail, self-referencing</li>
+                </ul>
+            </div>
+            
+            <div style="margin-bottom: 15px;">
+                <strong>3. OODB Advantages yang Signifikan:</strong>
+                <ul style="margin-top: 5px; margin-left: 20px;">
+                    <li>Natural inheritance tanpa impedance mismatch</li>
+                    <li>Complex data types dan nested objects</li>
+                    <li>Intuitive object navigation dan path expressions</li>
+                    <li>Reduced query complexity untuk hierarchical data</li>
+                </ul>
+            </div>
+            
+            <div style="background: #d4edda; padding: 10px; border-radius: 5px;">
+                <strong>Kesimpulan:</strong> Sistem akademik dengan struktur inheritance yang kompleks sangat cocok untuk pendekatan OODB atau hybrid ORM, karena dapat merepresentasikan hubungan natural antara ORANG, MAHASISWA, dan DOSEN dengan lebih intuitif dan efisien dibandingkan pure relational approach.
+            </div>
+        </div>
+    </div>
+`,
+        explanation: "Jawaban harus mencakup EER diagram visual yang rapi dengan SVG, analisis constraint spesialisasi yang detail, transformasi ke relasional dengan SQL komprehensif termasuk validations dan constraints, serta penjelasan mendalam tentang keuntungan OODB dengan contoh implementasi praktis dan perbandingan dengan relational database."
+    }
+];
+
+
+        // Combine all questions
+        const allQuestions = [
+            ...multipleChoiceQuestions.map((q, i) => ({...q, type: 'multiple', originalIndex: i})),
+            ...essayQuestions.map((q, i) => ({...q, type: 'essay', originalIndex: i + multipleChoiceQuestions.length}))
+        ];
+
+        // Global variables
+        let questions = [...allQuestions];
+        let currentQuestion = 0;
+        let userAnswers = new Array(questions.length).fill(null);
+        let flaggedQuestions = new Set();
+        let startTime = Date.now();
+        let timerInterval;
+        let timeLimit = 120 * 60; // 120 minutes
+
+        // Toggle settings
+        function toggleSetting(setting) {
+            settings[setting] = !settings[setting];
+            const toggle = document.getElementById(setting + 'Toggle');
+            toggle.classList.toggle('active');
+            
+            if (setting === 'darkMode') {
+                document.body.classList.toggle('dark-mode');
+            }
+        }
+
+        // Shuffle array
+        function shuffleArray(array) {
+            const newArray = [...array];
+            for (let i = newArray.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+            }
+            return newArray;
+        }
+
+        // Start exam
+        function startExam() {
+            // Apply randomization if enabled
+            if (settings.randomize) {
+                // Separate multiple choice and essay questions
+                const mcQuestions = allQuestions.filter(q => q.type === 'multiple');
+                const essayQuestions = allQuestions.filter(q => q.type === 'essay');
+                
+                // Shuffle multiple choice questions
+                const shuffledMC = shuffleArray(mcQuestions);
+                
+                // Combine: shuffled MC first, then essay questions
+                questions = [...shuffledMC, ...essayQuestions];
+            } else {
+                questions = [...allQuestions];
+            }
+            
+            // Reset variables
+            currentQuestion = 0;
+            userAnswers = new Array(questions.length).fill(null);
+            flaggedQuestions.clear();
+            startTime = Date.now();
+                        timeLimit = 120 * 60;
+            
+            document.querySelector('.start-screen').classList.remove('active');
+            document.querySelector('.question-screen').classList.add('active');
+            
+            // Initialize navigator
+            if (settings.showNavigator) {
+                initializeNavigator();
+                document.getElementById('questionNavigator').classList.add('show');
+            }
+            
+            startTimer();
+            showQuestion();
+        }
+
+        // Initialize question navigator
+        function initializeNavigator() {
+            const navGrid = document.getElementById('navGrid');
+            navGrid.innerHTML = '';
+            
+            for (let i = 0; i < questions.length; i++) {
+                const navItem = document.createElement('div');
+                navItem.className = 'nav-item';
+                
+                if (questions[i].type === 'essay') {
+                    navItem.classList.add('essay');
+                    navItem.textContent = 'E' + (questions[i].originalIndex - 49);
+                } else {
+                    navItem.textContent = i + 1;
+                }
+                
+                navItem.onclick = () => jumpToQuestion(i);
+                navGrid.appendChild(navItem);
+            }
+        }
+
+        // Jump to specific question
+        function jumpToQuestion(index) {
+            currentQuestion = index;
+            showQuestion();
+        }
+
+        // Update navigator
+        function updateNavigator() {
+            if (!settings.showNavigator) return;
+            
+            const navItems = document.querySelectorAll('.nav-item');
+            navItems.forEach((item, index) => {
+                item.classList.remove('current', 'answered', 'flagged');
+                
+                if (index === currentQuestion) {
+                    item.classList.add('current');
+                }
+                
+                if (userAnswers[index] !== null) {
+                    item.classList.add('answered');
+                }
+                
+                if (flaggedQuestions.has(index)) {
+                    item.classList.add('flagged');
+                }
+            });
+        }
+
+        // Timer function
+        function startTimer() {
+            timerInterval = setInterval(() => {
+                timeLimit--;
+                const minutes = Math.floor(timeLimit / 60);
+                const seconds = timeLimit % 60;
+                const timerElement = document.getElementById('timer');
+                timerElement.textContent = 
+                    `${minutes}:${seconds.toString().padStart(2, '0')}`;
+                
+                // Warning when 5 minutes left
+                if (timeLimit <= 300) {
+                    timerElement.classList.add('warning');
+                }
+                
+                if (timeLimit <= 0) {
+                    clearInterval(timerInterval);
+                    finishExam();
+                }
+            }, 1000);
+        }
+
+        // Show question
+        function showQuestion() {
+            const question = questions[currentQuestion];
+            
+            // Update question info
+            document.getElementById('questionNumber').textContent = 
+                `Soal ${currentQuestion + 1} dari ${questions.length}`;
+            document.getElementById('questionType').textContent = 
+                question.type === 'essay' ? 'Essay' : 'Pilihan Ganda';
+            document.getElementById('questionText').innerHTML = question.question;
+            
+            // Handle image
+            const imageContainer = document.getElementById('questionImage');
+            if (question.hasImage) {
+                imageContainer.style.display = 'block';
+                document.getElementById('questionImg').src = question.imageFile;
+            } else {
+                imageContainer.style.display = 'none';
+            }
+            
+            // Show/hide appropriate answer area
+            const optionsList = document.getElementById('optionsList');
+            const essayContainer = document.getElementById('essayContainer');
+            
+            if (question.type === 'multiple') {
+                optionsList.style.display = 'block';
+                essayContainer.style.display = 'none';
+                showMultipleChoiceOptions(question);
+            } else {
+                optionsList.style.display = 'none';
+                essayContainer.style.display = 'block';
+                showEssayArea();
+            }
+            
+            // Update progress bar
+            const progress = ((currentQuestion + 1) / questions.length) * 100;
+            document.getElementById('progressBar').style.width = progress + '%';
+            
+            // Update navigation buttons
+            document.getElementById('prevBtn').disabled = currentQuestion === 0;
+            document.getElementById('nextBtn').textContent = 
+                currentQuestion === questions.length - 1 ? 'Selesai' : 'Selanjutnya →';
+            
+            // Update flag button
+            const flagBtn = document.getElementById('flagBtn');
+            if (flaggedQuestions.has(currentQuestion)) {
+                flagBtn.classList.add('flagged');
+                flagBtn.innerHTML = '🚩 Hapus Tanda';
+            } else {
+                flagBtn.classList.remove('flagged');
+                flagBtn.innerHTML = '🚩 Tandai Soal';
+            }
+            
+            // Update navigator
+            updateNavigator();
+        }
+
+        // Show multiple choice options
+        function showMultipleChoiceOptions(question) {
+            const optionsList = document.getElementById('optionsList');
+            optionsList.innerHTML = '';
+            
+            // Get options (randomize if enabled)
+            let options = question.options.map((option, index) => ({ text: option, originalIndex: index }));
+            if (settings.randomizeOptions) {
+                options = shuffleArray(options);
+            }
+            
+            options.forEach((option, displayIndex) => {
+                const li = document.createElement('li');
+                li.className = 'option';
+                
+                // Set data attribute untuk tracking
+                li.setAttribute('data-original-index', option.originalIndex);
+                
+                // Check if this option was selected
+                if (userAnswers[currentQuestion] === option.originalIndex) {
+                    li.classList.add('selected');
+                }
+                
+                li.innerHTML = `
+                    <span class="option-label">${String.fromCharCode(65 + displayIndex)}.</span>
+                    ${option.text}
+                `;
+                
+                // Event listener
+                li.addEventListener('click', function() {
+                    selectOption(option.originalIndex);
+                });
+                
+                optionsList.appendChild(li);
+            });
+        }
+
+        // Show essay area
+        function showEssayArea() {
+            const essayTextarea = document.getElementById('essayAnswer');
+            const charCounter = document.getElementById('charCounter');
+            const currentEssayQuestion = essayQuestions.find(q => questions[currentQuestion].question === q.question);
+            
+            // Load saved answer if exists
+            essayTextarea.value = userAnswers[currentQuestion] || '';
+            
+            // Set placeholder with minimum requirement
+            const minLength = currentEssayQuestion?.minLength || 200;
+            essayTextarea.placeholder = `Tulis jawaban Anda di sini (minimal ${minLength} karakter)...`;
+            
+            // Initial character counter update
+            updateCharCounter();
+            
+            // Add event listener for character counting
+            essayTextarea.oninput = function() {
+                userAnswers[currentQuestion] = this.value;
+                updateCharCounter();
+                updateNavigator();
+                saveProgress();
+            };
+            
+            // Focus on textarea
+            essayTextarea.focus();
+        }
+
+        // Update character counter
+        function updateCharCounter() {
+            const essayTextarea = document.getElementById('essayAnswer');
+            const charCounter = document.getElementById('charCounter');
+            const length = essayTextarea.value.length;
+            
+            // Get the current essay question from essayQuestions array
+            const currentEssayQuestion = essayQuestions.find(q => questions[currentQuestion].question === q.question);
+            const minLength = currentEssayQuestion?.minLength || 200;
+            
+            // Update counter display
+            charCounter.innerHTML = `
+                <span style="font-weight: bold; color: ${length >= minLength ? '#28a745' : '#dc3545'}">
+                    ${length}/${minLength} karakter
+                </span>
+            `;
+            
+            if (length < minLength) {
+                charCounter.innerHTML += `
+                    <span style="color: #dc3545; font-size: 0.9em; margin-left: 10px;">
+                        (kurang ${minLength - length} karakter)
+                    </span>
+                `;
+            } else {
+                charCounter.innerHTML += `
+                    <span style="color: #28a745; font-size: 0.9em; margin-left: 10px;">
+                        ✓ Memenuhi syarat
+                    </span>
+                `;
+            }
+            
+            // Add visual feedback to textarea
+            if (length >= minLength) {
+                essayTextarea.style.borderColor = '#28a745';
+                essayTextarea.style.backgroundColor = '#f8fff9';
+            } else if (length > 0) {
+                essayTextarea.style.borderColor = '#ffc107';
+                essayTextarea.style.backgroundColor = '#fffdf8';
+            } else {
+                essayTextarea.style.borderColor = '#dee2e6';
+                essayTextarea.style.backgroundColor = '#ffffff';
+            }
+        }
+
+        // Select option
+        function selectOption(index) {
+            // Simpan jawaban
+            userAnswers[currentQuestion] = index;
+            
+            // Hapus semua class selected
+            const allOptions = document.querySelectorAll('.option');
+            allOptions.forEach(opt => {
+                opt.classList.remove('selected');
+            });
+            
+            // Tambahkan class selected ke option yang diklik
+            const selectedOption = document.querySelector(`.option[data-original-index="${index}"]`);
+            if (selectedOption) {
+                selectedOption.classList.add('selected');
+            }
+            
+            // Update navigator
+            updateNavigator();
+            
+            // Save progress
+            saveProgress();
+        }
+
+        // Toggle flag
+        function toggleFlag() {
+            if (flaggedQuestions.has(currentQuestion)) {
+                flaggedQuestions.delete(currentQuestion);
+            } else {
+                flaggedQuestions.add(currentQuestion);
+            }
+            showQuestion();
+            saveProgress();
+        }
+
+        // Navigation
+        function previousQuestion() {
+            if (currentQuestion > 0) {
+                currentQuestion--;
+                showQuestion();
+            }
+        }
+
+        function nextQuestion() {
+            if (currentQuestion < questions.length - 1) {
+                currentQuestion++;
+                showQuestion();
+            } else {
+                showSubmitConfirmation();
+            }
+        }
+
+        // Show submit confirmation
+        function showSubmitConfirmation() {
+            const unanswered = userAnswers.filter(answer => answer === null).length;
+            const modal = document.getElementById('submitModal');
+            const warning = document.getElementById('unansweredWarning');
+            
+            if (unanswered > 0) {
+                warning.textContent = `Anda masih memiliki ${unanswered} soal yang belum dijawab.`;
+                warning.style.color = '#dc3545';
+            } else {
+                warning.textContent = 'Semua soal telah dijawab.';
+                warning.style.color = '#28a745';
+            }
+            
+            modal.classList.add('show');
+        }
+
+        // Close modal
+        function closeModal() {
+            document.getElementById('submitModal').classList.remove('show');
+        }
+
+        // Finish exam
+        function finishExam() {
+            clearInterval(timerInterval);
+            closeModal();
+            
+            // Calculate results
+            let correctCount = 0;
+            let incorrectCount = 0;
+            let unansweredCount = 0;
+            let essayAnswered = 0;
+            
+            questions.forEach((question, index) => {
+                if (question.type === 'multiple') {
+                    if (userAnswers[index] === null) {
+                        unansweredCount++;
+                    } else if (userAnswers[index] === question.correct) {
+                        correctCount++;
+                    } else {
+                        incorrectCount++;
+                    }
+                } else if (question.type === 'essay') {
+                    if (userAnswers[index] && userAnswers[index].length >= (question.minLength || 200)) {
+                        essayAnswered++;
+                    }
+                }
+            });
+            
+            // Calculate score (multiple choice only for now)
+            const mcScore = (correctCount / 50) * 70; // 70% weight
+            const essayScore = (essayAnswered / 2) * 30; // 30% weight
+            const totalScore = Math.round(mcScore + essayScore);
+            
+            const timeSpent = Math.floor((Date.now() - startTime) / 1000);
+            const minutes = Math.floor(timeSpent / 60);
+            const seconds = timeSpent % 60;
+            
+            // Show results
+            document.querySelector('.question-screen').classList.remove('active');
+            document.querySelector('.result-screen').classList.add('active');
+            
+            document.getElementById('scoreText').textContent = totalScore + '%';
+            document.getElementById('correctCount').textContent = correctCount;
+            document.getElementById('incorrectCount').textContent = incorrectCount;
+            document.getElementById('essayCount').textContent = essayAnswered;
+            document.getElementById('timeSpent').textContent = 
+                `${minutes}:${seconds.toString().padStart(2, '0')}`;
+            
+            // Grade
+            let grade, gradeClass, gradeMessage;
+            if (totalScore >= 85) {
+                grade = 'A';
+                gradeClass = 'excellent';
+                gradeMessage = 'Luar biasa! Anda menguasai materi dengan sangat baik!';
+            } else if (totalScore >= 70) {
+                grade = 'B';
+                gradeClass = 'good';
+                gradeMessage = 'Bagus! Anda memiliki pemahaman yang baik tentang materi.';
+            } else if (totalScore >= 60) {
+                grade = 'C';
+                gradeClass = 'fair';
+                gradeMessage = 'Cukup baik! Anda lulus, tetapi masih perlu meningkatkan pemahaman.';
+            } else {
+                grade = 'D';
+                gradeClass = 'poor';
+                gradeMessage = 'Anda perlu belajar lebih giat lagi. Jangan menyerah!';
+            }
+            
+            const gradeElement = document.getElementById('gradeText');
+            gradeElement.textContent = `Grade: ${grade}`;
+            gradeElement.className = `grade ${gradeClass}`;
+            document.getElementById('gradeMessage').textContent = gradeMessage;
+            
+            // Show answer review
+            showAnswerReview();
+            
+            // Clear saved progress
+            localStorage.removeItem('examProgress');
+            
+            // Confetti for high scores
+            if (totalScore >= 85) {
+                setTimeout(createConfetti, 500);
+            }
+        }
+
+        // Show answer review
+        function showAnswerReview() {
+            const reviewContainer = document.getElementById('answerReview');
+            reviewContainer.innerHTML = '<h3>📝 Review Jawaban</h3>';
+            
+            questions.forEach((question, index) => {
+                const reviewItem = document.createElement('div');
+                
+                if (question.type === 'multiple') {
+                    const userAnswer = userAnswers[index];
+                    const isCorrect = userAnswer === question.correct;
+                    const isUnanswered = userAnswer === null;
+                    
+                    reviewItem.className = `review-item ${isCorrect ? 'correct' : 'incorrect'}`;
+                    
+                    let statusText, statusClass;
+                    if (isUnanswered) {
+                        statusText = '⚪ Tidak Dijawab';
+                        statusClass = 'incorrect';
+                    } else if (isCorrect) {
+                        statusText = '✓ Benar';
+                        statusClass = 'correct';
+                    } else {
+                        statusText = '✗ Salah';
+                        statusClass = 'incorrect';
+                    }
+                    
+                    reviewItem.innerHTML = `
+                        <div class="review-header">
+                                                        <span>Soal ${index + 1} ${flaggedQuestions.has(index) ? '🚩' : ''}</span>
+                            <span class="review-status ${statusClass}">
+                                ${statusText}
+                            </span>
+                        </div>
+                        <div class="review-question">${question.question}</div>
+                        ${question.hasImage ? `<div class="question-image"><img src="${question.imageFile}" style="max-width: 300px;"></div>` : ''}
+                        ${!isCorrect ? `
+                            <div class="review-answer your-answer">
+                                Jawaban Anda: ${isUnanswered ? 'Tidak dijawab' : 
+                                String.fromCharCode(65 + userAnswer) + '. ' + 
+                                question.options[userAnswer]}
+                            </div>
+                        ` : ''}
+                        <div class="review-answer correct-answer">
+                            Jawaban Benar: ${String.fromCharCode(65 + question.correct)}. 
+                            ${question.options[question.correct]}
+                        </div>
+                        <div style="margin-top: 10px; color: #666; font-size: 0.9em;">
+                            <strong>Penjelasan:</strong> ${question.explanation}
+                        </div>
+                    `;
+                } else if (question.type === 'essay') {
+                    const userAnswer = userAnswers[index] || '';
+                    const isAnswered = userAnswer.length >= (question.minLength || 200);
+                    const essayNumber = index - 49; // Karena essay mulai dari index 50
+                    
+                    reviewItem.className = 'review-item essay';
+                    
+                    reviewItem.innerHTML = `
+                        <div class="review-header">
+                            <span>Essay ${essayNumber} ${flaggedQuestions.has(index) ? '🚩' : ''}</span>
+                            <span class="review-status essay">
+                                ${isAnswered ? '✓ Dijawab' : '⚪ Tidak Lengkap'}
+                                (${userAnswer.length}/${question.minLength} karakter)
+                            </span>
+                        </div>
+                        <div class="review-question">${question.question}</div>
+                        
+                        <div class="essay-answer" style="margin-top: 15px;">
+                            <strong>Jawaban Anda:</strong>
+                            <div style="background: #f5f5f5; padding: 15px; border-radius: 5px; margin-top: 10px; white-space: pre-wrap;">
+                                ${userAnswer || '<em style="color: #999;">Tidak ada jawaban</em>'}
+                            </div>
+                        </div>
+                        
+                        ${!isAnswered ? `
+                            <div style="color: #dc3545; margin-top: 10px; padding: 10px; background: #f8d7da; border-radius: 5px;">
+                                ⚠️ Jawaban kurang dari ${question.minLength} karakter minimum.
+                            </div>
+                        ` : ''}
+                        
+                        <div style="margin-top: 20px; background: #d4edda; padding: 15px; border-radius: 5px;">
+                            <strong>📚 Contoh Jawaban yang Baik:</strong>
+                            <div style="margin-top: 10px; color: #155724; white-space: pre-wrap;">
+                                ${question.correctAnswer}
+                            </div>
+                        </div>
+                        
+                        <div style="margin-top: 15px; background: #fff3cd; padding: 15px; border-radius: 5px;">
+                            <strong>💡 Penjelasan:</strong>
+                            <div style="margin-top: 10px; color: #856404;">
+                                ${question.explanation}
+                            </div>
+                        </div>
+                    `;
+                }
+                
+                reviewContainer.appendChild(reviewItem);
+            });
+        }
+
+        // Retake exam
+        function retakeExam() {
+            currentQuestion = 0;
+            userAnswers = new Array(questions.length).fill(null);
+            flaggedQuestions.clear();
+            startTime = Date.now();
+            timeLimit = 120 * 60;
+            
+            document.querySelector('.result-screen').classList.remove('active');
+            document.querySelector('.start-screen').classList.add('active');
+        }
+
+        // Download result
+        function downloadResult() {
+            let correctCount = 0;
+            let incorrectCount = 0;
+            let unansweredCount = 0;
+            let essayAnswered = 0;
+            
+            questions.forEach((question, index) => {
+                if (question.type === 'multiple') {
+                    if (userAnswers[index] === null) {
+                        unansweredCount++;
+                    } else if (userAnswers[index] === question.correct) {
+                        correctCount++;
+                    } else {
+                        incorrectCount++;
+                    }
+                } else if (question.type === 'essay') {
+                    if (userAnswers[index] && userAnswers[index].length >= (question.minLength || 200)) {
+                        essayAnswered++;
+                    }
+                }
+            });
+            
+            const mcScore = (correctCount / 50) * 70;
+            const essayScore = (essayAnswered / 2) * 30;
+            const totalScore = Math.round(mcScore + essayScore);
+            const timeSpent = Math.floor((Date.now() - startTime) / 1000);
+            const minutes = Math.floor(timeSpent / 60);
+            const seconds = timeSpent % 60;
+            
+            let resultText = `HASIL UJIAN TENGAH SEMESTER - SISTEM BASIS DATA 2\n`;
+            resultText += `${'='.repeat(50)}\n\n`;
+            resultText += `Tanggal: ${new Date().toLocaleDateString('id-ID')}\n`;
+            resultText += `Waktu: ${new Date().toLocaleTimeString('id-ID')}\n\n`;
+            resultText += `RINGKASAN HASIL\n`;
+            resultText += `${'-'.repeat(30)}\n`;
+            resultText += `Total Soal: ${questions.length} (50 PG + 2 Essay)\n`;
+            resultText += `Pilihan Ganda Benar: ${correctCount}/50\n`;
+            resultText += `Pilihan Ganda Salah: ${incorrectCount}/50\n`;
+            resultText += `Pilihan Ganda Tidak Dijawab: ${unansweredCount}/50\n`;
+            resultText += `Essay Dijawab Lengkap: ${essayAnswered}/2\n`;
+            resultText += `Skor Total: ${totalScore}%\n`;
+            resultText += `Grade: ${totalScore >= 85 ? 'A' : totalScore >= 70 ? 'B' : totalScore >= 60 ? 'C' : 'D'}\n`;
+            resultText += `Waktu Pengerjaan: ${minutes}:${seconds.toString().padStart(2, '0')}\n\n`;
+            
+            resultText += `\nDETAIL JAWABAN PILIHAN GANDA\n`;
+            resultText += `${'='.repeat(50)}\n\n`;
+            
+            questions.forEach((question, index) => {
+                if (question.type === 'multiple') {
+                    const userAnswer = userAnswers[index];
+                    const isCorrect = userAnswer === question.correct;
+                    const isUnanswered = userAnswer === null;
+                    
+                    resultText += `Soal ${index + 1}: ${isUnanswered ? '⚪ TIDAK DIJAWAB' : isCorrect ? '✓ BENAR' : '✗ SALAH'}`;
+                    if (flaggedQuestions.has(index)) resultText += ' 🚩';
+                    resultText += `\n`;
+                    resultText += `Pertanyaan: ${question.question}\n`;
+                    
+                    if (!isCorrect) {
+                        resultText += `Jawaban Anda: ${isUnanswered ? 'Tidak dijawab' : 
+                            String.fromCharCode(65 + userAnswer) + '. ' + 
+                            question.options[userAnswer]}\n`;
+                    }
+                    
+                    resultText += `Jawaban Benar: ${String.fromCharCode(65 + question.correct)}. ${question.options[question.correct]}\n`;
+                    resultText += `Penjelasan: ${question.explanation}\n`;
+                    resultText += `${'-'.repeat(50)}\n\n`;
+                }
+            });
+            
+            resultText += `\nDETAIL JAWABAN ESSAY\n`;
+            resultText += `${'='.repeat(50)}\n\n`;
+            
+            questions.forEach((question, index) => {
+                if (question.type === 'essay') {
+                    const userAnswer = userAnswers[index];
+                    const isAnswered = userAnswer && userAnswer.length >= (question.minLength || 200);
+                    
+                    resultText += `Essay ${index - 49}: ${isAnswered ? '✓ DIJAWAB' : '⚪ TIDAK LENGKAP'}`;
+                    if (flaggedQuestions.has(index)) resultText += ' 🚩';
+                    resultText += `\n`;
+                    resultText += `Pertanyaan: ${question.question.replace(/<[^>]*>/g, '')}\n`;
+                    resultText += `Jawaban Anda:\n${userAnswer || 'Tidak ada jawaban'}\n`;
+                    resultText += `Panjang Jawaban: ${userAnswer ? userAnswer.length : 0} karakter (minimal ${question.minLength})\n`;
+                    resultText += `${'-'.repeat(50)}\n\n`;
+                }
+            });
+            
+            // Create and download file
+            const blob = new Blob([resultText], { type: 'text/plain' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `Hasil_UTS_SistemBasisData2_${new Date().getTime()}.txt`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+        }
+
+        // Print result
+        function printResult() {
+            window.print();
+        }
+
+        // Image modal functions
+        function openImageModal(src) {
+            const modal = document.getElementById('imageModal');
+            const modalImg = document.getElementById('modalImage');
+            modal.classList.add('show');
+            modalImg.src = src;
+        }
+
+        function closeImageModal() {
+            const modal = document.getElementById('imageModal');
+            modal.classList.remove('show');
+        }
+
+        // Create confetti effect
+        function createConfetti() {
+            const colors = ['#1e3c72', '#2a5298', '#f093fb', '#4facfe'];
+            const confettiCount = 100;
+            
+            for (let i = 0; i < confettiCount; i++) {
+                const confetti = document.createElement('div');
+                confetti.style.position = 'fixed';
+                confetti.style.width = '10px';
+                confetti.style.height = '10px';
+                confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.left = Math.random() * 100 + '%';
+                confetti.style.top = '-10px';
+                confetti.style.opacity = Math.random();
+                confetti.style.transform = `rotate(${Math.random() * 360}deg)`;
+                confetti.style.transition = `all ${2 + Math.random() * 3}s linear`;
+                confetti.style.pointerEvents = 'none';
+                confetti.style.zIndex = '9999';
+                document.body.appendChild(confetti);
+                
+                setTimeout(() => {
+                    confetti.style.top = '100%';
+                    confetti.style.transform = `rotate(${Math.random() * 720}deg)`;
+                }, 10);
+                
+                setTimeout(() => {
+                    confetti.remove();
+                }, 5000);
+            }
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (document.querySelector('.question-screen').classList.contains('active')) {
+                if (e.key === 'ArrowLeft' && currentQuestion > 0) {
+                    previousQuestion();
+                } else if (e.key === 'ArrowRight' && currentQuestion < questions.length - 1) {
+                    nextQuestion();
+                } else if (questions[currentQuestion].type === 'multiple') {
+                    if (e.key >= '1' && e.key <= '4') {
+                        const index = parseInt(e.key) - 1;
+                        const options = document.querySelectorAll('.option');
+                        if (options[index]) {
+                            const originalIndex = parseInt(options[index].getAttribute('data-original-index'));
+                            selectOption(originalIndex);
+                        }
+                    } else if (e.key.toLowerCase() >= 'a' && e.key.toLowerCase() <= 'd') {
+                        const index = e.key.toLowerCase().charCodeAt(0) - 97;
+                        const options = document.querySelectorAll('.option');
+                        if (options[index]) {
+                            const originalIndex = parseInt(options[index].getAttribute('data-original-index'));
+                            selectOption(originalIndex);
+                        }
+                    }
+                } else if (e.key === 'f' || e.key === 'F') {
+                    toggleFlag();
+                }
+            }
+        });
+
+        // Prevent accidental page refresh
+        window.addEventListener('beforeunload', (e) => {
+            if (document.querySelector('.question-screen').classList.contains('active')) {
+                e.preventDefault();
+                e.returnValue = '';
+            }
+        });
+
+        // Auto-save progress to localStorage
+        function saveProgress() {
+            const progress = {
+                currentQuestion,
+                userAnswers,
+                flaggedQuestions: Array.from(flaggedQuestions),
+                timeLimit,
+                startTime,
+                settings,
+                questionOrder: questions.map(q => q.originalIndex)
+            };
+            localStorage.setItem('examProgress', JSON.stringify(progress));
+        }
+
+        function loadProgress() {
+            const saved = localStorage.getItem('examProgress');
+            if (saved) {
+                const progress = JSON.parse(saved);
+                if (confirm('Anda memiliki ujian yang belum selesai. Lanjutkan?')) {
+                    currentQuestion = progress.currentQuestion;
+                    userAnswers = progress.userAnswers;
+                    flaggedQuestions = new Set(progress.flaggedQuestions);
+                    timeLimit = progress.timeLimit;
+                    startTime = progress.startTime;
+                    
+                    // Restore settings
+                    Object.assign(settings, progress.settings);
+                    
+                    // Restore question order
+                    if (progress.questionOrder) {
+                        questions = progress.questionOrder.map(index => allQuestions[index]);
+                    }
+                    
+                    // Apply settings
+                    if (settings.darkMode) {
+                        document.body.classList.add('dark-mode');
+                        document.getElementById('darkModeToggle').classList.add('active');
+                    }
+                    
+                    document.querySelector('.start-screen').classList.remove('active');
+                    document.querySelector('.question-screen').classList.add('active');
+                    
+                    if (settings.showNavigator) {
+                        initializeNavigator();
+                        document.getElementById('questionNavigator').classList.add('show');
+                    }
+                    
+                    startTimer();
+                    showQuestion();
+                } else {
+                    localStorage.removeItem('examProgress');
+                }
+            }
+        }
+
+                // Load progress on page load
+        window.addEventListener('load', loadProgress);
+
+        // Mobile touch support
+        let touchStartX = 0;
+        let touchEndX = 0;
+
+        document.addEventListener('touchstart', (e) => {
+            touchStartX = e.changedTouches[0].screenX;
+        });
+
+        document.addEventListener('touchend', (e) => {
+            touchEndX = e.changedTouches[0].screenX;
+            handleSwipe();
+        });
+
+        function handleSwipe() {
+            if (document.querySelector('.question-screen').classList.contains('active')) {
+                if (touchEndX < touchStartX - 50 && currentQuestion < questions.length - 1) {
+                    nextQuestion();
+                }
+                if (touchEndX > touchStartX + 50 && currentQuestion > 0) {
+                    previousQuestion();
+                }
+            }
+        }
+
+        // Add visibility change handler to pause timer when tab is not visible
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden && timerInterval) {
+                // Optional: You could pause the timer here
+                console.log('Tab is hidden');
+            } else {
+                console.log('Tab is visible');
+            }
+        });
+
+        // Initialize tooltips for better UX
+        function initTooltips() {
+            const tooltipElements = [
+                { selector: '.flag-button', text: 'Tandai soal untuk review nanti' },
+                { selector: '.nav-item', text: 'Klik untuk langsung ke soal' }
+            ];
+            
+            tooltipElements.forEach(({ selector, text }) => {
+                const elements = document.querySelectorAll(selector);
+                elements.forEach(el => {
+                    el.setAttribute('title', text);
+                });
+            });
+        }
+
+        // Fix untuk memastikan tooltips diinisialisasi saat start exam
+        const originalStartExam = startExam;
+        startExam = function() {
+            originalStartExam();
+            setTimeout(initTooltips, 100);
+        };
+
+        // Helper function to render database tables in questions
+        function renderDatabaseTable(tableData) {
+            let html = '<table class="db-table">';
+            
+            // Header
+            if (tableData.headers) {
+                html += '<thead><tr>';
+                tableData.headers.forEach(header => {
+                    html += `<th>${header}</th>`;
+                });
+                html += '</tr></thead>';
+            }
+            
+            // Body
+            if (tableData.rows) {
+                html += '<tbody>';
+                tableData.rows.forEach(row => {
+                    html += '<tr>';
+                    row.forEach(cell => {
+                        html += `<td>${cell}</td>`;
+                    });
+                    html += '</tr>';
+                });
+                html += '</tbody>';
+            }
+            
+            html += '</table>';
+            return html;
+        }
+
+        // Helper function to render SQL code blocks
+        function renderSQLCode(code) {
+            return `<div class="code-block">${code}</div>`;
+        }
+
+        // Add support for rendering tables and SQL in questions
+        questions.forEach(question => {
+            if (question.tableData) {
+                question.question += renderDatabaseTable(question.tableData);
+            }
+            if (question.sqlCode) {
+                question.question += renderSQLCode(question.sqlCode);
+            }
+        });
+
+        // Enhanced error handling
+        window.addEventListener('error', (e) => {
+            console.error('An error occurred:', e.error);
+            // You could send this to a logging service
+        });
+
+        // Performance monitoring
+        const performanceData = {
+            startTime: null,
+            questionTimes: {},
+            currentQuestionStart: null
+        };
+
+        // Track time spent on each question
+        const originalShowQuestion = showQuestion;
+        showQuestion = function() {
+            if (performanceData.currentQuestionStart) {
+                const timeSpent = Date.now() - performanceData.currentQuestionStart;
+                if (!performanceData.questionTimes[currentQuestion]) {
+                    performanceData.questionTimes[currentQuestion] = 0;
+                }
+                performanceData.questionTimes[currentQuestion] += timeSpent;
+            }
+            performanceData.currentQuestionStart = Date.now();
+            originalShowQuestion();
+        };
+
+        // Add performance data to results
+        const originalFinishExam = finishExam;
+        finishExam = function() {
+            // Save final question time
+            if (performanceData.currentQuestionStart) {
+                const timeSpent = Date.now() - performanceData.currentQuestionStart;
+                if (!performanceData.questionTimes[currentQuestion]) {
+                    performanceData.questionTimes[currentQuestion] = 0;
+                }
+                performanceData.questionTimes[currentQuestion] += timeSpent;
+            }
+            
+            originalFinishExam();
+            
+            // Log performance data (could be sent to analytics)
+            console.log('Performance Data:', performanceData);
+        };
+
+        // Accessibility improvements
+        document.addEventListener('DOMContentLoaded', () => {
+            // Add ARIA labels
+            document.getElementById('timer').setAttribute('aria-label', 'Waktu tersisa');
+            document.getElementById('progressBar').setAttribute('role', 'progressbar');
+            document.getElementById('progressBar').setAttribute('aria-label', 'Progress ujian');
+            
+            // Ensure all interactive elements are keyboard accessible
+            const interactiveElements = document.querySelectorAll('button, .option, .nav-item');
+            interactiveElements.forEach(el => {
+                if (!el.hasAttribute('tabindex')) {
+                    el.setAttribute('tabindex', '0');
+                }
+            });
+        });
+
+        // Add support for screen readers
+        function announceToScreenReader(message) {
+            const announcement = document.createElement('div');
+            announcement.setAttribute('role', 'status');
+            announcement.setAttribute('aria-live', 'polite');
+            announcement.style.position = 'absolute';
+            announcement.style.left = '-10000px';
+            announcement.textContent = message;
+            document.body.appendChild(announcement);
+            
+            setTimeout(() => {
+                document.body.removeChild(announcement);
+            }, 1000);
+        }
+
+        // Announce question changes to screen readers
+        const originalJumpToQuestion = jumpToQuestion;
+        jumpToQuestion = function(index) {
+            originalJumpToQuestion(index);
+            announceToScreenReader(`Soal ${index + 1} dari ${questions.length}`);
+        };
+
+        // Add custom event system for extensibility
+        const examEvents = {
+            listeners: {},
+            
+            on(event, callback) {
+                if (!this.listeners[event]) {
+                    this.listeners[event] = [];
+                }
+                this.listeners[event].push(callback);
+            },
+            
+            emit(event, data) {
+                if (this.listeners[event]) {
+                    this.listeners[event].forEach(callback => callback(data));
+                }
+            }
+        };
+
+        // Emit events at key points
+        const originalSelectOption = selectOption;
+        selectOption = function(index) {
+            originalSelectOption(index);
+            examEvents.emit('answerSelected', {
+                questionIndex: currentQuestion,
+                selectedOption: index,
+                questionType: 'multiple'
+            });
+        };
+
+        // Example: Listen for answer selection
+        examEvents.on('answerSelected', (data) => {
+            console.log('Answer selected:', data);
+        });
+
+        // Add exam statistics
+        function calculateDetailedStats() {
+            const stats = {
+                totalQuestions: questions.length,
+                multipleChoice: {
+                    total: 50,
+                    answered: 0,
+                    correct: 0,
+                    incorrect: 0,
+                    unanswered: 0
+                },
+                essay: {
+                    total: 2,
+                    answered: 0,
+                    complete: 0,
+                    incomplete: 0
+                },
+                flagged: flaggedQuestions.size,
+                timePerQuestion: {}
+            };
+            
+            questions.forEach((question, index) => {
+                if (question.type === 'multiple') {
+                    if (userAnswers[index] !== null) {
+                        stats.multipleChoice.answered++;
+                        if (userAnswers[index] === question.correct) {
+                            stats.multipleChoice.correct++;
+                        } else {
+                            stats.multipleChoice.incorrect++;
+                        }
+                    } else {
+                        stats.multipleChoice.unanswered++;
+                    }
+                } else if (question.type === 'essay') {
+                    if (userAnswers[index]) {
+                        stats.essay.answered++;
+                        if (userAnswers[index].length >= (question.minLength || 200)) {
+                            stats.essay.complete++;
+                        } else {
+                            stats.essay.incomplete++;
+                        }
+                    }
+                }
+                
+                if (performanceData.questionTimes[index]) {
+                    stats.timePerQuestion[index] = performanceData.questionTimes[index];
+                }
+            });
+            
+            return stats;
+        }
+
+        // Enhanced download with detailed statistics
+        const originalDownloadResult = downloadResult;
+        downloadResult = function() {
+            const stats = calculateDetailedStats();
+            console.log('Detailed exam statistics:', stats);
+            originalDownloadResult();
+        };
+
+        // Add exam configuration validation
+        function validateExamConfiguration() {
+            const errors = [];
+            
+            if (questions.length === 0) {
+                errors.push('No questions loaded');
+            }
+            
+            if (timeLimit <= 0) {
+                errors.push('Invalid time limit');
+            }
+            
+            questions.forEach((question, index) => {
+                if (!question.question) {
+                    errors.push(`Question ${index + 1} has no text`);
+                }
+                
+                if (question.type === 'multiple') {
+                    if (!question.options || question.options.length < 2) {
+                        errors.push(`Question ${index + 1} has insufficient options`);
+                    }
+                    if (question.correct === undefined || question.correct < 0 || question.correct >= question.options.length) {
+                        errors.push(`Question ${index + 1} has invalid correct answer`);
+                    }
+                }
+            });
+            
+            if (errors.length > 0) {
+                console.error('Exam configuration errors:', errors);
+                return false;
+            }
+            
+            return true;
+        }
+
+        // Validate on load
+        if (!validateExamConfiguration()) {
+            alert('Ada kesalahan dalam konfigurasi ujian. Silakan hubungi administrator.');
+        }
+
+        // Add debug mode for development
+        const debugMode = false; // Set to true during development
+        
+        if (debugMode) {
+            window.examDebug = {
+                questions,
+                userAnswers,
+                flaggedQuestions,
+                settings,
+                jumpToQuestion,
+                selectOption,
+                finishExam,
+                calculateDetailedStats
+            };
+            
+            console.log('Debug mode enabled. Access exam data via window.examDebug');
+        }
+
+        // Initialize exam system
+        console.log('Sistem Ujian Online - Sistem Basis Data 2 initialized successfully');
+    </script>
+</body>
+</html>
